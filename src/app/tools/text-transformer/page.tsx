@@ -34,8 +34,8 @@ export default function TextTransformerPage() {
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto">
       <PageHeader 
-        title="Text Transformer" 
-        description="Convert string casing, remove spaces, and apply various text manipulations." 
+        title="텍스트 변환기" 
+        description="문자열 대소문자를 변환하고, 공백을 제거하며, 다양한 텍스트 조작을 적용하세요." 
       />
       
       <div className="flex flex-wrap gap-2 mb-6">
@@ -56,10 +56,10 @@ export default function TextTransformerPage() {
 
       <div className="flex flex-col lg:flex-row gap-6 h-[400px]">
         <div className="flex-1 flex flex-col gap-2">
-          <label className="text-sm font-medium text-zinc-300">Input Text</label>
+          <label className="text-sm font-medium text-zinc-300">텍스트 입력</label>
           <textarea
             className="flex-1 w-full p-4 glass-card resize-none text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
-            placeholder="Type or paste your text here..."
+            placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."
             value={input}
             onChange={(e) => handleTransform(e.target.value, activeTransform)}
           />
@@ -71,19 +71,19 @@ export default function TextTransformerPage() {
         
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-zinc-300">Transformed Result</label>
+            <label className="text-sm font-medium text-zinc-300">변환 결과</label>
             <div className="flex gap-2">
               <button 
                 onClick={() => handleTransform("", activeTransform)}
                 className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-                title="Clear"
+                title="지우기"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
               <button 
                 onClick={handleCopy}
                 className="p-1.5 text-zinc-400 hover:text-fuchsia-300 hover:bg-fuchsia-500/10 rounded-md transition-colors"
-                title="Copy to clipboard"
+                title="클립보드에 복사"
               >
                 <Copy className="w-4 h-4" />
               </button>
@@ -92,7 +92,7 @@ export default function TextTransformerPage() {
           <textarea
             readOnly
             className="flex-1 w-full p-4 glass-card resize-none text-sm text-fuchsia-100"
-            placeholder="Result will appear here..."
+            placeholder="결과가 여기에 표시됩니다..."
             value={output}
           />
         </div>

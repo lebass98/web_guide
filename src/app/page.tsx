@@ -3,24 +3,24 @@ import { Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock 
 
 export default function Home() {
   const tools = [
-    { title: "HTML Special Chars", desc: "Easily remove or convert HTML entities.", href: "/tools/html-chars", icon: Code, color: "text-blue-400", bg: "bg-blue-500/10" },
-    { title: "JSON Formatter", desc: "Format, validate, and beautify JSON data.", href: "/tools/json-formatter", icon: FileText, color: "text-emerald-400", bg: "bg-emerald-500/10" },
-    { title: "Color Converter", desc: "Convert HEX, RGB, HSL with ease.", href: "/tools/color-converter", icon: Palette, color: "text-pink-400", bg: "bg-pink-500/10" },
-    { title: "Text Transformer", desc: "Uppercase, lowercase, replace, and more.", href: "/tools/text-transformer", icon: Type, color: "text-indigo-400", bg: "bg-indigo-500/10" },
-    { title: "Base64 Converter", desc: "Encode or decode Base64 strings safely.", href: "/tools/base64", icon: Binary, color: "text-orange-400", bg: "bg-orange-500/10" },
-    { title: "URL Encoder", desc: "Quickly encode or decode URI components.", href: "/tools/url-encoder", icon: LinkIcon, color: "text-cyan-400", bg: "bg-cyan-500/10" },
-    { title: "QR Generator", desc: "Create ready-to-use QR codes instantly.", href: "/tools/qr-generator", icon: QrCode, color: "text-fuchsia-400", bg: "bg-fuchsia-500/10" },
-    { title: "Timestamp", desc: "Convert Unix epoch times to human-readable.", href: "/tools/timestamp", icon: Clock, color: "text-amber-400", bg: "bg-amber-500/10" },
+    { title: "HTML 특수문자 변환", desc: "HTML 엔티티를 쉽게 제거하거나 변환하세요.", href: "/tools/html-chars", icon: Code, color: "text-blue-400", bg: "bg-blue-500/10" },
+    { title: "JSON 포매터", desc: "JSON 데이터를 포맷, 검증 및 정렬하세요.", href: "/tools/json-formatter", icon: FileText, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+    { title: "색상 변환기", desc: "HEX, RGB, HSL 형식을 쉽게 변환하세요.", href: "/tools/color-converter", icon: Palette, color: "text-pink-400", bg: "bg-pink-500/10" },
+    { title: "텍스트 변환기", desc: "대문자, 소문자, 텍스트 치환 등 다양한 변환을 지원합니다.", href: "/tools/text-transformer", icon: Type, color: "text-indigo-400", bg: "bg-indigo-500/10" },
+    { title: "Base64 변환기", desc: "Base64 문자열을 안전하게 인코딩 또는 디코딩하세요.", href: "/tools/base64", icon: Binary, color: "text-orange-400", bg: "bg-orange-500/10" },
+    { title: "URL 인코더", desc: "URI 구성요소를 빠르게 인코딩 또는 디코딩하세요.", href: "/tools/url-encoder", icon: LinkIcon, color: "text-cyan-400", bg: "bg-cyan-500/10" },
+    { title: "QR 코드 생성기", desc: "즉시 사용 가능한 QR 코드를 생성하세요.", href: "/tools/qr-generator", icon: QrCode, color: "text-fuchsia-400", bg: "bg-fuchsia-500/10" },
+    { title: "타임스탬프 변환기", desc: "Unix 에포크 시간을 읽기 쉬운 형식으로 변환하세요.", href: "/tools/timestamp", icon: Clock, color: "text-amber-400", bg: "bg-amber-500/10" },
   ];
 
   return (
     <div className="flex flex-col gap-10">
       <section className="space-y-4">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">WebTools</span>
+          환영합니다, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">WebTools</span>
         </h1>
         <p className="text-lg text-zinc-400 max-w-2xl">
-          Your one-stop collection of premium, developer-focused utilities. Enhance your workflow with tools that are fast, secure, and beautiful.
+          개발자를 위한 프리미엄 유틸리티의 모든 것. 빠르고 안전하며 아름다운 도구들로 작업 효율을 높이세요.
         </p>
       </section>
 

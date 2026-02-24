@@ -46,7 +46,7 @@ export default function ColorConverterPage() {
       setHsl(`hsl(${hslVal.h}, ${hslVal.s}%, ${hslVal.l}%)`);
       setError(null);
     } else {
-      setError("Invalid HEX code");
+      setError("잘못된 HEX 코드");
     }
   };
 
@@ -57,8 +57,8 @@ export default function ColorConverterPage() {
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto">
       <PageHeader 
-        title="Color Code Converter" 
-        description="Convert between HEX, RGB, and HSL color formats instantly." 
+        title="색상 코드 변환기" 
+        description="HEX, RGB, HSL 색상 형식을 즉시 변환하세요." 
       />
       
       <div className="flex flex-col lg:flex-row gap-8 mt-4">
@@ -82,7 +82,7 @@ export default function ColorConverterPage() {
                   onClick={() => handleCopy(hex)}
                   className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 flex items-center gap-2"
                 >
-                  <Copy className="w-4 h-4" /> Copy
+                  <Copy className="w-4 h-4" /> 복사
                 </button>
               </div>
               {error && <span className="text-xs text-destructive-foreground">{error}</span>}
@@ -101,7 +101,7 @@ export default function ColorConverterPage() {
                   onClick={() => handleCopy(rgb)}
                   className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 flex items-center gap-2"
                 >
-                  <Copy className="w-4 h-4" /> Copy
+                  <Copy className="w-4 h-4" /> 복사
                 </button>
               </div>
             </div>
@@ -119,7 +119,7 @@ export default function ColorConverterPage() {
                   onClick={() => handleCopy(hsl)}
                   className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 flex items-center gap-2"
                 >
-                  <Copy className="w-4 h-4" /> Copy
+                  <Copy className="w-4 h-4" /> 복사
                 </button>
               </div>
             </div>
