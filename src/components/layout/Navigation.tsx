@@ -13,14 +13,14 @@ interface NavigationItem {
 }
 
 const navigationItems: NavigationItem[] = [
-    { title: "HTML Special Chars", href: "/tools/html-chars", icon: Code },
-    { title: "JSON Formatter", href: "/tools/json-formatter", icon: FileText },
-    { title: "Color Converter", href: "/tools/color-converter", icon: Palette },
-    { title: "Text Transformer", href: "/tools/text-transformer", icon: Type },
-    { title: "Base64 Converter", href: "/tools/base64", icon: Binary },
-    { title: "URL Encoder", href: "/tools/url-encoder", icon: LinkIcon },
-    { title: "QR Generator", href: "/tools/qr-generator", icon: QrCode },
-    { title: "Timestamp", href: "/tools/timestamp", icon: Clock },
+    { title: "HTML 특수문자 변환", href: "/tools/html-chars", icon: Code },
+    { title: "JSON 포매터", href: "/tools/json-formatter", icon: FileText },
+    { title: "색상 변환기", href: "/tools/color-converter", icon: Palette },
+    { title: "텍스트 변환기", href: "/tools/text-transformer", icon: Type },
+    { title: "Base64 변환기", href: "/tools/base64", icon: Binary },
+    { title: "URL 인코더", href: "/tools/url-encoder", icon: LinkIcon },
+    { title: "QR 코드 생성기", href: "/tools/qr-generator", icon: QrCode },
+    { title: "타임스탬프 변환기", href: "/tools/timestamp", icon: Clock },
 ];
 
 interface NavigationProps {

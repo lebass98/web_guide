@@ -40,18 +40,18 @@ export default function QrGeneratorPage() {
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto">
       <PageHeader 
-        title="QR Code Generator" 
-        description="Instantly generate and download high-quality QR codes." 
+        title="QR 코드 생성기" 
+        description="고품질 QR 코드를 즉시 생성하고 다운로드하세요." 
       />
       
       <div className="flex flex-col lg:flex-row gap-8 mt-4">
         <div className="flex-1 flex flex-col gap-6">
           <div className="glass-card p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">URL or Text</label>
+              <label className="text-sm font-medium text-zinc-300">URL 또는 텍스트</label>
               <textarea
                 className="w-full h-32 p-4 bg-black/50 border border-white/10 rounded-xl resize-none font-mono text-sm focus:outline-none focus:border-fuchsia-500 transition-colors"
-                placeholder="Enter URL or text to encode..."
+                placeholder="인코딩할 URL이나 텍스트를 입력하세요..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
@@ -61,7 +61,7 @@ export default function QrGeneratorPage() {
                 onClick={() => setInput("")}
                 className="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-lg transition-colors border border-white/10 flex items-center gap-2 text-sm font-medium"
               >
-                <RefreshCw className="w-4 h-4" /> Clear
+                <RefreshCw className="w-4 h-4" /> 지우기
               </button>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function QrGeneratorPage() {
             onClick={downloadQR}
             className="w-full py-3 bg-fuchsia-600 hover:bg-fuchsia-500 disabled:opacity-50 disabled:hover:bg-fuchsia-600 text-white rounded-xl transition-all font-semibold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(192,38,211,0.4)] disabled:shadow-none"
           >
-            <Download className="w-5 h-5" /> Download PNG
+            <Download className="w-5 h-5" /> PNG 다운로드
           </button>
         </div>
       </div>

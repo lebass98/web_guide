@@ -30,8 +30,8 @@ export default function TimestampPage() {
       setLocalTime(d.toLocaleString("en-US", { dateStyle: "full", timeStyle: "long" }));
       setUtcTime(d.toUTCString());
     } else {
-      setLocalTime("Invalid Timestamp");
-      setUtcTime("Invalid Timestamp");
+      setLocalTime("잘못된 타임스탬프");
+      setUtcTime("잘못된 타임스탬프");
     }
   };
 
@@ -46,8 +46,8 @@ export default function TimestampPage() {
   return (
     <div className="flex flex-col h-full max-w-5xl mx-auto">
       <PageHeader 
-        title="Unix Timestamp Converter" 
-        description="Convert epoch timestamps to human-readable dates in local and UTC formats." 
+        title="타임스탬프 변환기" 
+        description="Unix 타임스탬프를 읽기 쉬운 로컬 및 UTC 형식의 날짜로 변환하세요." 
       />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
@@ -57,7 +57,7 @@ export default function TimestampPage() {
             <div className="flex items-center justify-between mb-2">
               <span className="text-zinc-400 font-medium flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                Current Unix Time
+                현재 Unix 시간
               </span>
             </div>
             <div className="flex items-center gap-4">
@@ -65,7 +65,7 @@ export default function TimestampPage() {
               <button 
                 onClick={() => handleCopy(currentUnix.toString())}
                 className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10"
-                title="Copy current time"
+                title="현재 시간 복사"
               >
                 <Copy className="w-4 h-4 text-zinc-300" />
               </button>
@@ -73,9 +73,9 @@ export default function TimestampPage() {
           </div>
 
           <div className="glass-card p-6 flex flex-col gap-4">
-            <h3 className="text-lg font-semibold text-white mb-2">Convert Timestamp</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">타임스탬프 변환</h3>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">Timestamp (Seconds or MS)</label>
+              <label className="text-sm font-medium text-zinc-300">타임스탬프 (초 또는 밀리초)</label>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -87,7 +87,7 @@ export default function TimestampPage() {
                   onClick={setNow}
                   className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 font-medium"
                 >
-                  Now
+                  현재 시간
                 </button>
               </div>
             </div>
@@ -98,17 +98,17 @@ export default function TimestampPage() {
           <div className="glass-card p-6 flex flex-col gap-8 h-full">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
               <CalendarDays className="w-5 h-5 text-fuchsia-400" />
-              Human Readable Dates
+              변환된 날짜/시간
             </h3>
             
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-zinc-400">Local Time</label>
+                <label className="text-sm font-medium text-zinc-400">로컬 타임</label>
                 <button 
                   onClick={() => handleCopy(localTime)}
                   className="text-xs flex items-center gap-1 text-zinc-500 hover:text-white transition-colors"
                 >
-                  <Copy className="w-3 h-3" /> Copy
+                  <Copy className="w-3 h-3" /> 복사
                 </button>
               </div>
               <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-medium text-lg leading-relaxed text-zinc-100">
@@ -118,12 +118,12 @@ export default function TimestampPage() {
 
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-zinc-400">UTC Time</label>
+                <label className="text-sm font-medium text-zinc-400">UTC 타임</label>
                 <button 
                   onClick={() => handleCopy(utcTime)}
                   className="text-xs flex items-center gap-1 text-zinc-500 hover:text-white transition-colors"
                 >
-                  <Copy className="w-3 h-3" /> Copy
+                  <Copy className="w-3 h-3" /> 복사
                 </button>
               </div>
               <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-medium text-lg leading-relaxed text-zinc-100">
