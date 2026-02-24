@@ -22,7 +22,7 @@ export default function Home() {
           환영합니다, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">WebTools</span>
         </h1>
         <p className="text-lg text-zinc-600 max-w-2xl">
-          개발자를 위한 프리미엄 유틸리티의 모든 것. 빠르고 안전하며 아름다운 도구들로 작업 효율을 높이세요.
+          웹퍼블리셔 및 웹개발자들을 위한 프리미엄 유틸리티의 모든 것. 빠르고 안전하며 아름다운 도구들로 작업 효율을 높이세요.
         </p>
       </section>
 
