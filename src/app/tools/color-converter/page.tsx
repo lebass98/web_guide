@@ -63,24 +63,24 @@ export default function ColorConverterPage() {
       
       <div className="flex flex-col lg:flex-row gap-8 mt-4">
         <div 
-          className="lg:w-1/3 h-64 lg:h-auto rounded-3xl shadow-2xl transition-colors duration-300 border border-white/10"
+          className="lg:w-1/3 h-64 lg:h-auto rounded-3xl shadow-lg transition-colors duration-300 border border-zinc-200"
           style={{ backgroundColor: error ? "transparent" : hex }}
         />
         
         <div className="flex-1 flex flex-col gap-6">
           <div className="glass-card p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">HEX</label>
+              <label className="text-sm font-medium text-zinc-600">HEX</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={hex}
                   onChange={(e) => updateFromHex(e.target.value)}
-                  className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-2 font-mono focus:outline-none focus:border-fuchsia-500 transition-colors"
+                  className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-2 font-mono focus:outline-none focus:border-fuchsia-500 transition-colors"
                 />
                 <button 
                   onClick={() => handleCopy(hex)}
-                  className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 flex items-center gap-2"
+                  className="px-4 py-2 bg-black/5 hover:bg-black/10 text-zinc-600 hover:text-zinc-900 rounded-lg transition-colors border border-black/5 flex items-center gap-2"
                 >
                   <Copy className="w-4 h-4" /> 복사
                 </button>
@@ -89,17 +89,17 @@ export default function ColorConverterPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">RGB</label>
+              <label className="text-sm font-medium text-zinc-600">RGB</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={rgb}
                   readOnly
-                  className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-2 font-mono text-zinc-400"
+                  className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-2 font-mono text-zinc-500"
                 />
                 <button 
                   onClick={() => handleCopy(rgb)}
-                  className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 flex items-center gap-2"
+                  className="px-4 py-2 bg-black/5 hover:bg-black/10 text-zinc-600 hover:text-zinc-900 rounded-lg transition-colors border border-black/5 flex items-center gap-2"
                 >
                   <Copy className="w-4 h-4" /> 복사
                 </button>
@@ -107,17 +107,17 @@ export default function ColorConverterPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">HSL</label>
+              <label className="text-sm font-medium text-zinc-600">HSL</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={hsl}
                   readOnly
-                  className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-2 font-mono text-zinc-400"
+                  className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-2 font-mono text-zinc-500"
                 />
                 <button 
                   onClick={() => handleCopy(hsl)}
-                  className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 flex items-center gap-2"
+                  className="px-4 py-2 bg-black/5 hover:bg-black/10 text-zinc-600 hover:text-zinc-900 rounded-lg transition-colors border border-black/5 flex items-center gap-2"
                 >
                   <Copy className="w-4 h-4" /> 복사
                 </button>

@@ -51,7 +51,7 @@ export default function Base64Page() {
             "px-6 py-2 rounded-full text-sm font-medium transition-all",
             mode === "encode" 
               ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]" 
-              : "bg-white/5 text-zinc-400 border border-white/10 hover:bg-white/10 hover:text-white"
+              : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
           )}
         >
           인코딩
@@ -62,7 +62,7 @@ export default function Base64Page() {
             "px-6 py-2 rounded-full text-sm font-medium transition-all",
             mode === "decode" 
               ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]" 
-              : "bg-white/5 text-zinc-400 border border-white/10 hover:bg-white/10 hover:text-white"
+              : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
           )}
         >
           디코딩
@@ -71,7 +71,7 @@ export default function Base64Page() {
 
       <div className="flex flex-col lg:flex-row gap-6 h-[400px]">
         <div className="flex-1 flex flex-col gap-2">
-          <label className="text-sm font-medium text-zinc-300">입력</label>
+          <label className="text-sm font-medium text-zinc-600">입력</label>
           <textarea
             className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
             placeholder={mode === "encode" ? "인코딩할 텍스트를 입력하세요..." : "디코딩할 Base64를 붙여넣으세요..."}
@@ -82,11 +82,11 @@ export default function Base64Page() {
         
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-zinc-300">변환 결과</label>
+            <label className="text-sm font-medium text-zinc-600">변환 결과</label>
             <div className="flex gap-2">
               <button 
                 onClick={() => processText("", mode)}
-                className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                className="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-md transition-colors"
                 title="지우기"
               >
                 <Trash2 className="w-4 h-4" />

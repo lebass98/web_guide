@@ -46,7 +46,7 @@ export default function TextTransformerPage() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               activeTransform === t.id 
                 ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50" 
-                : "bg-white/5 text-zinc-400 border border-white/10 hover:bg-white/10 hover:text-white"
+                : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
             }`}
           >
             {t.label}
@@ -56,7 +56,7 @@ export default function TextTransformerPage() {
 
       <div className="flex flex-col lg:flex-row gap-6 h-[400px]">
         <div className="flex-1 flex flex-col gap-2">
-          <label className="text-sm font-medium text-zinc-300">텍스트 입력</label>
+          <label className="text-sm font-medium text-zinc-600">텍스트 입력</label>
           <textarea
             className="flex-1 w-full p-4 glass-card resize-none text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
             placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."
@@ -71,18 +71,18 @@ export default function TextTransformerPage() {
         
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-zinc-300">변환 결과</label>
+            <label className="text-sm font-medium text-zinc-600">변환 결과</label>
             <div className="flex gap-2">
               <button 
                 onClick={() => handleTransform("", activeTransform)}
-                className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                className="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-md transition-colors"
                 title="지우기"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
               <button 
                 onClick={handleCopy}
-                className="p-1.5 text-zinc-400 hover:text-fuchsia-300 hover:bg-fuchsia-500/10 rounded-md transition-colors"
+                className="p-1.5 text-zinc-600 hover:text-fuchsia-300 hover:bg-fuchsia-500/10 rounded-md transition-colors"
                 title="클립보드에 복사"
               >
                 <Copy className="w-4 h-4" />
