@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock } from "lucide-react";
+import { Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock, Paintbrush } from "lucide-react";
 
 export default function Home() {
   const tools = [
@@ -11,6 +11,7 @@ export default function Home() {
     { title: "URL 인코더", desc: "URI 구성요소를 빠르게 인코딩 또는 디코딩하세요.", href: "/tools/url-encoder", icon: LinkIcon, color: "text-cyan-400", bg: "bg-cyan-500/10" },
     { title: "QR 코드 생성기", desc: "즉시 사용 가능한 QR 코드를 생성하세요.", href: "/tools/qr-generator", icon: QrCode, color: "text-fuchsia-400", bg: "bg-fuchsia-500/10" },
     { title: "타임스탬프 변환기", desc: "Unix 에포크 시간을 읽기 쉬운 형식으로 변환하세요.", href: "/tools/timestamp", icon: Clock, color: "text-amber-400", bg: "bg-amber-500/10" },
+    { title: "CSS 그라데이션", desc: "사용자 지정 CSS 그라데이션을 쉽게 시각화하고 코드를 복사하세요.", href: "/tools/css-gradient", icon: Paintbrush, color: "text-teal-400", bg: "bg-teal-500/10" },
   ];
 
   return (
@@ -19,7 +20,7 @@ export default function Home() {
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
           환영합니다, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">WebTools</span>
         </h1>
-        <p className="text-lg text-zinc-400 max-w-2xl">
+        <p className="text-lg text-zinc-600 max-w-2xl">
           개발자를 위한 프리미엄 유틸리티의 모든 것. 빠르고 안전하며 아름다운 도구들로 작업 효율을 높이세요.
         </p>
       </section>
@@ -29,14 +30,14 @@ export default function Home() {
           <Link
             key={tool.href}
             href={tool.href}
-            className="group relative flex flex-col justify-between p-6 glass-card hover:-translate-y-1 hover:shadow-2xl hover:shadow-fuchsia-500/10 transition-all duration-300"
+            className="group relative flex flex-col justify-between p-6 glass-card hover:-translate-y-1 hover:shadow-2xl hover:shadow-fuchsia-500/20 transition-all duration-300"
           >
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${tool.bg}`}>
               <tool.icon className={`w-6 h-6 ${tool.color}`} />
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2 group-hover:text-fuchsia-400 transition-colors">{tool.title}</h2>
-              <p className="text-sm text-zinc-400 leading-relaxed">{tool.desc}</p>
+              <p className="text-sm text-zinc-600 leading-relaxed">{tool.desc}</p>
             </div>
           </Link>
         ))}

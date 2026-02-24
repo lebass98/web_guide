@@ -48,9 +48,9 @@ export default function QrGeneratorPage() {
         <div className="flex-1 flex flex-col gap-6">
           <div className="glass-card p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">URL 또는 텍스트</label>
+              <label className="text-sm font-medium text-zinc-600">URL 또는 텍스트</label>
               <textarea
-                className="w-full h-32 p-4 bg-black/50 border border-white/10 rounded-xl resize-none font-mono text-sm focus:outline-none focus:border-fuchsia-500 transition-colors"
+                className="w-full h-32 p-4 bg-zinc-100/80 border border-zinc-200/80 rounded-xl resize-none font-mono text-sm focus:outline-none focus:border-fuchsia-500 transition-colors"
                 placeholder="인코딩할 URL이나 텍스트를 입력하세요..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -59,7 +59,7 @@ export default function QrGeneratorPage() {
             <div className="flex gap-2">
               <button 
                 onClick={() => setInput("")}
-                className="px-4 py-2 bg-white/5 hover:bg-white/10 text-zinc-300 rounded-lg transition-colors border border-white/10 flex items-center gap-2 text-sm font-medium"
+                className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200/50 text-zinc-600 rounded-lg transition-colors border border-zinc-200/80 flex items-center gap-2 text-sm font-medium"
               >
                 <RefreshCw className="w-4 h-4" /> 지우기
               </button>

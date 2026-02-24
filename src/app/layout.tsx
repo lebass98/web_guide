@@ -13,9 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="dark">
+    <html lang="ko">
       <body
-        className="font-sans antialiased min-h-screen flex bg-background"
+        className="font-sans antialiased min-h-screen flex bg-white text-zinc-900"
       >
         <Navigation>{children}</Navigation>
       </body>

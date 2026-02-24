@@ -55,7 +55,7 @@ export default function TimestampPage() {
           <div className="p-6 glass-card border border-fuchsia-500/20 shadow-[0_0_20px_rgba(217,70,239,0.1)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-3xl -mr-10 -mt-10 rounded-full" />
             <div className="flex items-center justify-between mb-2">
-              <span className="text-zinc-400 font-medium flex items-center gap-2">
+              <span className="text-zinc-600 font-medium flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 현재 Unix 시간
               </span>
@@ -64,10 +64,10 @@ export default function TimestampPage() {
               <span className="text-4xl font-mono font-bold tracking-tight text-white">{currentUnix}</span>
               <button 
                 onClick={() => handleCopy(currentUnix.toString())}
-                className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10"
+                className="p-2 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80"
                 title="현재 시간 복사"
               >
-                <Copy className="w-4 h-4 text-zinc-300" />
+                <Copy className="w-4 h-4 text-zinc-600" />
               </button>
             </div>
           </div>
@@ -75,17 +75,17 @@ export default function TimestampPage() {
           <div className="glass-card p-6 flex flex-col gap-4">
             <h3 className="text-lg font-semibold text-white mb-2">타임스탬프 변환</h3>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-300">타임스탬프 (초 또는 밀리초)</label>
+              <label className="text-sm font-medium text-zinc-600">타임스탬프 (초 또는 밀리초)</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={inputUnix}
                   onChange={(e) => setInputUnix(e.target.value)}
-                  className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-3 font-mono text-lg focus:outline-none focus:border-fuchsia-500 transition-colors"
+                  className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-3 font-mono text-lg focus:outline-none focus:border-fuchsia-500 transition-colors"
                 />
                 <button 
                   onClick={setNow}
-                  className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-lg transition-colors border border-white/10 font-medium"
+                  className="px-6 py-3 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80 font-medium"
                 >
                   현재 시간
                 </button>
@@ -103,10 +103,10 @@ export default function TimestampPage() {
             
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-zinc-400">로컬 타임</label>
+                <label className="text-sm font-medium text-zinc-600">로컬 타임</label>
                 <button 
                   onClick={() => handleCopy(localTime)}
-                  className="text-xs flex items-center gap-1 text-zinc-500 hover:text-white transition-colors"
+                  className="text-xs flex items-center gap-1 text-zinc-500 hover:text-zinc-900 transition-colors"
                 >
                   <Copy className="w-3 h-3" /> 복사
                 </button>
@@ -118,10 +118,10 @@ export default function TimestampPage() {
 
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-zinc-400">UTC 타임</label>
+                <label className="text-sm font-medium text-zinc-600">UTC 타임</label>
                 <button 
                   onClick={() => handleCopy(utcTime)}
-                  className="text-xs flex items-center gap-1 text-zinc-500 hover:text-white transition-colors"
+                  className="text-xs flex items-center gap-1 text-zinc-500 hover:text-zinc-900 transition-colors"
                 >
                   <Copy className="w-3 h-3" /> 복사
                 </button>

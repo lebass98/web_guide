@@ -23,13 +23,13 @@ export function Sidebar({ items, activePath, isOpen, onClose }: SidebarProps) {
       {/* Backdrop for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden transition-all duration-300"
+          className="fixed inset-0 bg-white/60 backdrop-blur-sm z-[60] lg:hidden transition-all duration-300"
           onClick={onClose}
         />
       )}
 
       <aside className={cn(
-        "w-64 flex-col glass border-white/10 h-screen sticky top-0 overflow-y-auto z-[70] transition-transform duration-300 ease-in-out lg:translate-x-0 lg:flex lg:border-r",
+        "w-64 flex-col glass border-zinc-200/50 h-screen sticky top-0 overflow-y-auto z-[70] transition-transform duration-300 ease-in-out lg:translate-x-0 lg:flex lg:border-r",
         isOpen
           ? "translate-x-0 fixed inset-y-0 right-0 border-l"
           : "translate-x-full fixed inset-y-0 right-0 lg:static lg:translate-x-0 border-l lg:border-l-0"
@@ -42,7 +42,7 @@ export function Sidebar({ items, activePath, isOpen, onClose }: SidebarProps) {
               </h1>
             </Link>
             <button
-              className="lg:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+              className="lg:hidden p-2 text-zinc-500 hover:text-zinc-900 transition-colors"
               onClick={onClose}
             >
               <X className="w-5 h-5" />
@@ -60,8 +60,8 @@ export function Sidebar({ items, activePath, isOpen, onClose }: SidebarProps) {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ease-out",
                     isActive
-                      ? "bg-white/10 text-white shadow-lg shadow-black/20"
-                      : "text-zinc-400 hover:text-white hover:bg-white/5"
+                      ? "bg-black/5 text-zinc-900 shadow-sm"
+                      : "text-zinc-500 hover:text-zinc-900 hover:bg-black/5"
                   )}
                 >
                   <item.icon

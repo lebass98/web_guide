@@ -27,28 +27,28 @@
 }
 
 /*
-  The default theme is dark mode.
+  The default theme is light mode.
 */
 :root {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.141 0.005 285.823);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.141 0.005 285.823);
-  --popover-foreground: oklch(0.985 0 0);
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.64 0.17 260);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --secondary: oklch(0.967 0.003 264.542);
+  --secondary-foreground: oklch(0.269 0 0);
+  --muted: oklch(0.967 0.003 264.542);
+  --muted-foreground: oklch(0.551 0.027 264.364);
+  --accent: oklch(0.967 0.003 264.542);
+  --accent-foreground: oklch(0.269 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.928 0.006 264.531);
+  --input: oklch(0.928 0.006 264.531);
+  --ring: oklch(0.269 0 0);
   --radius: 0.5rem;
 }
 
@@ -64,9 +64,18 @@
 
 @layer utilities {
   .glass {
-    @apply bg-background/60 backdrop-blur-md border border-white/10;
+    @apply bg-white/70 backdrop-blur-md border border-zinc-200/50;
   }
   .glass-card {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl rounded-2xl;
+    @apply bg-white/80 backdrop-blur-lg border border-zinc-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl;
+  }
+  
+  .hide-spin-buttons::-webkit-inner-spin-button,
+  .hide-spin-buttons::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .hide-spin-buttons {
+    -moz-appearance: textfield;
   }
 }

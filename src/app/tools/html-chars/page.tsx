@@ -33,7 +33,7 @@ export default function HtmlCharsPage() {
       
       <div className="flex flex-col lg:flex-row gap-6 h-[600px]">
         <div className="flex-1 flex flex-col gap-2">
-          <label className="text-sm font-medium text-zinc-300">HTML 입력</label>
+          <label className="text-sm font-medium text-zinc-600">HTML 입력</label>
           <textarea
             className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
             placeholder="여기에 HTML 문자열을 붙여넣으세요... 예: &lt;div&gt;Hello&lt;/div&gt;"
@@ -44,18 +44,18 @@ export default function HtmlCharsPage() {
         
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-zinc-300">변환 결과</label>
+            <label className="text-sm font-medium text-zinc-600">변환 결과</label>
             <div className="flex gap-2">
               <button 
                 onClick={() => handleConvert("")}
-                className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                className="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-md transition-colors"
                 title="지우기"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
               <button 
                 onClick={handleCopy}
-                className="p-1.5 text-zinc-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                className="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-md transition-colors"
                 title="클립보드에 복사"
               >
                 <Copy className="w-4 h-4" />
