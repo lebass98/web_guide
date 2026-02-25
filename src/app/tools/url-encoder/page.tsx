@@ -38,13 +38,13 @@ export default function UrlEncoderPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader 
         title="URL 인코더/디코더" 
         description="URI 구성요소를 안전하게 인코딩하거나 URL 문자열을 텍스트로 디코딩하세요." 
       />
       
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2">
         <button
           onClick={() => handleModeSwitch("encode")}
           className={cn(

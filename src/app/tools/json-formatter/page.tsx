@@ -33,13 +33,13 @@ export default function JsonFormatterPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader 
         title="JSON 포매터 및 검사기" 
         description="JSON 데이터를 즉시 포맷하고 검증하며 정렬해 보세요." 
       />
       
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2">
         {error ? (
           <div className="flex items-center gap-2 text-destructive-foreground bg-destructive/20 px-3 py-1.5 rounded-md text-sm font-medium">
             <XCircle className="w-4 h-4" />
