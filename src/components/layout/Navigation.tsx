@@ -43,7 +43,7 @@ export function Navigation({ children }: NavigationProps) {
             />
             <div className="flex-1 flex flex-col min-w-0">
                 <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
-                <main className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full overflow-x-hidden">
+                <main className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full overflow-x-hidden flex flex-col gap-8 lg:gap-10 pb-10">
                     {children}
                 </main>
             </div>

@@ -44,7 +44,7 @@ export default function TimestampPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader 
         title="타임스탬프 변환기" 
         description="Unix 타임스탬프를 읽기 쉬운 로컬 및 UTC 형식의 날짜로 변환하세요." 
@@ -133,6 +133,6 @@ export default function TimestampPage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
