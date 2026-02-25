@@ -32,13 +32,13 @@ export default function TextTransformerPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader 
         title="텍스트 변환기" 
         description="문자열 대소문자를 변환하고, 공백을 제거하며, 다양한 텍스트 조작을 적용하세요." 
       />
       
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2">
         {transforms.map((t) => (
           <button
             key={t.id}

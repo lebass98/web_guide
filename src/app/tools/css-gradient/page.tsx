@@ -123,7 +123,7 @@ export default function CssGradientPage() {
   ];
 
   return (
-    <div className="flex flex-col h-full max-w-6xl mx-auto pb-10 gap-8">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader
         title="CSS 그라데이션 생성기"
         description="다양한 색상과 방향을 조합하여 아름다운 CSS 그라데이션을 만들어보세요."

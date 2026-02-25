@@ -55,13 +55,13 @@ export default function ColorConverterPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader 
         title="색상 코드 변환기" 
         description="HEX, RGB, HSL 색상 형식을 즉시 변환하세요." 
       />
       
-      <div className="flex flex-col lg:flex-row gap-8 mt-4">
+      <div className="flex flex-col lg:flex-row gap-8">
         <div 
           className="lg:w-1/3 h-64 lg:h-auto rounded-3xl shadow-lg transition-colors duration-300 border border-zinc-200"
           style={{ backgroundColor: error ? "transparent" : hex }}

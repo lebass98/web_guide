@@ -44,13 +44,13 @@ export default function TimestampPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader 
         title="타임스탬프 변환기" 
         description="Unix 타임스탬프를 읽기 쉬운 로컬 및 UTC 형식의 날짜로 변환하세요." 
       />
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="flex flex-col gap-6">
           <div className="p-6 glass-card border border-fuchsia-500/20 shadow-[0_0_20px_rgba(217,70,239,0.1)] relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-3xl -mr-10 -mt-10 rounded-full" />

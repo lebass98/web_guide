@@ -38,13 +38,13 @@ export default function QrGeneratorPage() {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto">
+    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
       <PageHeader 
         title="QR 코드 생성기" 
         description="고품질 QR 코드를 즉시 생성하고 다운로드하세요." 
       />
       
-      <div className="flex flex-col lg:flex-row gap-8 mt-4">
+      <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 flex flex-col gap-6">
           <div className="glass-card p-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
