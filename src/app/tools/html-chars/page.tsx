@@ -25,7 +25,7 @@ export default function HtmlCharsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader 
         title="HTML 특수문자 변환" 
         description="HTML 엔티티를 디코딩하고 특수문자를 즉시 제거하세요." 
@@ -70,6 +70,6 @@ export default function HtmlCharsPage() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }

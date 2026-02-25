@@ -32,7 +32,7 @@ export default function TextTransformerPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader 
         title="텍스트 변환기" 
         description="문자열 대소문자를 변환하고, 공백을 제거하며, 다양한 텍스트 조작을 적용하세요." 
@@ -97,6 +97,6 @@ export default function TextTransformerPage() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }

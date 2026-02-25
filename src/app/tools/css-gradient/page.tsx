@@ -123,7 +123,7 @@ export default function CssGradientPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader
         title="CSS 그라데이션 생성기"
         description="다양한 색상과 방향을 조합하여 아름다운 CSS 그라데이션을 만들어보세요."
@@ -200,6 +200,7 @@ export default function CssGradientPage() {
           
           {/* Cols 1 & 2: Picker and HEX/RGBA (From ColorPicker component) */}
           {stops.find(s => s.id === activeStopId) ? (
+            <div className="lg:w-[432px]">
             <ColorPicker 
               color={stops.find(s => s.id === activeStopId)!.color}
               opacity={stops.find(s => s.id === activeStopId)!.opacity ?? 100}
@@ -208,6 +209,7 @@ export default function CssGradientPage() {
                 updateStopOpacity(activeStopId, o);
               }}
             />
+            </div>
           ) : (
             <div className="w-[432px]" /> // Placeholder width
           )}
@@ -292,6 +294,6 @@ export default function CssGradientPage() {
           <Copy className="w-4 h-4" /> Copy to clipboard
         </button>
       </div>
-    </div>
+    </>
   );
 }

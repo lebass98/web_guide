@@ -47,7 +47,7 @@ export default function GradientBackgroundsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader
         title="CSS 그라데이션 배경"
         description="영감을 주는 아름다운 CSS 그라데이션 컬렉션입니다. 클릭 한 번으로 CSS 코드를 복사하세요."
@@ -100,6 +100,6 @@ export default function GradientBackgroundsPage() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

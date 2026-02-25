@@ -33,7 +33,7 @@ export default function JsonFormatterPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader 
         title="JSON 포매터 및 검사기" 
         description="JSON 데이터를 즉시 포맷하고 검증하며 정렬해 보세요." 
@@ -101,6 +101,6 @@ export default function JsonFormatterPage() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -38,7 +38,7 @@ export default function Base64Page() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader 
         title="Base64 변환기" 
         description="텍스트를 Base64 형식으로 안전하게 인코딩하거나 텍스트로 디코딩하세요." 
@@ -126,6 +126,6 @@ export default function Base64Page() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

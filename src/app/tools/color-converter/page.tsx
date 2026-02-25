@@ -55,7 +55,7 @@ export default function ColorConverterPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <PageHeader 
         title="색상 코드 변환기" 
         description="HEX, RGB, HSL 색상 형식을 즉시 변환하세요." 
@@ -126,6 +126,6 @@ export default function ColorConverterPage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

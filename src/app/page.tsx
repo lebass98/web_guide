@@ -16,7 +16,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col gap-8 lg:gap-10 pb-10">
+    <>
       <section className="space-y-4">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
           환영합니다, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-500">WebTools</span>
@@ -43,6 +43,6 @@ export default function Home() {
           </Link>
         ))}
       </div>
-    </div>
+    </>
   );
 }
