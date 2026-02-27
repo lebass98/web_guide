@@ -39,19 +39,6 @@ export default function JsonFormatterPage() {
         description="JSON 데이터를 즉시 포맷하고 검증하며 정렬해 보세요." 
       />
       
-      <div className="flex items-center gap-2">
-        {error ? (
-          <div className="flex items-center gap-2 text-destructive-foreground bg-destructive/20 px-3 py-1.5 rounded-md text-sm font-medium">
-            <XCircle className="w-4 h-4" />
-            {error}
-          </div>
-        ) : input.trim() ? (
-          <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-md text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4" />
-            유효한 JSON
-          </div>
-        ) : null}
-      </div>
 
       <div className="flex flex-col lg:flex-row gap-6 h-[500px]">
         <div className="flex-1 flex flex-col gap-2">
@@ -100,6 +87,20 @@ export default function JsonFormatterPage() {
             spellCheck={false}
           />
         </div>
+      </div>
+
+      <div>
+        {error ? (
+          <div className="flex items-center gap-2 text-destructive-foreground bg-destructive/20 px-3 py-1.5 rounded-md text-sm font-medium">
+            <XCircle className="w-4 h-4" />
+            {error}
+          </div>
+        ) : input.trim() ? (
+          <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-md text-sm font-medium">
+            <CheckCircle2 className="w-4 h-4" />
+            유효한 JSON
+          </div>
+        ) : null}
       </div>
     </>
   );
