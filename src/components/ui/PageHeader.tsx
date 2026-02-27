@@ -1,13 +1,13 @@
 interface PageHeaderProps {
-  title: string;
-  description: string;
+    title: string;
+    description: string;
 }
 
 export function PageHeader({ title, description }: PageHeaderProps) {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold mb-2 tracking-tight">{title}</h1>
-      <p className="text-zinc-400">{description}</p>
-    </div>
-  );
+    return (
+        <div>
+            <h1 className="text-3xl font-bold mb-2 tracking-tight">{title}</h1>
+            <p className="text-zinc-400">{description}</p>
+        </div>
+    );
 }
