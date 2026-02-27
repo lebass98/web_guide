@@ -15,16 +15,17 @@ import {
   Settings2,
   Code as CodeIcon,
   ChevronRight,
-  Target,
   Type,
   Link as LinkIcon,
   X,
-  Maximize2,
-  RefreshCcw
+  RefreshCcw,
+  MousePointer,
+  Hand
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ShapeType = "rect" | "circle" | "poly";
+type CreationMethod = "drag" | "click";
 
 interface MapArea {
   id: string;
@@ -43,9 +44,14 @@ export default function ImageMapPage() {
   const [areas, setAreas] = useState<MapArea[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [drawingMode, setDrawingMode] = useState<ShapeType>("rect");
+  const [creationMethod, setCreationMethod] = useState<CreationMethod>("drag");
+  
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
+  const [tempPolyPoints, setTempPolyPoints] = useState<{x: number, y: number}[]>([]);
+  const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
+  
   const [viewMode, setViewMode] = useState<"edit" | "code">("edit");
   const [zoom, setZoom] = useState(1);
 
@@ -61,6 +67,7 @@ export default function ImageMapPage() {
         setAreas([]);
         setSelectedId(null);
         setImageUrl("");
+        setTempPolyPoints([]);
       };
       reader.readAsDataURL(file);
     }
@@ -71,6 +78,7 @@ export default function ImageMapPage() {
       setImage(imageUrl);
       setAreas([]);
       setSelectedId(null);
+      setTempPolyPoints([]);
     }
   };
 
@@ -80,14 +88,13 @@ export default function ImageMapPage() {
     
     let clientX, clientY;
     if ("touches" in e) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
+      clientX = e.touches?.[0]?.clientX || 0;
+      clientY = e.touches?.[0]?.clientY || 0;
     } else {
       clientX = (e as React.MouseEvent).clientX;
       clientY = (e as React.MouseEvent).clientY;
     }
 
-    // Scale coordinates back to original image size
     const scaleX = imgRef.current.naturalWidth / rect.width;
     const scaleY = imgRef.current.naturalHeight / rect.height;
 
@@ -97,12 +104,50 @@ export default function ImageMapPage() {
     return { x, y };
   }, []);
 
+  const finishPoly = useCallback(() => {
+    if (tempPolyPoints.length < 3) return;
+    
+    const coords = tempPolyPoints.flatMap(p => [p.x, p.y]);
+    const newArea: MapArea = {
+      id: Math.random().toString(36).substr(2, 9),
+      type: "poly",
+      coords,
+      href: "https://",
+      alt: `영역 ${areas.length + 1}`,
+      title: `영역 ${areas.length + 1}`,
+      target: "_blank",
+    };
+    setAreas([...areas, newArea]);
+    setSelectedId(newArea.id);
+    setTempPolyPoints([]);
+    setIsDrawing(false);
+  }, [tempPolyPoints, areas]);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!image || viewMode === "code") return;
     const { x, y } = getCoordinates(e);
-    setIsDrawing(true);
-    setStartPos({ x, y });
-    setCurrentPos({ x, y });
+
+    if (drawingMode === "poly") {
+      setIsDrawing(true);
+      setTempPolyPoints(prev => [...prev, { x, y }]);
+      return;
+    }
+
+    if (creationMethod === "drag") {
+      setIsDrawing(true);
+      setStartPos({ x, y });
+      setCurrentPos({ x, y });
+    } else {
+      // Click method
+      if (!isDrawing) {
+        setIsDrawing(true);
+        setStartPos({ x, y });
+        setCurrentPos({ x, y });
+      } else {
+        // Complete the shape
+        completeShape(x, y);
+      }
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -111,28 +156,43 @@ export default function ImageMapPage() {
     setCurrentPos({ x, y });
   };
 
-  const handleMouseUp = () => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
-
-    const x1 = Math.min(startPos.x, currentPos.x);
-    const y1 = Math.min(startPos.y, currentPos.y);
-    const x2 = Math.max(startPos.x, currentPos.x);
-    const y2 = Math.max(startPos.y, currentPos.y);
-
-    if (Math.abs(x2 - x1) > 5 && Math.abs(y2 - y1) > 5) {
-      const newArea: MapArea = {
-        id: Math.random().toString(36).substr(2, 9),
-        type: drawingMode,
-        coords: drawingMode === "rect" ? [x1, y1, x2, y2] : [],
-        href: "https://",
-        alt: `영역 ${areas.length + 1}`,
-        title: `영역 ${areas.length + 1}`,
-        target: "_blank",
-      };
-      setAreas([...areas, newArea]);
-      setSelectedId(newArea.id);
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isDrawing || drawingMode === "poly") return;
+    
+    if (creationMethod === "drag") {
+      const { x, y } = getCoordinates(e);
+      completeShape(x, y);
     }
+  };
+
+  const completeShape = (endX: number, endY: number) => {
+    setIsDrawing(false);
+    let coords: number[] = [];
+    
+    if (drawingMode === "rect") {
+      const x1 = Math.min(startPos.x, endX);
+      const y1 = Math.min(startPos.y, endY);
+      const x2 = Math.max(startPos.x, endX);
+      const y2 = Math.max(startPos.y, endY);
+      if (Math.abs(x2 - x1) < 5 || Math.abs(y2 - y1) < 5) return;
+      coords = [x1, y1, x2, y2];
+    } else if (drawingMode === "circle") {
+      const radius = Math.round(Math.sqrt(Math.pow(endX - startPos.x, 2) + Math.pow(endY - startPos.y, 2)));
+      if (radius < 5) return;
+      coords = [startPos.x, startPos.y, radius];
+    }
+
+    const newArea: MapArea = {
+      id: Math.random().toString(36).substr(2, 9),
+      type: drawingMode,
+      coords,
+      href: "https://",
+      alt: `영역 ${areas.length + 1}`,
+      title: `영역 ${areas.length + 1}`,
+      target: "_blank",
+    };
+    setAreas([...areas, newArea]);
+    setSelectedId(newArea.id);
   };
 
   const deleteArea = (id: string) => {
@@ -171,120 +231,116 @@ export default function ImageMapPage() {
     document.body.removeChild(element);
   };
 
-  // Convert natural coordinates to visual coordinates for highlighting
-  const getVisualRect = (area: MapArea) => {
-    if (!imgRef.current) return { x: 0, y: 0, width: 0, height: 0 };
-    const rect = imgRef.current.getBoundingClientRect();
-    const scaleX = rect.width / imgRef.current.naturalWidth;
-    const scaleY = rect.height / imgRef.current.naturalHeight;
-
-    return {
-      x: area.coords[0] * scaleX,
-      y: area.coords[1] * scaleY,
-      width: (area.coords[2] - area.coords[0]) * scaleX,
-      height: (area.coords[3] - area.coords[1]) * scaleY
-    };
-  };
-
   return (
     <>
       <PageHeader 
         title="이미지 맵 에디터" 
-        description="이미지 위에 클릭 가능한 다중 링크 영역을 직접 정의하고 바로 사용할 수 있는 HTML 코드를 생성하세요." 
+        description="이미지 위에 사각형, 원형, 다각형 등 다양한 클릭 영역을 자유롭게 정의하세요." 
       />
 
       <div className="flex flex-col lg:flex-row gap-6 lg:max-h-[calc(100vh-250px)]">
-        {/* Left Toolbar - Standard Tools Aesthetic */}
-        <div className="w-full lg:w-20 flex lg:flex-col gap-3 p-3 glass-card bg-white/40 shadow-xl self-start sticky top-0">
+        {/* Left Toolbar */}
+        <div className="w-full lg:w-20 flex lg:flex-col gap-3 p-3 glass-card bg-white/40 shadow-xl self-start sticky top-0 z-10">
           <button 
-            onClick={() => { setDrawingMode("rect"); setViewMode("edit"); }}
+            onClick={() => { setDrawingMode("rect"); setTempPolyPoints([]); }}
             className={cn(
-              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300 group",
-              drawingMode === "rect" && viewMode === "edit"
-                ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" 
-                : "text-zinc-400 hover:bg-zinc-100/50 hover:text-zinc-600"
+              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300",
+              drawingMode === "rect" ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" : "text-zinc-400 hover:bg-zinc-100/50"
             )}
-            title="사각형 그리기"
+            title="사각형"
           >
             <Square className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Rect</span>
+            <span className="text-[10px] font-bold uppercase">Rect</span>
           </button>
           
           <button 
-            disabled
-            className="flex flex-col items-center gap-1.5 p-3 rounded-2xl text-zinc-300 cursor-not-allowed opacity-30"
-            title="원형 (준비 중)"
+            onClick={() => { setDrawingMode("circle"); setTempPolyPoints([]); }}
+            className={cn(
+              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300",
+              drawingMode === "circle" ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" : "text-zinc-400 hover:bg-zinc-100/50"
+            )}
+            title="원형"
           >
             <Circle className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Circle</span>
+            <span className="text-[10px] font-bold uppercase">Circle</span>
+          </button>
+
+          <button 
+            onClick={() => { setDrawingMode("poly"); setTempPolyPoints([]); }}
+            className={cn(
+              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300",
+              drawingMode === "poly" ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" : "text-zinc-400 hover:bg-zinc-100/50"
+            )}
+            title="다각형"
+          >
+            <Hexagon className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">Poly</span>
           </button>
 
           <div className="h-px w-full bg-zinc-200/50 my-2 hidden lg:block" />
-          <div className="w-px h-full bg-zinc-200/50 mx-2 lg:hidden" />
-
-          <button 
-            onClick={() => setViewMode(viewMode === "edit" ? "code" : "edit")}
-            className={cn(
-              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300",
-              viewMode === "code" 
-                ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" 
-                : "text-zinc-400 hover:bg-zinc-100/50 hover:text-zinc-600"
-            )}
-            title="코드 생성 및 보기"
-          >
-            <CodeIcon className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Code</span>
-          </button>
-
-          <button 
-            onClick={() => { setImage(null); setAreas([]); setSelectedId(null); }}
-            className="mt-auto flex flex-col items-center gap-1.5 p-3 rounded-2xl text-zinc-400 hover:bg-rose-50 hover:text-rose-500 transition-all duration-300"
-            title="새로 만들기"
-          >
-            <RefreshCcw className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Reset</span>
-          </button>
+          
+          <div className="lg:mt-auto flex lg:flex-col gap-3">
+            <button 
+              onClick={() => setViewMode(viewMode === "edit" ? "code" : "edit")}
+              className={cn(
+                "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300",
+                viewMode === "code" ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" : "text-zinc-400 hover:bg-zinc-100/50"
+              )}
+            >
+              <CodeIcon className="w-6 h-6" />
+              <span className="text-[10px] font-bold uppercase">Code</span>
+            </button>
+            <button 
+              onClick={() => { setImage(null); setAreas([]); setSelectedId(null); setTempPolyPoints([]); }}
+              className="flex flex-col items-center gap-1.5 p-3 rounded-2xl text-zinc-400 hover:bg-rose-50 hover:text-rose-500 transition-all"
+            >
+              <RefreshCcw className="w-6 h-6" />
+              <span className="text-[10px] font-bold uppercase">Reset</span>
+            </button>
+          </div>
         </div>
 
         {/* Main Editor Workarea */}
         <div className="flex-1 flex flex-col gap-4 min-w-0">
-          {/* Editor Header */}
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between p-4 gap-4 glass-card bg-zinc-50/50 backdrop-blur-md">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 flex-1">
-              <label className="group relative flex items-center justify-center gap-2 px-5 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer transition-all duration-300 shadow-lg shadow-zinc-200 overflow-hidden active:scale-95 flex-shrink-0">
+              <label className="group relative flex items-center justify-center gap-2 px-5 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer transition-all shadow-lg flex-shrink-0">
                 <Upload className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
                 <span className="text-sm font-semibold">파일 업로드</span>
                 <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
               </label>
 
-              <div className="flex-1 flex items-center gap-2 bg-white border border-zinc-200 p-1 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-fuchsia-500/20 transition-all">
-                <input 
-                  type="text" 
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleImageUrlLoad()}
-                  className="flex-1 pl-3 pr-2 py-1.5 text-sm bg-transparent outline-none min-w-0 font-medium"
-                  placeholder="이미지 URL 입력..."
-                />
-                <button 
-                  onClick={handleImageUrlLoad}
-                  className="px-4 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-lg text-xs font-bold transition-colors flex-shrink-0"
-                >
-                  불러오기
-                </button>
-              </div>
-              
-              {image && (
-                <div className="flex items-center gap-3 px-3 py-1.5 bg-white border border-zinc-200 rounded-full shadow-sm animate-in fade-in slide-in-from-left-2 duration-500">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs font-bold text-zinc-600 uppercase tracking-tighter">
-                    {areas.length} Areas Created
-                  </span>
-                </div>
-              )}
+              <button 
+                onClick={() => setIsUrlModalOpen(true)}
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 rounded-xl transition-all shadow-sm flex-shrink-0 font-semibold text-sm"
+              >
+                <LinkIcon className="w-4 h-4" />
+                <span>URL 불러오기</span>
+              </button>
             </div>
 
-            <div className="flex items-center justify-between sm:justify-end gap-3">
+            <div className="flex items-center justify-between sm:justify-end gap-3 self-center">
+              <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 shadow-inner mr-2">
+                <button 
+                  onClick={() => setCreationMethod("drag")}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all",
+                    creationMethod === "drag" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-400 hover:text-zinc-600"
+                  )}
+                >
+                  <Hand className="w-3.5 h-3.5" /> Drag
+                </button>
+                <button 
+                  onClick={() => setCreationMethod("click")}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all",
+                    creationMethod === "click" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-400 hover:text-zinc-600"
+                  )}
+                >
+                  <MousePointer className="w-3.5 h-3.5" /> Click
+                </button>
+              </div>
+
               <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-lg border border-zinc-200">
                 <button onClick={() => setZoom(Math.max(0.1, zoom - 0.1))} className="p-1 px-2 hover:bg-white rounded transition-colors text-xs font-bold">-</button>
                 <span className="text-[10px] font-mono w-12 text-center text-zinc-500">{Math.round(zoom * 100)}%</span>
@@ -293,20 +349,18 @@ export default function ImageMapPage() {
               <button 
                 disabled={!image}
                 onClick={downloadHtml}
-                className="p-2.5 text-zinc-500 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-xl transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                title="HTML 파일로 다운로드"
+                className="p-2.5 text-zinc-500 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-xl disabled:opacity-30 transition-all"
               >
                 <Download className="w-5 h-5" />
               </button>
             </div>
           </div>
 
-          {/* Editor Surface */}
-          <div className="flex-1 glass-card overflow-auto relative min-h-[400px] flex items-center justify-center bg-zinc-800/10 p-8 checkerboard-pattern group/surface">
+          <div className="flex-1 glass-card overflow-auto relative min-h-[450px] flex items-center justify-center bg-zinc-800/10 p-8 checkerboard-pattern group/surface">
             {viewMode === "edit" ? (
               image ? (
                 <div 
-                  className="relative transition-transform duration-300 ease-out shadow-2xl bg-white"
+                  className="relative transition-transform shadow-2xl bg-white"
                   style={{ transform: `scale(${zoom})` }}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
@@ -324,40 +378,61 @@ export default function ImageMapPage() {
                     className="absolute inset-0 w-full h-full pointer-events-auto cursor-crosshair"
                     viewBox={imgRef.current ? `0 0 ${imgRef.current.naturalWidth} ${imgRef.current.naturalHeight}` : "0 0 100 100"}
                   >
-                    {/* Rendered Areas */}
                     {areas.map(area => (
                       <g key={area.id} className="group/area cursor-pointer">
-                        <rect
-                          x={area.coords[0]}
-                          y={area.coords[1]}
-                          width={area.coords[2] - area.coords[0]}
-                          height={area.coords[3] - area.coords[1]}
-                          className={cn(
-                            "transition-all duration-200",
-                            selectedId === area.id 
-                              ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" 
-                              : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
-                          )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedId(area.id);
-                          }}
-                        />
-                        {/* Area Label on Hover */}
-                        <text
-                          x={area.coords[0] + 5}
-                          y={area.coords[1] + 15}
-                          className={cn(
-                            "text-[10px] font-bold pointer-events-none transition-opacity",
-                            selectedId === area.id ? "opacity-100 fill-fuchsia-700" : "opacity-0 group-hover/area:opacity-100 fill-fuchsia-500"
-                          )}
-                        >
-                          {area.title}
-                        </text>
+                        {area.type === "rect" && (
+                          <rect
+                            x={area.coords[0]}
+                            y={area.coords[1]}
+                            width={area.coords[2] - area.coords[0]}
+                            height={area.coords[3] - area.coords[1]}
+                            className={cn(
+                              "transition-all",
+                              selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                            )}
+                            onClick={(e) => { e.stopPropagation(); setSelectedId(area.id); }}
+                          />
+                        )}
+                        {area.type === "circle" && (
+                          <circle
+                            cx={area.coords[0]}
+                            cy={area.coords[1]}
+                            r={area.coords[2]}
+                            className={cn(
+                              "transition-all",
+                              selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                            )}
+                            onClick={(e) => { e.stopPropagation(); setSelectedId(area.id); }}
+                          />
+                        )}
+                        {area.type === "poly" && (
+                          <polygon
+                            points={area.coords.join(",")}
+                            className={cn(
+                              "transition-all",
+                              selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                            )}
+                            onClick={(e) => { e.stopPropagation(); setSelectedId(area.id); }}
+                          />
+                        )}
                       </g>
                     ))}
                     
-                    {/* Active Drawing Preview */}
+                    {/* Poly temporary points */}
+                    {drawingMode === "poly" && tempPolyPoints.length > 0 && (
+                      <g>
+                        <polyline
+                          points={[...tempPolyPoints, currentPos].map(p => `${p.x},${p.y}`).join(" ")}
+                          className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[2px]"
+                          strokeDasharray="4,4"
+                        />
+                        {tempPolyPoints.map((p, i) => (
+                          <circle key={i} cx={p.x} cy={p.y} r={zoom > 1 ? 3/zoom : 3} className="fill-fuchsia-600" />
+                        ))}
+                      </g>
+                    )}
+
+                    {/* Preview for dragging */}
                     {isDrawing && drawingMode === "rect" && (
                       <rect
                         x={Math.min(startPos.x, currentPos.x)}
@@ -368,115 +443,107 @@ export default function ImageMapPage() {
                         strokeDasharray="8,8"
                       />
                     )}
+                    {isDrawing && drawingMode === "circle" && (
+                      <circle
+                        cx={startPos.x}
+                        cy={startPos.y}
+                        r={Math.sqrt(Math.pow(currentPos.x - startPos.x, 2) + Math.pow(currentPos.y - startPos.y, 2))}
+                        className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[3px]"
+                        strokeDasharray="8,8"
+                      />
+                    )}
                   </svg>
                 </div>
               ) : (
                 <div className="text-zinc-400 flex flex-col items-center gap-6 animate-pulse">
-                  <div className="w-24 h-24 rounded-full bg-zinc-100 flex items-center justify-center border-4 border-dashed border-zinc-200">
-                    <Upload className="w-10 h-10 opacity-40" />
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-lg text-zinc-600 mb-1">작업을 위해 이미지를 업로드하세요</p>
-                    <p className="text-sm opacity-60">드래그하여 클릭 영역을 설정할 수 있습니다</p>
-                  </div>
+                  <Upload className="w-16 h-16 opacity-20" />
+                  <p className="font-bold text-center">이미지를 업로드하거나 URL을 입력하세요</p>
                 </div>
               )
             ) : (
-              <div className="w-full h-full p-0 flex flex-col">
-                <div className="flex items-center justify-between p-4 bg-zinc-900 text-white rounded-t-2xl">
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1.5 mr-3">
-                      <div className="w-3 h-3 rounded-full bg-rose-500" />
-                      <div className="w-3 h-3 rounded-full bg-amber-500" />
-                      <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                    </div>
-                    <span className="text-xs font-mono font-bold opacity-60 tracking-widest uppercase">HTML Output</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={copyToClipboard}
-                      className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-all active:scale-95"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                      Copy Code
-                    </button>
-                  </div>
+              <div className="w-full h-full p-0 flex flex-col bg-zinc-950 rounded-2xl overflow-hidden shadow-2xl">
+                <div className="flex items-center justify-between p-4 bg-zinc-900">
+                  <span className="text-xs font-mono font-bold text-zinc-500 uppercase tracking-widest">HTML Output</span>
+                  <button onClick={copyToClipboard} className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-all">
+                    <Copy className="w-3.5 h-3.5" /> Copy Code
+                  </button>
                 </div>
-                <div className="flex-1 bg-zinc-950 p-8 font-mono text-sm overflow-auto text-fuchsia-400 selection:bg-fuchsia-500/30 selection:text-white">
-                  <pre>{generateCode()}</pre>
-                </div>
+                <pre className="flex-1 p-8 font-mono text-sm overflow-auto text-fuchsia-400 selection:bg-fuchsia-500/30">
+                  {generateCode()}
+                </pre>
               </div>
             )}
           </div>
+
+          {drawingMode === "poly" && isDrawing && (
+            <div className="flex items-center justify-center p-4 glass-card bg-fuchsia-500/10 border-fuchsia-500/50 animate-in fade-in zoom-in duration-300">
+               <p className="text-sm font-bold text-fuchsia-600 mr-4">점들을 클릭하여 영역을 만드세요 ({tempPolyPoints.length}개 점)</p>
+               <button 
+                onClick={finishPoly}
+                className="px-6 py-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-xl text-sm font-bold shadow-lg"
+               >
+                 영역 완성하기
+               </button>
+            </div>
+          )}
         </div>
 
-        {/* Right Properties Panel - Premium Sidebar Aesthetic */}
+        {/* Right Properties Panel */}
         <div className="w-full lg:w-[350px] flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
-          <div className="glass-card bg-white p-6 shadow-xl border-zinc-100 flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black flex items-center gap-2 uppercase tracking-tight">
-                <Settings2 className="w-5 h-5 text-fuchsia-500" />
-                Configuration
-              </h2>
-            </div>
+          <div className="glass-card bg-white p-6 shadow-xl flex flex-col gap-6">
+            <h2 className="text-lg font-black flex items-center gap-2 uppercase tracking-tight">
+              <Settings2 className="w-5 h-5 text-fuchsia-500" /> Configuration
+            </h2>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">맵 이름 (name)</label>
-                <div className="relative">
-                   <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-300" />
-                   <input 
-                    type="text" 
-                    value={mapName}
-                    onChange={(e) => setMapName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-bold transition-all"
-                    placeholder="map-name"
-                  />
-                </div>
+                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">맵 이름</label>
+                <input 
+                  type="text" 
+                  value={mapName}
+                  onChange={(e) => setMapName(e.target.value)}
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-bold transition-all"
+                />
               </div>
             </div>
 
             <div className="h-px bg-zinc-100 my-2" />
 
             {selectedId ? (
-              <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-2">
                 {areas.filter(a => a.id === selectedId).map(area => (
                   <div key={area.id} className="space-y-5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black px-2 py-0.5 bg-fuchsia-100 text-fuchsia-600 rounded uppercase">Active Area Settings</span>
+                      <span className="text-[10px] font-black px-2 py-0.5 bg-fuchsia-100 text-fuchsia-600 rounded uppercase">Shape: {area.type}</span>
                       <button onClick={() => setSelectedId(null)} className="text-zinc-300 hover:text-zinc-600"><X className="w-4 h-4" /></button>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">링크 주소 (href)</label>
-                      <div className="relative">
-                        <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-300" />
-                        <input 
-                          type="text" 
-                          value={area.href}
-                          onChange={(e) => updateArea(area.id, { href: e.target.value })}
-                          className="w-full pl-10 pr-4 py-3 bg-fuchsia-50/30 border border-fuchsia-100 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-medium text-zinc-700 transition-all"
-                          placeholder="https://..."
-                        />
-                      </div>
+                      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">링크 주소</label>
+                      <input 
+                        type="text" 
+                        value={area.href}
+                        onChange={(e) => updateArea(area.id, { href: e.target.value })}
+                        className="w-full px-4 py-3 bg-fuchsia-50/30 border border-fuchsia-100 rounded-xl focus:border-fuchsia-500 outline-none text-sm font-medium"
+                      />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">대체 텍스트 (alt)</label>
+                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">대체 텍스트</label>
                         <input 
                           type="text" 
                           value={area.alt}
                           onChange={(e) => updateArea(area.id, { alt: e.target.value })}
-                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium transition-all"
+                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">타겟 (target)</label>
+                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">대상 타겟</label>
                         <select 
                           value={area.target}
                           onChange={(e) => updateArea(area.id, { target: e.target.value as any })}
-                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold transition-all appearance-none cursor-pointer"
+                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold"
                         >
                           <option value="_blank">New Tab</option>
                           <option value="_self">Current</option>
@@ -484,83 +551,48 @@ export default function ImageMapPage() {
                       </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">타이틀 (title)</label>
-                      <input 
-                        type="text" 
-                        value={area.title}
-                        onChange={(e) => updateArea(area.id, { title: e.target.value })}
-                        className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium transition-all"
-                      />
-                    </div>
-
                     <button 
                       onClick={() => deleteArea(area.id)}
-                      className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-rose-100 bg-rose-50/30 text-rose-500 hover:bg-rose-50 hover:border-rose-200 transition-all group/del"
+                      className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-rose-100 bg-rose-50/30 text-rose-500 hover:bg-rose-50 transition-all font-black uppercase text-xs tracking-widest"
                     >
-                      <Trash2 className="w-4 h-4 group-hover:shake transition-transform" />
-                      <span className="text-xs font-black uppercase tracking-widest">Delete This Area</span>
+                      <Trash2 className="w-4 h-4" /> 영역 삭제
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center text-zinc-300 text-center py-12 px-6 border-2 border-dashed border-zinc-50 rounded-3xl bg-zinc-50/30">
-                <div className="w-16 h-16 rounded-full bg-white shadow-inner flex items-center justify-center mb-4 transition-transform hover:rotate-12 duration-500">
-                  <MousePointer2 className="w-8 h-8 text-zinc-200" />
-                </div>
-                <p className="text-sm font-bold text-zinc-400 leading-relaxed">
-                  편집할 영역을 선택하거나<br />이미지 위를 드래그하여<br />새로운 영역을 만드세요
-                </p>
+              <div className="text-center py-12 bg-zinc-50/50 rounded-3xl border-2 border-dashed border-zinc-100">
+                <MousePointer2 className="w-10 h-10 text-zinc-200 mx-auto mb-4" />
+                <p className="text-sm font-bold text-zinc-400">도구와 생성 방식을 선택 후<br />이미지 작업 영역을 만드세요</p>
               </div>
             )}
           </div>
 
-          <div className="glass-card bg-zinc-900 border-zinc-800 p-6 flex flex-col gap-4">
-             <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
-                  <Plus className="w-4 h-4 text-fuchsia-400" />
-                  Area Layers
-                </h3>
-             </div>
-             <div className="space-y-2 max-h-[300px] overflow-auto pr-2 custom-scrollbar">
-              {areas.length === 0 ? (
-                <div className="py-8 text-center bg-white/5 rounded-2xl border border-white/5">
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">No Layers Yet</p>
-                </div>
-              ) : (
-                areas.map((area, index) => (
-                  <div 
-                    key={area.id}
-                    onClick={() => setSelectedId(area.id)}
-                    className={cn(
-                      "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300",
-                      selectedId === area.id 
-                        ? "bg-fuchsia-500 shadow-lg shadow-fuchsia-500/20 scale-[1.02]" 
-                        : "bg-white/5 hover:bg-white/10"
-                    )}
-                  >
-                    <div className="flex items-center gap-3 overflow-hidden">
-                      <div className={cn(
-                        "w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black transition-colors",
-                        selectedId === area.id ? "bg-white text-fuchsia-600" : "bg-zinc-800 text-zinc-500"
-                      )}>
-                        {index + 1}
-                      </div>
-                      <span className={cn(
-                        "text-xs font-bold truncate tracking-tight",
-                        selectedId === area.id ? "text-white" : "text-zinc-300"
-                      )}>
-                        {area.title || "New Area layer"}
-                      </span>
+          <div className="glass-card bg-zinc-900 p-6 flex flex-col gap-4">
+            <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <Plus className="w-4 h-4 text-fuchsia-400" /> Area Layers ({areas.length})
+            </h3>
+            <div className="space-y-2 max-h-[300px] overflow-auto pr-2 custom-scrollbar">
+              {areas.map((area, index) => (
+                <div 
+                  key={area.id}
+                  onClick={() => setSelectedId(area.id)}
+                  className={cn(
+                    "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all",
+                    selectedId === area.id ? "bg-fuchsia-500 shadow-lg scale-[1.02]" : "bg-white/5 hover:bg-white/10"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black", selectedId === area.id ? "bg-white text-fuchsia-600" : "bg-zinc-800 text-zinc-500")}>
+                      {index + 1}
                     </div>
-                    <ChevronRight className={cn(
-                      "w-4 h-4 transition-transform",
-                      selectedId === area.id ? "text-white rotate-90" : "text-zinc-600 group-hover:translate-x-1"
-                    )} />
+                    <span className={cn("text-xs font-bold", selectedId === area.id ? "text-white" : "text-zinc-300")}>
+                      {area.type.toUpperCase()}: {area.title}
+                    </span>
                   </div>
-                ))
-              )}
+                  <ChevronRight className={cn("w-4 h-4", selectedId === area.id ? "text-white" : "text-zinc-600")} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -568,28 +600,67 @@ export default function ImageMapPage() {
 
       <style jsx global>{`
         .checkerboard-pattern {
-          background-image: 
-            linear-gradient(45deg, #f8f8f8 25%, transparent 25%), 
-            linear-gradient(-45deg, #f8f8f8 25%, transparent 25%), 
-            linear-gradient(45deg, transparent 75%, #f8f8f8 75%), 
-            linear-gradient(-45deg, transparent 75%, #f8f8f8 75%);
+          background-image: linear-gradient(45deg, #f8f8f8 25%, transparent 25%), linear-gradient(-45deg, #f8f8f8 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f8f8f8 75%), linear-gradient(-45deg, transparent 75%, #f8f8f8 75%);
           background-size: 20px 20px;
           background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(0,0,0,0.1);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(0,0,0,0.2);
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
       `}</style>
+
+      {/* URL Input Modal */}
+      {isUrlModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-md glass-card bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-black uppercase tracking-tight flex items-center gap-2">
+                <LinkIcon className="w-5 h-5 text-fuchsia-500" />
+                이미지 URL 입력
+              </h3>
+              <button onClick={() => setIsUrlModalOpen(false)} className="text-zinc-400 hover:text-zinc-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-sm text-zinc-500 mb-6">웹상에 있는 이미지의 주소를 입력하여 바로 불러올 수 있습니다.</p>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Image URL</label>
+                <input 
+                  type="text" 
+                  autoFocus
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleImageUrlLoad();
+                      setIsUrlModalOpen(false);
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-medium transition-all"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button 
+                  onClick={() => setIsUrlModalOpen(false)}
+                  className="flex-1 px-4 py-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-xl font-bold text-sm transition-all"
+                >
+                  취소
+                </button>
+                <button 
+                  onClick={() => {
+                    handleImageUrlLoad();
+                    setIsUrlModalOpen(false);
+                  }}
+                  className="flex-1 px-4 py-3 bg-fuchsia-500 hover:bg-fuchsia-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-fuchsia-500/20 transition-all"
+                >
+                  불러오기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
