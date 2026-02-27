@@ -4,7 +4,20 @@ import { useState } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { usePathname } from "next/navigation";
-import { type LucideIcon, Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock, Paintbrush, Layers, MousePointer2 } from "lucide-react";
+import {
+    type LucideIcon,
+    Code,
+    FileText,
+    Palette,
+    Type,
+    Binary,
+    Link as LinkIcon,
+    QrCode,
+    Clock,
+    Paintbrush,
+    Layers,
+    MousePointer2,
+} from "lucide-react";
 
 interface NavigationItem {
     title: string;
