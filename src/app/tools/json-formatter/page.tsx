@@ -39,7 +39,7 @@ export default function JsonFormatterPage() {
                 description="JSON 데이터를 즉시 포맷하고 검증하며 정렬해 보세요."
             />
 
-            <div className="flex flex-col lg:flex-row gap-6 h-[500px]">
+            <div className="flex flex-col lg:flex-row gap-8 h-[500px] mb-6">
                 <div className="flex-1 flex flex-col gap-2">
                     <label className="text-sm font-medium text-zinc-600">JSON 입력</label>
                     <textarea

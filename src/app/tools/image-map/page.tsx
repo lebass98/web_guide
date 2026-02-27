@@ -390,7 +390,7 @@ export default function ImageMapPage() {
                 description="이미지 위에 사각형, 원형, 다각형 등 다양한 클릭 영역을 자유롭게 정의하세요."
             />
 
-            <div className="flex flex-col lg:flex-row gap-6 lg:max-h-[calc(100vh-250px)]">
+            <div className="flex flex-col lg:flex-row gap-8 lg:max-h-[calc(100vh-250px)]">
                 {/* Left Toolbar */}
                 <div className="w-full lg:w-16 flex lg:flex-col gap-3 p-2.5 glass-card bg-white/40 shadow-xl self-start sticky top-0 z-10 transition-all duration-300">
                     <button
@@ -851,7 +851,7 @@ export default function ImageMapPage() {
                                                 cy={startPos.y}
                                                 r={Math.sqrt(
                                                     Math.pow(currentPos.x - startPos.x, 2) +
-                                                        Math.pow(currentPos.y - startPos.y, 2)
+                                                    Math.pow(currentPos.y - startPos.y, 2)
                                                 )}
                                                 className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[3px]"
                                                 strokeDasharray="8,8"
@@ -1107,8 +1107,8 @@ export default function ImageMapPage() {
                                             {area.type === "rect"
                                                 ? "사각형"
                                                 : area.type === "circle"
-                                                  ? "원형"
-                                                  : "다각형"}
+                                                    ? "원형"
+                                                    : "다각형"}
                                             :{" "}
                                             {area.href.length > 20
                                                 ? area.href.substring(0, 20) + "..."

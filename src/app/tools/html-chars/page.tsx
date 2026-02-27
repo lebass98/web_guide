@@ -31,7 +31,7 @@ export default function HtmlCharsPage() {
                 description="HTML 엔티티를 디코딩하고 특수문자를 즉시 제거하세요."
             />
 
-            <div className="flex flex-col lg:flex-row gap-6 h-[600px]">
+            <div className="flex flex-col lg:flex-row gap-8 h-[600px]">
                 <div className="flex-1 flex flex-col gap-2">
                     <label className="text-sm font-medium text-zinc-600">HTML 입력</label>
                     <textarea

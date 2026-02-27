@@ -1,66 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "./Header";
+import Link from "next/link";
 import { Sidebar } from "./Sidebar";
-import { usePathname } from "next/navigation";
-import {
-    type LucideIcon,
-    Code,
-    FileText,
-    Palette,
-    Type,
-    Binary,
-    Link as LinkIcon,
-    QrCode,
-    Clock,
-    Paintbrush,
-    Layers,
-    MousePointer2,
-} from "lucide-react";
-
-interface NavigationItem {
-    title: string;
-    href: string;
-    icon: LucideIcon;
-}
-
-const navigationItems: NavigationItem[] = [
-    { title: "HTML 특수문자 변환", href: "/tools/html-chars", icon: Code },
-    { title: "JSON 포매터", href: "/tools/json-formatter", icon: FileText },
-    { title: "색상 변환기", href: "/tools/color-converter", icon: Palette },
-    { title: "텍스트 변환기", href: "/tools/text-transformer", icon: Type },
-    { title: "Base64 변환기", href: "/tools/base64", icon: Binary },
-    { title: "URL 인코더", href: "/tools/url-encoder", icon: LinkIcon },
-    { title: "QR 코드 생성기", href: "/tools/qr-generator", icon: QrCode },
-    { title: "타임스탬프 변환기", href: "/tools/timestamp", icon: Clock },
-    { title: "CSS 그라데이션", href: "/tools/css-gradient", icon: Paintbrush },
-    { title: "CSS 그라데이션 배경", href: "/tools/gradient-backgrounds", icon: Layers },
-    { title: "이미지 맵 에디터", href: "/tools/image-map", icon: MousePointer2 },
-];
+import { Menu } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface NavigationProps {
     children: React.ReactNode;
 }
 
 export function Navigation({ children }: NavigationProps) {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const pathname = usePathname();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <>
+        <div className="flex w-full min-h-screen bg-transparent">
+            {/* Sticky Header */}
+            <header className="fixed top-0 right-0 left-0 lg:left-[80px] h-16 glass-header z-30 flex items-center justify-between px-6 transition-all duration-300">
+                {/* Header Title / Logo Link */}
+                <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <div className="lg:hidden w-8 h-8 flex items-center justify-center bg-gray-900/90 backdrop-blur-md rounded-lg shadow-lg">
+                        <span className="text-white font-bold text-[10px]">W</span>
+                    </div>
+                    <span className="text-sm font-bold text-gray-900 tracking-tight">WebTools Premium</span>
+                </Link>
+
+                {/* Mobile Menu Toggle inside Header */}
+                <button
+                    onClick={() => setIsSidebarOpen(true)}
+                    className="lg:hidden p-2.5 glass-card !rounded-xl text-gray-500 hover:text-gray-900 active:scale-95 transition-all"
+                >
+                    <Menu className="w-5 h-5" />
+                </button>
+            </header>
+
             <Sidebar
-                items={navigationItems}
-                activePath={pathname}
-                isOpen={isMobileMenuOpen}
-                onClose={() => setIsMobileMenuOpen(false)}
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
             />
-            <div className="flex-1 flex flex-col min-w-0">
-                <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
-                <main className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full overflow-x-hidden flex flex-col gap-8 lg:gap-10 pb-10">
+
+            <div className={cn(
+                "flex-1 p-10 pt-28 min-w-0 transition-all duration-300",
+                "ml-0 lg:ml-[80px]"
+            )}>
+                <main className="w-full">
                     {children}
                 </main>
             </div>
-        </>
+        </div>
     );
 }

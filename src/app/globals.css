@@ -35,54 +35,65 @@
   The default theme is light mode.
 */
 :root {
-    --background: oklch(0.985 0 0);
-    --foreground: oklch(0.141 0.005 285.823);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.141 0.005 285.823);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.141 0.005 285.823);
-    --primary: oklch(0.64 0.17 260);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.967 0.003 264.542);
-    --secondary-foreground: oklch(0.269 0 0);
-    --muted: oklch(0.967 0.003 264.542);
-    --muted-foreground: oklch(0.551 0.027 264.364);
-    --accent: oklch(0.967 0.003 264.542);
-    --accent-foreground: oklch(0.269 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.985 0 0);
-    --border: oklch(0.928 0.006 264.531);
-    --input: oklch(0.928 0.006 264.531);
-    --ring: oklch(0.269 0 0);
-    --radius: 0.5rem;
+    --background: #f4f5f7;
+    --foreground: #1c1c1c;
+    --card: #ffffff;
+    --card-foreground: #1c1c1c;
+    --popover: #ffffff;
+    --popover-foreground: #1c1c1c;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --secondary: #f0f1f3;
+    --secondary-foreground: #1c1c1c;
+    --muted: #f9fafb;
+    --muted-foreground: #6b7280;
+    --accent: #f0f1f3;
+    --accent-foreground: #1c1c1c;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e5e7eb;
+    --input: #e5e7eb;
+    --ring: #6366f1;
+    --radius: 1rem;
 }
 
 @layer base {
     * {
         @apply border-border;
     }
+
     body {
-        @apply bg-background text-foreground;
-        font-feature-settings:
-            "rlig" 1,
-            "calt" 1;
+        @apply bg-[#F4F7FF] text-foreground font-sans antialiased min-h-screen relative;
+        font-feature-settings: "rlig" 1, "calt" 1;
+        background-image:
+            radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.1) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+            radial-gradient(at 0% 100%, rgba(232, 121, 249, 0.15) 0px, transparent 50%);
+        background-attachment: fixed;
     }
 }
 
 @layer utilities {
     .glass {
-        @apply bg-white/70 backdrop-blur-md border border-zinc-200/50;
-    }
-    .glass-card {
-        @apply bg-white/80 backdrop-blur-lg border border-zinc-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl;
+        @apply bg-white/40 backdrop-blur-xl border border-white/40 shadow-xl;
     }
 
-    .hide-spin-buttons::-webkit-inner-spin-button,
-    .hide-spin-buttons::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+    .glass-card {
+        @apply bg-white/60 backdrop-blur-lg border border-white/60 rounded-[32px] transition-all duration-300;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        /* Using standard CSS shadow to avoid @apply issues with spaces */
     }
-    .hide-spin-buttons {
-        -moz-appearance: textfield;
+
+    .glass-sidebar {
+        @apply bg-white/20 backdrop-blur-2xl border-r border-white/30 shadow-2xl;
+    }
+
+    .glass-header {
+        @apply bg-white/30 backdrop-blur-xl border-b border-white/40 shadow-sm;
+    }
+
+    .glass-hover {
+        @apply hover:bg-white/70 hover:shadow-2xl hover:border-white/80 hover:-translate-y-1;
     }
 }
