@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { usePathname } from "next/navigation";
-import { type LucideIcon, Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock, Paintbrush, Layers } from "lucide-react";
+import { type LucideIcon, Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock, Paintbrush, Layers, MousePointer2 } from "lucide-react";
 
 interface NavigationItem {
     title: string;
@@ -23,6 +23,7 @@ const navigationItems: NavigationItem[] = [
     { title: "타임스탬프 변환기", href: "/tools/timestamp", icon: Clock },
     { title: "CSS 그라데이션", href: "/tools/css-gradient", icon: Paintbrush },
     { title: "CSS 그라데이션 배경", href: "/tools/gradient-backgrounds", icon: Layers },
+    { title: "이미지 맵 에디터", href: "/tools/image-map", icon: MousePointer2 },
 ];
 
 interface NavigationProps {
