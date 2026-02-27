@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock, Paintbrush, Layers } from "lucide-react";
+import { Code, FileText, Palette, Type, Binary, Link as LinkIcon, QrCode, Clock, Paintbrush, Layers, MousePointer2 } from "lucide-react";
 
 export default function Home() {
   const tools = [
@@ -13,6 +13,7 @@ export default function Home() {
     { title: "타임스탬프 변환기", desc: "Unix 에포크 시간을 읽기 쉬운 형식으로 변환하세요.", href: "/tools/timestamp", icon: Clock, color: "text-amber-400", bg: "bg-amber-500/10" },
     { title: "CSS 그라데이션", desc: "사용자 지정 CSS 그라데이션을 쉽게 시각화하고 코드를 복사하세요.", href: "/tools/css-gradient", icon: Paintbrush, color: "text-teal-400", bg: "bg-teal-500/10" },
     { title: "CSS 그라데이션 배경", desc: "영감을 주는 아름다운 CSS 그라데이션 프리셋들을 모아놓은 갤러리입니다.", href: "/tools/gradient-backgrounds", icon: Layers, color: "text-rose-400", bg: "bg-rose-500/10" },
+    { title: "이미지 맵 에디터", desc: "이미지 위에 클릭 가능한 영역을 정의하고 HTML 코드를 생성하세요.", href: "/tools/image-map", icon: MousePointer2, color: "text-yellow-400", bg: "bg-yellow-500/10" },
   ];
 
   return (
