@@ -132,7 +132,7 @@ export default function CssGradientPage() {
     ];
 
     return (
-        <>
+        <div className="space-y-10">
             <PageHeader
                 title="CSS 그라데이션 생성기"
                 description="다양한 색상과 방향을 조합하여 아름다운 CSS 그라데이션을 만들어보세요."
@@ -153,9 +153,9 @@ export default function CssGradientPage() {
             </div>
 
             {/* Main Designer Workspace */}
-            <div className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
+            <div className="bg-white rounded-[28px] shadow-sm border border-gray-100 overflow-hidden">
                 {/* Top Bar: Gradient Bar & Controls */}
-                <div className="flex flex-col lg:flex-row p-6 items-center gap-8 border-b border-zinc-200 bg-zinc-50/50">
+                <div className="flex flex-col lg:flex-row p-8 items-center gap-10 border-b border-gray-100 bg-gray-50/30">
                     {/* Left: Gradient Bar */}
                     <div className="flex-1 w-full relative">
                         <GradientBar
@@ -215,7 +215,7 @@ export default function CssGradientPage() {
                 </div>
 
                 {/* Edit Area: 3 Columns */}
-                <div className="flex flex-col lg:flex-row p-6 gap-8">
+                <div className="flex flex-col lg:flex-row p-8 gap-10">
                     {/* Cols 1 & 2: Picker and HEX/RGBA (From ColorPicker component) */}
                     {stops.find((s) => s.id === activeStopId) ? (
                         <div className="lg:w-[432px]">
@@ -327,6 +327,6 @@ export default function CssGradientPage() {
                     <Copy className="w-4 h-4" /> Copy to clipboard
                 </button>
             </div>
-        </>
+        </div>
     );
 }
