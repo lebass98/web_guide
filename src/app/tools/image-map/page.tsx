@@ -38,6 +38,7 @@ interface MapArea {
 
 export default function ImageMapPage() {
   const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [mapName, setMapName] = useState("workmap");
   const [areas, setAreas] = useState<MapArea[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -59,8 +60,17 @@ export default function ImageMapPage() {
         setImage(event.target?.result as string);
         setAreas([]);
         setSelectedId(null);
+        setImageUrl("");
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUrlLoad = () => {
+    if (imageUrl.trim()) {
+      setImage(imageUrl);
+      setAreas([]);
+      setSelectedId(null);
     }
   };
 
@@ -183,7 +193,7 @@ export default function ImageMapPage() {
         description="이미지 위에 클릭 가능한 다중 링크 영역을 직접 정의하고 바로 사용할 수 있는 HTML 코드를 생성하세요." 
       />
 
-      <div className="flex flex-col lg:flex-row gap-6 max-h-[calc(100vh-250px)]">
+      <div className="flex flex-col lg:flex-row gap-6 lg:max-h-[calc(100vh-250px)]">
         {/* Left Toolbar - Standard Tools Aesthetic */}
         <div className="w-full lg:w-20 flex lg:flex-col gap-3 p-3 glass-card bg-white/40 shadow-xl self-start sticky top-0">
           <button 
@@ -237,15 +247,32 @@ export default function ImageMapPage() {
         </div>
 
         {/* Main Editor Workarea */}
-        <div className="flex-1 flex flex-col gap-4 overflow-hidden min-h-[500px]">
+        <div className="flex-1 flex flex-col gap-4 min-w-0">
           {/* Editor Header */}
-          <div className="flex items-center justify-between p-4 glass-card bg-zinc-50/50 backdrop-blur-md">
-            <div className="flex items-center gap-4">
-              <label className="group relative flex items-center gap-2 px-5 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer transition-all duration-300 shadow-lg shadow-zinc-200 overflow-hidden active:scale-95">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between p-4 gap-4 glass-card bg-zinc-50/50 backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 flex-1">
+              <label className="group relative flex items-center justify-center gap-2 px-5 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer transition-all duration-300 shadow-lg shadow-zinc-200 overflow-hidden active:scale-95 flex-shrink-0">
                 <Upload className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
-                <span className="text-sm font-semibold">이미지 불러오기</span>
+                <span className="text-sm font-semibold">파일 업로드</span>
                 <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
               </label>
+
+              <div className="flex-1 flex items-center gap-2 bg-white border border-zinc-200 p-1 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-fuchsia-500/20 transition-all">
+                <input 
+                  type="text" 
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleImageUrlLoad()}
+                  className="flex-1 pl-3 pr-2 py-1.5 text-sm bg-transparent outline-none min-w-0 font-medium"
+                  placeholder="이미지 URL 입력..."
+                />
+                <button 
+                  onClick={handleImageUrlLoad}
+                  className="px-4 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-lg text-xs font-bold transition-colors flex-shrink-0"
+                >
+                  불러오기
+                </button>
+              </div>
               
               {image && (
                 <div className="flex items-center gap-3 px-3 py-1.5 bg-white border border-zinc-200 rounded-full shadow-sm animate-in fade-in slide-in-from-left-2 duration-500">
@@ -257,7 +284,7 @@ export default function ImageMapPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between sm:justify-end gap-3">
               <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-lg border border-zinc-200">
                 <button onClick={() => setZoom(Math.max(0.1, zoom - 0.1))} className="p-1 px-2 hover:bg-white rounded transition-colors text-xs font-bold">-</button>
                 <span className="text-[10px] font-mono w-12 text-center text-zinc-500">{Math.round(zoom * 100)}%</span>
