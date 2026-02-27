@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type ShapeType = "rect" | "circle" | "poly";
+type ShapeType = "select" | "rect" | "circle" | "poly";
 type CreationMethod = "drag" | "click";
 
 interface MapArea {
@@ -51,9 +51,14 @@ export default function ImageMapPage() {
   const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
   const [tempPolyPoints, setTempPolyPoints] = useState<{x: number, y: number}[]>([]);
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
+  const [resizingHandle, setResizingHandle] = useState<{ id: string, index: number } | null>(null);
+  const [movingArea, setMovingArea] = useState<{ id: string, startX: number, startY: number, initialCoords: number[] } | null>(null);
   
   const [viewMode, setViewMode] = useState<"edit" | "code">("edit");
   const [zoom, setZoom] = useState(1);
+  const [contextMenu, setContextMenu] = useState<{ x: number, y: number, areaId: string } | null>(null);
+  const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
+  const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
 
   const imgRef = useRef<HTMLImageElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -104,6 +109,18 @@ export default function ImageMapPage() {
     return { x, y };
   }, []);
 
+  useEffect(() => {
+    const handleClick = () => setContextMenu(null);
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, []);
+
+  const handleContextMenu = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY, areaId: id });
+    setSelectedId(id);
+  };
+
   const finishPoly = useCallback(() => {
     if (tempPolyPoints.length < 3) return;
     
@@ -126,6 +143,11 @@ export default function ImageMapPage() {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!image || viewMode === "code") return;
     const { x, y } = getCoordinates(e);
+
+    if (drawingMode === "select") {
+      setSelectedId(null);
+      return;
+    }
 
     if (drawingMode === "poly") {
       setIsDrawing(true);
@@ -151,18 +173,78 @@ export default function ImageMapPage() {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDrawing || !image) return;
     const { x, y } = getCoordinates(e);
+
+    if (resizingHandle) {
+      const area = areas.find(a => a.id === resizingHandle.id);
+      if (!area) return;
+
+      const newCoords = [...area.coords];
+      if (area.type === "rect") {
+        if (resizingHandle.index === 0) { newCoords[0] = x; newCoords[1] = y; }
+        if (resizingHandle.index === 1) { newCoords[2] = x; newCoords[1] = y; }
+        if (resizingHandle.index === 2) { newCoords[2] = x; newCoords[3] = y; }
+        if (resizingHandle.index === 3) { newCoords[0] = x; newCoords[3] = y; }
+      } else if (area.type === "circle") {
+        const radius = Math.round(Math.sqrt(Math.pow(x - newCoords[0], 2) + Math.pow(y - newCoords[1], 2)));
+        newCoords[2] = radius;
+      } else if (area.type === "poly") {
+        newCoords[resizingHandle.index * 2] = x;
+        newCoords[resizingHandle.index * 2 + 1] = y;
+      }
+      updateArea(area.id, { coords: newCoords });
+      return;
+    }
+
+    if (movingArea) {
+      const dx = x - movingArea.startX;
+      const dy = y - movingArea.startY;
+      const newCoords = movingArea.initialCoords.map((coord, i) => {
+        if (movingArea.initialCoords.length === 3 && i === 2) return coord; // Don't shift radius for circle
+        return i % 2 === 0 ? coord + dx : coord + dy;
+      });
+      updateArea(movingArea.id, { coords: newCoords });
+      return;
+    }
+
+    if (!isDrawing || !image) return;
     setCurrentPos({ x, y });
   };
 
   const handleMouseUp = (e: React.MouseEvent) => {
+    if (resizingHandle) {
+      setResizingHandle(null);
+      return;
+    }
+
+    if (movingArea) {
+      setMovingArea(null);
+      return;
+    }
+
     if (!isDrawing || drawingMode === "poly") return;
     
     if (creationMethod === "drag") {
       const { x, y } = getCoordinates(e);
       completeShape(x, y);
     }
+  };
+
+  const handleResizeMouseDown = (e: React.MouseEvent, id: string, index: number) => {
+    e.stopPropagation();
+    setResizingHandle({ id, index });
+  };
+
+  const handleAreaMouseDown = (e: React.MouseEvent, area: MapArea) => {
+    e.stopPropagation();
+    setSelectedId(area.id);
+    const { x, y } = getCoordinates(e);
+    setMovingArea({
+      id: area.id,
+      startX: x,
+      startY: y,
+      initialCoords: [...area.coords]
+    });
   };
 
   const completeShape = (endX: number, endY: number) => {
@@ -231,6 +313,50 @@ export default function ImageMapPage() {
     document.body.removeChild(element);
   };
 
+  const getAreaCenter = (area: MapArea) => {
+    if (area.type === "rect") {
+      return {
+        x: (area.coords[0] + area.coords[2]) / 2,
+        y: (area.coords[1] + area.coords[3]) / 2
+      };
+    } else if (area.type === "circle") {
+      return { x: area.coords[0], y: area.coords[1] };
+    } else if (area.type === "poly") {
+      let sumX = 0, sumY = 0;
+      for (let i = 0; i < area.coords.length; i += 2) {
+        sumX += area.coords[i];
+        sumY += area.coords[i + 1];
+      }
+      return {
+        x: sumX / (area.coords.length / 2),
+        y: sumY / (area.coords.length / 2)
+      };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    
+    const newAreas = [...areas];
+    const item = newAreas.splice(draggedIndex, 1)[0];
+    newAreas.splice(index, 0, item);
+    
+    setAreas(newAreas);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
   return (
     <>
       <PageHeader 
@@ -241,6 +367,18 @@ export default function ImageMapPage() {
       <div className="flex flex-col lg:flex-row gap-6 lg:max-h-[calc(100vh-250px)]">
         {/* Left Toolbar */}
         <div className="w-full lg:w-20 flex lg:flex-col gap-3 p-3 glass-card bg-white/40 shadow-xl self-start sticky top-0 z-10">
+          <button 
+            onClick={() => { setDrawingMode("select"); setTempPolyPoints([]); }}
+            className={cn(
+              "flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all duration-300",
+              drawingMode === "select" ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner" : "text-zinc-400 hover:bg-zinc-100/50"
+            )}
+            title="선택 및 이동"
+          >
+            <MousePointer2 className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase">Select</span>
+          </button>
+
           <button 
             onClick={() => { setDrawingMode("rect"); setTempPolyPoints([]); }}
             className={cn(
@@ -375,48 +513,126 @@ export default function ImageMapPage() {
                   />
                   <svg 
                     ref={svgRef}
-                    className="absolute inset-0 w-full h-full pointer-events-auto cursor-crosshair"
+                    className={cn(
+                      "absolute inset-0 w-full h-full pointer-events-auto transition-all",
+                      drawingMode === "select" ? "cursor-default" : "cursor-crosshair"
+                    )}
                     viewBox={imgRef.current ? `0 0 ${imgRef.current.naturalWidth} ${imgRef.current.naturalHeight}` : "0 0 100 100"}
                   >
-                    {areas.map(area => (
-                      <g key={area.id} className="group/area cursor-pointer">
-                        {area.type === "rect" && (
-                          <rect
-                            x={area.coords[0]}
-                            y={area.coords[1]}
-                            width={area.coords[2] - area.coords[0]}
-                            height={area.coords[3] - area.coords[1]}
-                            className={cn(
-                              "transition-all",
-                              selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                    {areas.map((area, index) => {
+                      const center = getAreaCenter(area);
+                      return (
+                        <g key={area.id} className="group/area cursor-pointer">
+                          {area.type === "rect" && (
+                            <rect
+                              x={area.coords[0]}
+                              y={area.coords[1]}
+                              width={area.coords[2] - area.coords[0]}
+                              height={area.coords[3] - area.coords[1]}
+                              className={cn(
+                                "transition-all cursor-move",
+                                selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                              )}
+                              onMouseDown={(e) => handleAreaMouseDown(e, area)}
+                              onContextMenu={(e) => handleContextMenu(e, area.id)}
+                            />
+                          )}
+                          {area.type === "circle" && (
+                            <circle
+                              cx={area.coords[0]}
+                              cy={area.coords[1]}
+                              r={area.coords[2]}
+                              className={cn(
+                                "transition-all cursor-move",
+                                selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                              )}
+                              onMouseDown={(e) => handleAreaMouseDown(e, area)}
+                              onContextMenu={(e) => handleContextMenu(e, area.id)}
+                            />
+                          )}
+                          {area.type === "poly" && (
+                            <polygon
+                              points={area.coords.join(",")}
+                              className={cn(
+                                "transition-all cursor-move",
+                                selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                              )}
+                              onMouseDown={(e) => handleAreaMouseDown(e, area)}
+                              onContextMenu={(e) => handleContextMenu(e, area.id)}
+                            />
+                          )}
+
+                          {/* Area Number Label */}
+                          <g className="pointer-events-none">
+                            <rect
+                              x={center.x - 12 / zoom}
+                              y={center.y - 12 / zoom}
+                              width={24 / zoom}
+                              height={24 / zoom}
+                              rx={12 / zoom}
+                              className={cn(
+                                "fill-white/80 stroke-zinc-200 stroke-[1px] shadow-sm transition-all",
+                                selectedId === area.id ? "fill-fuchsia-600 stroke-fuchsia-400" : ""
+                              )}
+                            />
+                            <text
+                              x={center.x}
+                              y={center.y}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className={cn(
+                                "font-black transition-all",
+                                selectedId === area.id ? "fill-white" : "fill-zinc-700"
+                              )}
+                              style={{ fontSize: `${12 / zoom}px` }}
+                            >
+                              #{index + 1}
+                            </text>
+                          </g>
+
+                          {/* Resize Handles */}
+                        {selectedId === area.id && (
+                          <g>
+                            {area.type === "rect" && [
+                              {x: area.coords[0], y: area.coords[1], cursor: "nw-resize"},
+                              {x: area.coords[2], y: area.coords[1], cursor: "ne-resize"},
+                              {x: area.coords[2], y: area.coords[3], cursor: "se-resize"},
+                              {x: area.coords[0], y: area.coords[3], cursor: "sw-resize"}
+                            ].map((pos, i) => (
+                              <circle
+                                key={i}
+                                cx={pos.x}
+                                cy={pos.y}
+                                r={8 / zoom}
+                                className={cn("fill-white stroke-fuchsia-500 stroke-2 pointer-events-auto shadow-sm")}
+                                style={{ cursor: pos.cursor }}
+                                onMouseDown={(e) => handleResizeMouseDown(e, area.id, i)}
+                              />
+                            ))}
+                            {area.type === "circle" && (
+                              <circle
+                                cx={area.coords[0] + area.coords[2]}
+                                cy={area.coords[1]}
+                                r={8 / zoom}
+                                className="fill-white stroke-fuchsia-500 stroke-2 cursor-ew-resize pointer-events-auto"
+                                onMouseDown={(e) => handleResizeMouseDown(e, area.id, 0)}
+                              />
                             )}
-                            onClick={(e) => { e.stopPropagation(); setSelectedId(area.id); }}
-                          />
-                        )}
-                        {area.type === "circle" && (
-                          <circle
-                            cx={area.coords[0]}
-                            cy={area.coords[1]}
-                            r={area.coords[2]}
-                            className={cn(
-                              "transition-all",
-                              selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
-                            )}
-                            onClick={(e) => { e.stopPropagation(); setSelectedId(area.id); }}
-                          />
-                        )}
-                        {area.type === "poly" && (
-                          <polygon
-                            points={area.coords.join(",")}
-                            className={cn(
-                              "transition-all",
-                              selectedId === area.id ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]" : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
-                            )}
-                            onClick={(e) => { e.stopPropagation(); setSelectedId(area.id); }}
-                          />
+                            {area.type === "poly" && Array.from({length: area.coords.length / 2}).map((_, i) => (
+                              <circle
+                                key={i}
+                                cx={area.coords[i*2]}
+                                cy={area.coords[i*2+1]}
+                                r={8 / zoom}
+                                className="fill-white stroke-fuchsia-500 stroke-2 cursor-move pointer-events-auto"
+                                onMouseDown={(e) => handleResizeMouseDown(e, area.id, i)}
+                              />
+                            ))}
+                          </g>
                         )}
                       </g>
-                    ))}
+                    );
+                  })}
                     
                     {/* Poly temporary points */}
                     {drawingMode === "poly" && tempPolyPoints.length > 0 && (
@@ -512,51 +728,88 @@ export default function ImageMapPage() {
             {selectedId ? (
               <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-2">
                 {areas.filter(a => a.id === selectedId).map(area => (
-                  <div key={area.id} className="space-y-5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black px-2 py-0.5 bg-fuchsia-100 text-fuchsia-600 rounded uppercase">Shape: {area.type}</span>
-                      <button onClick={() => setSelectedId(null)} className="text-zinc-300 hover:text-zinc-600"><X className="w-4 h-4" /></button>
+                  <div key={area.id} className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-zinc-50 pb-2">
+                      <h3 className="text-lg font-bold text-zinc-800">영역 속성</h3>
+                      <button onClick={() => setSelectedId(null)} className="text-zinc-300 hover:text-zinc-600"><X className="w-5 h-5" /></button>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">링크 주소</label>
+                      <label className="text-sm font-semibold text-zinc-600">href (링크 URL)</label>
                       <input 
                         type="text" 
                         value={area.href}
                         onChange={(e) => updateArea(area.id, { href: e.target.value })}
-                        className="w-full px-4 py-3 bg-fuchsia-50/30 border border-fuchsia-100 rounded-xl focus:border-fuchsia-500 outline-none text-sm font-medium"
+                        className="w-full px-4 py-2.5 bg-zinc-50/50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none text-sm font-medium text-zinc-700 transition-all"
+                        placeholder="https://example.com"
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">대체 텍스트</label>
-                        <input 
-                          type="text" 
-                          value={area.alt}
-                          onChange={(e) => updateArea(area.id, { alt: e.target.value })}
-                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">대상 타겟</label>
-                        <select 
-                          value={area.target}
-                          onChange={(e) => updateArea(area.id, { target: e.target.value as any })}
-                          className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-bold"
-                        >
-                          <option value="_blank">New Tab</option>
-                          <option value="_self">Current</option>
-                        </select>
-                      </div>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-zinc-600">alt</label>
+                      <input 
+                        type="text" 
+                        value={area.alt}
+                        onChange={(e) => updateArea(area.id, { alt: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-zinc-50/50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none text-sm font-medium text-zinc-700 transition-all"
+                        placeholder="대체 텍스트"
+                      />
                     </div>
 
-                    <button 
-                      onClick={() => deleteArea(area.id)}
-                      className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-rose-100 bg-rose-50/30 text-rose-500 hover:bg-rose-50 transition-all font-black uppercase text-xs tracking-widest"
-                    >
-                      <Trash2 className="w-4 h-4" /> 영역 삭제
-                    </button>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-zinc-600">title (툴팁)</label>
+                      <input 
+                        type="text" 
+                        value={area.title}
+                        onChange={(e) => updateArea(area.id, { title: e.target.value })}
+                        className="w-full px-4 py-2.5 bg-zinc-50/50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none text-sm font-medium text-zinc-700 transition-all"
+                        placeholder="마우스오버 툴팁"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-zinc-600">target</label>
+                      <select 
+                        value={area.target}
+                        onChange={(e) => updateArea(area.id, { target: e.target.value as any })}
+                        className="w-full px-4 py-2.5 bg-zinc-50/50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none text-sm font-medium text-zinc-700 transition-all appearance-none cursor-pointer"
+                      >
+                        <option value="_self">없음</option>
+                        <option value="_blank">새 창 (_blank)</option>
+                        <option value="_parent">부모 창 (_parent)</option>
+                        <option value="_top">최상위 창 (_top)</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-zinc-600">coords (좌표)</label>
+                      <input 
+                        type="text" 
+                        value={area.coords.join(",")}
+                        onChange={(e) => {
+                          const newCoords = e.target.value.split(",").map(v => parseInt(v.trim()) || 0);
+                          updateArea(area.id, { coords: newCoords });
+                        }}
+                        className="w-full px-4 py-2.5 bg-zinc-50/50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none text-sm font-medium text-zinc-700 transition-all"
+                        placeholder="예: 10,20,100,80"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2 pt-2">
+                      <button 
+                        onClick={() => setSelectedId(null)}
+                        className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95"
+                      >
+                        속성 적용
+                      </button>
+                      
+                      <button 
+                        onClick={() => deleteArea(area.id)}
+                        className="w-full py-3 bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 rounded-xl font-bold text-xs uppercase tracking-widest transition-all"
+                      >
+                        영역 삭제
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -576,21 +829,32 @@ export default function ImageMapPage() {
               {areas.map((area, index) => (
                 <div 
                   key={area.id}
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
                   onClick={() => setSelectedId(area.id)}
                   className={cn(
-                    "group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all",
-                    selectedId === area.id ? "bg-fuchsia-500 shadow-lg scale-[1.02]" : "bg-white/5 hover:bg-white/10"
+                    "group flex items-center justify-between p-3 rounded-xl cursor-grab active:cursor-grabbing transition-all",
+                    selectedId === area.id ? "bg-fuchsia-500 shadow-lg scale-[1.02]" : "bg-white/5 hover:bg-white/10",
+                    draggedIndex === index ? "opacity-30 border-2 border-dashed border-fuchsia-400" : ""
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black", selectedId === area.id ? "bg-white text-fuchsia-600" : "bg-zinc-800 text-zinc-500")}>
-                      {index + 1}
+                      #{index + 1}
                     </div>
                     <span className={cn("text-xs font-bold", selectedId === area.id ? "text-white" : "text-zinc-300")}>
-                      {area.type.toUpperCase()}: {area.title}
+                      {area.type.toUpperCase()}: {area.href.length > 20 ? area.href.substring(0, 20) + "..." : area.href || "No link"}
                     </span>
                   </div>
-                  <ChevronRight className={cn("w-4 h-4", selectedId === area.id ? "text-white" : "text-zinc-600")} />
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-col gap-0.5 opacity-30 group-hover:opacity-100 transition-opacity">
+                      <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />
+                      <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />
+                      <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -659,6 +923,149 @@ export default function ImageMapPage() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {/* Context Menu */}
+      {contextMenu && (
+        <div 
+          className="fixed z-[101] bg-white border border-zinc-200 shadow-xl rounded-lg py-1.5 min-w-[120px] animate-in fade-in zoom-in duration-100"
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button 
+            onClick={() => {
+              setEditingAreaId(contextMenu.areaId);
+              setIsPropertyModalOpen(true);
+              setContextMenu(null);
+            }}
+            className="w-full text-left px-4 py-2 hover:bg-fuchsia-50 text-zinc-700 text-sm font-bold transition-colors flex items-center gap-2"
+          >
+            <Settings2 className="w-4 h-4 text-fuchsia-500" />
+            속성 편집
+          </button>
+          <div className="h-px bg-zinc-100 my-1.5" />
+          <button 
+            onClick={() => {
+              deleteArea(contextMenu.areaId);
+              setContextMenu(null);
+            }}
+            className="w-full text-left px-4 py-2 hover:bg-rose-50 text-rose-500 text-sm font-bold transition-colors flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            영역 삭제
+          </button>
+        </div>
+      )}
+
+      {/* Property Edit Modal (Image-style Popup) */}
+      {isPropertyModalOpen && editingAreaId && (
+        <div className="fixed inset-0 z-[102] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={() => setIsPropertyModalOpen(false)} />
+          {areas.filter(a => a.id === editingAreaId).map(area => (
+            <div key={area.id} className="relative w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 animate-in zoom-in-95 duration-200">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 bg-zinc-50/50">
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <div className="flex flex-col gap-0.5 opacity-50">
+                    <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />
+                    <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />
+                    <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />
+                  </div>
+                  <span className="text-sm font-bold uppercase tracking-tight text-zinc-800">
+                    #{areas.indexOf(area) + 1} {area.type.toUpperCase()} 속성
+                  </span>
+                </div>
+                <button 
+                  onClick={() => setIsPropertyModalOpen(false)}
+                  className="p-1 hover:bg-zinc-200 rounded-lg transition-colors text-zinc-400"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-5 space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-zinc-500">href (링크 URL)</label>
+                  <input 
+                    type="text" 
+                    value={area.href}
+                    onChange={(e) => updateArea(area.id, { href: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm text-zinc-800 transition-all placeholder:text-zinc-400"
+                    placeholder="https://example.com"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-zinc-500">alt</label>
+                  <input 
+                    type="text" 
+                    value={area.alt}
+                    onChange={(e) => updateArea(area.id, { alt: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm text-zinc-800 transition-all placeholder:text-zinc-400"
+                    placeholder="대체 텍스트"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-zinc-500">title (툴팁)</label>
+                  <input 
+                    type="text" 
+                    value={area.title}
+                    onChange={(e) => updateArea(area.id, { title: e.target.value })}
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm text-zinc-800 transition-all placeholder:text-zinc-400"
+                    placeholder="마우스오버 툴팁"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-zinc-500">target</label>
+                  <select 
+                    value={area.target}
+                    onChange={(e) => updateArea(area.id, { target: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm text-zinc-800 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="_self">없음</option>
+                    <option value="_blank">_blank (새 탭)</option>
+                    <option value="_parent">_parent (부모 창)</option>
+                    <option value="_top">_top (최상위 창)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-zinc-500">coords (좌표)</label>
+                  <input 
+                    type="text" 
+                    value={area.coords.join(",")}
+                    onChange={(e) => {
+                      const newCoords = e.target.value.split(",").map(v => parseInt(v.trim()) || 0);
+                      updateArea(area.id, { coords: newCoords });
+                    }}
+                    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none font-mono text-sm text-zinc-800 transition-all"
+                  />
+                </div>
+
+                {/* Modal Footer Buttons */}
+                <div className="flex gap-3 pt-2">
+                  <button 
+                    onClick={() => setIsPropertyModalOpen(false)}
+                    className="flex-1 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
+                  >
+                    ✓ 적용
+                  </button>
+                  <button 
+                    onClick={() => {
+                      deleteArea(area.id);
+                      setIsPropertyModalOpen(false);
+                    }}
+                    className="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-rose-500/10 transition-all flex items-center justify-center gap-2"
+                  >
+                    🗑 삭제
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </>
