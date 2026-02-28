@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils"; // Assumes you have a standard cn utility
 
 interface AngleDialProps {
@@ -11,21 +11,24 @@ export function AngleDial({ angle, onChange, className }: AngleDialProps) {
     const dialRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
 
-    const calculateAngle = (clientX: number, clientY: number) => {
-        if (!dialRef.current) return;
-        const rect = dialRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+    const calculateAngle = useCallback(
+        (clientX: number, clientY: number) => {
+            if (!dialRef.current) return;
+            const rect = dialRef.current.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
 
-        const dx = clientX - centerX;
-        const dy = clientY - centerY;
+            const dx = clientX - centerX;
+            const dy = clientY - centerY;
 
-        // Calculate angle in degrees, offset so 0 is top
-        let newAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-        if (newAngle < 0) newAngle += 360;
+            // Calculate angle in degrees, offset so 0 is top
+            let newAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            if (newAngle < 0) newAngle += 360;
 
-        onChange(Math.round(newAngle));
-    };
+            onChange(Math.round(newAngle));
+        },
+        [onChange]
+    );
 
     const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
         e.preventDefault(); // Prevent text selection
@@ -51,7 +54,7 @@ export function AngleDial({ angle, onChange, className }: AngleDialProps) {
             window.removeEventListener("pointermove", handlePointerMove);
             window.removeEventListener("pointerup", handlePointerUp);
         };
-    }, [isDragging]);
+    }, [isDragging, calculateAngle]);
 
     return (
         <div className={cn("flex items-center gap-3", className)}>

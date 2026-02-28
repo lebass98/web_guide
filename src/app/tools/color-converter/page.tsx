@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Copy } from "lucide-react";
 
@@ -12,13 +12,13 @@ export default function ColorConverterPage() {
 
     // Extremely basic conversions for MVP
     const hexToRgb = (hex: string) => {
-        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result
             ? {
-                  r: parseInt(result[1], 16),
-                  g: parseInt(result[2], 16),
-                  b: parseInt(result[3], 16),
-              }
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16),
+            }
             : null;
     };
 
@@ -28,9 +28,9 @@ export default function ColorConverterPage() {
         b /= 255;
         const max = Math.max(r, g, b),
             min = Math.min(r, g, b);
+        const l = (max + min) / 2;
         let h = 0,
-            s = 0,
-            l = (max + min) / 2;
+            s = 0;
         if (max !== min) {
             const d = max - min;
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);

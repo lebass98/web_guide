@@ -1,0 +1,42 @@
+
+> web-tools-app@0.1.0 lint
+> eslint
+
+
+I:\work\wordNcode\React\web_guide\src\app\tools\base64\page.tsx
+  29:18  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+I:\work\wordNcode\React\web_guide\src\app\tools\css-gradient\page.tsx
+  3:20  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+  5:16  warning  'Plus' is defined but never used       @typescript-eslint/no-unused-vars
+  5:30  warning  'Palette' is defined but never used    @typescript-eslint/no-unused-vars
+
+I:\work\wordNcode\React\web_guide\src\app\tools\gradient-backgrounds\page.tsx
+  5:16  warning  'Plus' is defined but never used  @typescript-eslint/no-unused-vars
+  6:10  warning  'cn' is defined but never used    @typescript-eslint/no-unused-vars
+
+I:\work\wordNcode\React\web_guide\src\app\tools\html-chars\page.tsx
+  18:18  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+I:\work\wordNcode\React\web_guide\src\app\tools\image-map\page.tsx
+   17:5   warning  'ChevronRight' is defined but never used                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   18:5   warning  'Type' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  610:37  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+I:\work\wordNcode\React\web_guide\src\app\tools\url-encoder\page.tsx
+  29:18  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+I:\work\wordNcode\React\web_guide\src\components\layout\Sidebar.tsx
+   17:5   warning  'Settings' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   19:5   warning  'Sparkles' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   20:5   warning  'Layout' is defined but never used                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   21:5   warning  'Monitor' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+  116:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+I:\work\wordNcode\React\web_guide\src\components\layout\TopBar.tsx
+  18:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  22:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  26:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+??19 problems (0 errors, 19 warnings)
+
