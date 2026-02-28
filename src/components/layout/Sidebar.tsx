@@ -34,7 +34,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     const toolItems = [
         { icon: Home, label: "공구함 홈", href: "/" },
-        { icon: MousePointer2, label: "이미지 맵핑", href: "/tools/image-map" },
         { icon: Code, label: "HTML 특수문자", href: "/tools/html-chars" },
         { icon: FileText, label: "JSON 포매터", href: "/tools/json-formatter" },
         { icon: Palette, label: "색상 변환기", href: "/tools/color-converter" },
@@ -45,14 +44,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         { icon: Clock, label: "타임스탬프", href: "/tools/timestamp" },
         { icon: Paintbrush, label: "CSS 그라데이션", href: "/tools/css-gradient" },
         { icon: Layers, label: "그라데이션 배경", href: "/tools/gradient-backgrounds" },
+        { icon: MousePointer2, label: "이미지 맵핑", href: "/tools/image-map" },
     ];
 
-    const settingItems = [
-        { icon: Sparkles, label: "Premium", href: "/premium" },
-        { icon: Layout, label: "Layout", href: "/layout" },
-        { icon: Monitor, label: "Display", href: "/display" },
-        { icon: Settings, label: "Settings", href: "/settings" },
-    ];
+
 
     return (
         <>
@@ -66,10 +61,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             />
 
             <aside className={cn(
-                "fixed top-0 h-screen w-[80px] glass-sidebar flex flex-col items-center py-6 transition-transform duration-300 lg:translate-x-0 z-[100]",
+                "fixed top-0 h-screen w-[240px] glass-sidebar flex flex-col items-center py-6 transition-all duration-300 lg:translate-x-0 z-[100]",
                 "right-0 lg:right-auto lg:left-0",
-                isOpen ? "translate-x-0" : "translate-x-full",
-                "overflow-visible"
+                isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0",
+                "overflow-y-auto overflow-x-hidden"
             )}>
                 {/* Mobile Close Button */}
                 <button
@@ -98,27 +93,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                             href={item.href}
                             onClick={onClose}
                             className={cn(
-                                "p-3 rounded-xl transition-all duration-200 group relative",
+                                "p-3 rounded-xl transition-all duration-200 group relative flex items-center gap-4 w-[210px] justify-start px-4",
                                 pathname === item.href
-                                    ? "bg-gray-50 text-[#1c1c1c]"
-                                    : "text-gray-400 hover:text-[#1c1c1c] hover:bg-gray-50/50"
+                                    ? "bg-gray-100 text-[#1c1c1c] shadow-sm"
+                                    : "text-gray-400 hover:text-[#1c1c1c] hover:bg-gray-50"
                             )}
                         >
-                            <item.icon className="w-5 h-5 relative z-10" />
-
-                            {/* Premium Tooltip */}
-                            <div className={cn(
-                                "absolute top-1/2 -translate-y-1/2 px-3 py-1.5 bg-[#1c1c1c] text-white text-[11px] font-bold rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[110] shadow-xl pointer-events-none",
-                                "right-[calc(100%+12px)] translate-x-[8px] group-hover:translate-x-0 lg:right-auto lg:left-[calc(100%+12px)] lg:translate-x-[-8px] lg:group-hover:translate-x-0"
-                            )}>
-                                {item.label}
-                                {/* Tooltip Arrow */}
-                                <div className={cn(
-                                    "absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-[#1c1c1c] rotate-45",
-                                    "right-[-4px] lg:right-auto lg:left-[-4px]"
-                                )} />
-                            </div>
-
+                            <item.icon className="w-5 h-5 relative z-10 shrink-0" />
+                            <span className="text-sm font-semibold whitespace-nowrap transition-colors">{item.label}</span>
                             {pathname === item.href && (
                                 <div className="absolute left-0 lg:left-0 right-0 lg:right-auto top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] rounded-r-full lg:block hidden" />
                             )}
@@ -126,38 +108,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     ))}
                 </div>
 
-                {/* Settings Section */}
-                <div className="flex flex-col items-center gap-2 w-full mb-6 pt-4 border-t border-gray-50 overflow-visible">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 lg:block hidden">Settings</span>
-                    {settingItems.map((item, i) => (
-                        <Link
-                            key={i}
-                            href={item.href}
-                            onClick={onClose}
-                            className={cn(
-                                "p-3 rounded-xl transition-all duration-200 group relative",
-                                pathname === item.href
-                                    ? "bg-gray-50 text-[#1c1c1c]"
-                                    : "text-gray-400 hover:text-[#1c1c1c] hover:bg-gray-50/50"
-                            )}
-                        >
-                            <item.icon className="w-5 h-5 relative z-10" />
 
-                            {/* Premium Tooltip */}
-                            <div className={cn(
-                                "absolute top-1/2 -translate-y-1/2 px-3 py-1.5 bg-[#1c1c1c] text-white text-[11px] font-bold rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[110] shadow-xl pointer-events-none",
-                                "right-[calc(100%+12px)] translate-x-[8px] group-hover:translate-x-0 lg:right-auto lg:left-[calc(100%+12px)] lg:translate-x-[-8px] lg:group-hover:translate-x-0"
-                            )}>
-                                {item.label}
-                                {/* Tooltip Arrow */}
-                                <div className={cn(
-                                    "absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-[#1c1c1c] rotate-45",
-                                    "right-[-4px] lg:right-auto lg:left-[-4px]"
-                                )} />
-                            </div>
-                        </Link>
-                    ))}
-                </div>
 
                 {/* Account Section */}
                 <div className="mt-auto px-4 w-full flex flex-col items-center gap-4 pt-4 border-t border-gray-50">
