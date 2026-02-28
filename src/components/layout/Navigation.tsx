@@ -16,7 +16,7 @@ export function Navigation({ children }: NavigationProps) {
     return (
         <div className="flex w-full min-h-screen bg-transparent">
             {/* Sticky Header */}
-            <header className="fixed top-0 right-0 left-0 lg:left-[80px] h-16 glass-header z-30 flex items-center justify-between px-6 transition-all duration-300">
+            <header className="fixed top-0 right-0 left-0 lg:left-[240px] h-16 glass-header z-30 flex items-center justify-between px-6 transition-all duration-300">
                 {/* Header Title / Logo Link */}
                 <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <div className="lg:hidden w-8 h-8 flex items-center justify-center bg-gray-900/90 backdrop-blur-md rounded-lg shadow-lg">
@@ -41,7 +41,7 @@ export function Navigation({ children }: NavigationProps) {
 
             <div className={cn(
                 "flex-1 p-10 pt-28 min-w-0 transition-all duration-300",
-                "ml-0 lg:ml-[80px]"
+                "ml-0 lg:ml-[240px]"
             )}>
                 <main className="w-full">
                     {children}
