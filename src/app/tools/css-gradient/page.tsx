@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Copy, Plus, Trash2, Palette } from "lucide-react";
 import { AngleDial } from "@/components/ui/AngleDial";
@@ -41,27 +41,19 @@ export default function CssGradientPage() {
         { id: "2", color: "#f43f5e", position: 100, opacity: 100 },
     ]);
     const [activeStopId, setActiveStopId] = useState<string>("1");
-    const [cssCode, setCssCode] = useState("");
-
-    useEffect(() => {
-        generateCss();
-    }, [gradientType, angle, stops]);
-
-    const generateCss = () => {
+    const cssCode = useMemo(() => {
         // Sort stops by position to ensure valid CSS
         const sortedStops = [...stops].sort((a, b) => a.position - b.position);
         const stopsString = sortedStops
             .map((stop) => `${hexToRgba(stop.color, stop.opacity)} ${stop.position}%`)
             .join(", ");
 
-        let css = "";
         if (gradientType === "linear") {
-            css = `background: linear-gradient(${angle}deg, ${stopsString});`;
+            return `background: linear-gradient(${angle}deg, ${stopsString});`;
         } else {
-            css = `background: radial-gradient(circle, ${stopsString});`;
+            return `background: radial-gradient(circle, ${stopsString});`;
         }
-        setCssCode(css);
-    };
+    }, [gradientType, angle, stops]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(cssCode);

@@ -1,16 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Copy, Clock, CalendarDays } from "lucide-react";
 
 export default function TimestampPage() {
-    const [currentUnix, setCurrentUnix] = useState(Math.floor(Date.now() / 1000));
-    const [inputUnix, setInputUnix] = useState(currentUnix.toString());
-    const [localTime, setLocalTime] = useState("");
-    const [utcTime, setUtcTime] = useState("");
+    const [currentUnix, setCurrentUnix] = useState(0);
+    const [inputUnix, setInputUnix] = useState("0");
+    const { localTime, utcTime } = useMemo(() => {
+        const num = parseInt(inputUnix, 10);
+        if (!isNaN(num) && num > 0) {
+            // Assuming it's in seconds if it's less than 3000-01-01 in ms
+            const ms = num < 32503680000 ? num * 1000 : num;
+            const d = new Date(ms);
+            return {
+                localTime: d.toLocaleString("en-US", { dateStyle: "full", timeStyle: "long" }),
+                utcTime: d.toUTCString(),
+            };
+        }
+        return { localTime: "잘못된 타임스탬프", utcTime: "잘못된 타임스탬프" };
+    }, [inputUnix]);
 
     useEffect(() => {
+        const now = Math.floor(Date.now() / 1000);
+        setTimeout(() => {
+            setCurrentUnix(now);
+            setInputUnix(now.toString());
+        }, 0);
+
         const timer = setInterval(() => {
             setCurrentUnix(Math.floor(Date.now() / 1000));
         }, 1000);
@@ -18,22 +35,12 @@ export default function TimestampPage() {
     }, []);
 
     useEffect(() => {
-        updateTimes(inputUnix);
-    }, [inputUnix]);
-
-    const updateTimes = (unixStr: string) => {
-        const num = parseInt(unixStr, 10);
-        if (!isNaN(num) && num > 0) {
-            // Assuming it's in seconds if it's less than 3000-01-01 in ms
-            const ms = num < 32503680000 ? num * 1000 : num;
-            const d = new Date(ms);
-            setLocalTime(d.toLocaleString("en-US", { dateStyle: "full", timeStyle: "long" }));
-            setUtcTime(d.toUTCString());
-        } else {
-            setLocalTime("잘못된 타임스탬프");
-            setUtcTime("잘못된 타임스탬프");
+        if (inputUnix === "0") {
+            setTimeout(() => {
+                setInputUnix(Math.floor(Date.now() / 1000).toString());
+            }, 0);
         }
-    };
+    }, [inputUnix]);
 
     const setNow = () => {
         setInputUnix(Math.floor(Date.now() / 1000).toString());
@@ -50,9 +57,9 @@ export default function TimestampPage() {
                 description="Unix 타임스탬프를 읽기 쉬운 로컬 및 UTC 형식의 날짜로 변환하세요."
             />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                 <div className="flex flex-col gap-6">
-                    <div className="p-6 glass-card border border-fuchsia-500/20 shadow-[0_0_20px_rgba(217,70,239,0.1)] relative overflow-hidden">
+                    <div className="p-4 sm:p-6 glass-card border border-fuchsia-500/20 shadow-[0_0_20px_rgba(217,70,239,0.1)] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-3xl -mr-10 -mt-10 rounded-full" />
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-zinc-600 font-medium flex items-center gap-2">
@@ -60,13 +67,13 @@ export default function TimestampPage() {
                                 현재 Unix 시간
                             </span>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <span className="text-4xl font-mono font-bold tracking-tight text-white">
+                        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+                            <span className="text-2xl sm:text-4xl font-mono font-bold tracking-tight text-white break-all">
                                 {currentUnix}
                             </span>
                             <button
                                 onClick={() => handleCopy(currentUnix.toString())}
-                                className="p-2 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80"
+                                className="p-2 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80 shrink-0"
                                 title="현재 시간 복사"
                             >
                                 <Copy className="w-4 h-4 text-zinc-600" />
@@ -74,22 +81,22 @@ export default function TimestampPage() {
                         </div>
                     </div>
 
-                    <div className="glass-card p-6 flex flex-col gap-4">
+                    <div className="glass-card p-4 sm:p-6 flex flex-col gap-4">
                         <h3 className="text-lg font-semibold text-white mb-2">타임스탬프 변환</h3>
                         <div className="flex flex-col gap-2">
                             <label className="text-sm font-medium text-zinc-600">
                                 타임스탬프 (초 또는 밀리초)
                             </label>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                                 <input
                                     type="text"
                                     value={inputUnix}
                                     onChange={(e) => setInputUnix(e.target.value)}
-                                    className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-3 font-mono text-lg focus:outline-none focus:border-fuchsia-500 transition-colors"
+                                    className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-3 font-mono text-base sm:text-lg focus:outline-none focus:border-fuchsia-500 transition-colors w-full"
                                 />
                                 <button
                                     onClick={setNow}
-                                    className="px-6 py-3 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80 font-medium"
+                                    className="px-6 py-3 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80 font-medium whitespace-nowrap"
                                 >
                                     현재 시간
                                 </button>
@@ -99,7 +106,7 @@ export default function TimestampPage() {
                 </div>
 
                 <div className="flex flex-col gap-6">
-                    <div className="glass-card p-6 flex flex-col gap-8 h-full">
+                    <div className="glass-card p-4 sm:p-6 flex flex-col gap-6 sm:gap-8 h-full">
                         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                             <CalendarDays className="w-5 h-5 text-fuchsia-400" />
                             변환된 날짜/시간
@@ -117,7 +124,7 @@ export default function TimestampPage() {
                                     <Copy className="w-3 h-3" /> 복사
                                 </button>
                             </div>
-                            <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-medium text-lg leading-relaxed text-zinc-100">
+                            <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-medium text-base sm:text-lg leading-relaxed text-zinc-100 break-words">
                                 {localTime}
                             </div>
                         </div>
@@ -134,7 +141,7 @@ export default function TimestampPage() {
                                     <Copy className="w-3 h-3" /> 복사
                                 </button>
                             </div>
-                            <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-medium text-lg leading-relaxed text-zinc-100">
+                            <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-medium text-base sm:text-lg leading-relaxed text-zinc-100 break-words">
                                 {utcTime}
                             </div>
                         </div>

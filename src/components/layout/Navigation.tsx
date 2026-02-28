@@ -12,11 +12,17 @@ interface NavigationProps {
 
 export function Navigation({ children }: NavigationProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     return (
         <div className="flex w-full min-h-screen bg-transparent">
             {/* Sticky Header */}
-            <header className="fixed top-0 right-0 left-0 lg:left-[240px] h-16 glass-header z-30 flex items-center justify-between px-6 transition-all duration-300">
+            <header
+                className={cn(
+                    "fixed top-0 right-0 left-0 h-16 glass-header z-30 flex items-center justify-between px-6 transition-all duration-300",
+                    isSidebarCollapsed ? "lg:left-[80px]" : "lg:left-[240px]"
+                )}
+            >
                 {/* Header Title / Logo Link */}
                 <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <div className="lg:hidden w-8 h-8 flex items-center justify-center bg-gray-900/90 backdrop-blur-md rounded-lg shadow-lg">
@@ -36,13 +42,17 @@ export function Navigation({ children }: NavigationProps) {
 
             <Sidebar
                 isOpen={isSidebarOpen}
+                isCollapsed={isSidebarCollapsed}
                 onClose={() => setIsSidebarOpen(false)}
+                onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             />
 
-            <div className={cn(
-                "flex-1 p-10 pt-28 min-w-0 transition-all duration-300",
-                "ml-0 lg:ml-[240px]"
-            )}>
+            <div
+                className={cn(
+                    "flex-1 px-5 pt-28 pb-10 min-w-0 transition-all duration-300",
+                    isSidebarCollapsed ? "lg:ml-[80px]" : "lg:ml-[240px]"
+                )}
+            >
                 <main className="w-full">
                     {children}
                 </main>

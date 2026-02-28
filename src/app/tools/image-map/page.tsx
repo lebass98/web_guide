@@ -45,6 +45,7 @@ export default function ImageMapPage() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [drawingMode, setDrawingMode] = useState<ShapeType>("rect");
     const [creationMethod, setCreationMethod] = useState<CreationMethod>("drag");
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
     const [isDrawing, setIsDrawing] = useState(false);
     const [startPos, setStartPos] = useState({ x: 0, y: 0 });
@@ -612,6 +613,13 @@ export default function ImageMapPage() {
                                         alt="Editor Workspace"
                                         className="max-w-none select-none pointer-events-none"
                                         draggable={false}
+                                        onLoad={(e) => {
+                                            const img = e.currentTarget;
+                                            setDimensions({
+                                                width: img.naturalWidth,
+                                                height: img.naturalHeight,
+                                            });
+                                        }}
                                     />
                                     <svg
                                         ref={svgRef}
@@ -622,8 +630,8 @@ export default function ImageMapPage() {
                                                 : "cursor-crosshair"
                                         )}
                                         viewBox={
-                                            imgRef.current
-                                                ? `0 0 ${imgRef.current.naturalWidth} ${imgRef.current.naturalHeight}`
+                                            dimensions.width > 0
+                                                ? `0 0 ${dimensions.width} ${dimensions.height}`
                                                 : "0 0 100 100"
                                         }
                                     >
@@ -1000,7 +1008,7 @@ export default function ImageMapPage() {
                                                     value={area.target}
                                                     onChange={(e) =>
                                                         updateArea(area.id, {
-                                                            target: e.target.value as any,
+                                                            target: e.target.value as "_blank" | "_self" | "_parent" | "_top",
                                                         })
                                                     }
                                                     className="w-full px-4 py-2.5 bg-zinc-50/50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 outline-none text-sm font-medium text-zinc-700 transition-all appearance-none cursor-pointer"
@@ -1334,7 +1342,7 @@ export default function ImageMapPage() {
                                             value={area.target}
                                             onChange={(e) =>
                                                 updateArea(area.id, {
-                                                    target: e.target.value as any,
+                                                    target: e.target.value as "_blank" | "_self" | "_parent" | "_top",
                                                 })
                                             }
                                             className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm text-zinc-800 transition-all appearance-none cursor-pointer"

@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function Home() {
-    const tools = [
+    const tools: Tool[] = [
         {
             title: "HTML 특수문자 변환",
             desc: "HTML 엔티티를 쉽게 제거하거나 변환하세요.",
@@ -121,7 +121,15 @@ export default function Home() {
     );
 }
 
-function ToolCard({ tool }: { tool: any }) {
+interface Tool {
+    title: string;
+    desc: string;
+    href: string;
+    icon: React.ElementType;
+    color: string;
+}
+
+function ToolCard({ tool }: { tool: Tool }) {
     const Icon = tool.icon;
 
     return (

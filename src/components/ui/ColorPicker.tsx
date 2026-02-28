@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { RgbaColorPicker, RgbaColor } from "react-colorful";
 import { cn } from "@/lib/utils";
 
@@ -43,11 +43,13 @@ interface ColorPickerProps {
 export function ColorPicker({ color, opacity, onChange, className }: ColorPickerProps) {
     const [internalColor, setInternalColor] = useState<RgbaColor>({ r: 255, g: 0, b: 0, a: 1 });
 
-    // Sync prop changes to internal state
-    useEffect(() => {
+    const [prevProps, setPrevProps] = useState({ color, opacity });
+
+    if (color !== prevProps.color || opacity !== prevProps.opacity) {
         const { r, g, b } = hexToRgb(color || "#000000");
         setInternalColor({ r, g, b, a: (opacity ?? 100) / 100 });
-    }, [color, opacity]);
+        setPrevProps({ color, opacity });
+    }
 
     const handlePickerChange = (newColor: RgbaColor) => {
         setInternalColor(newColor);
@@ -137,12 +139,12 @@ export function ColorPicker({ color, opacity, onChange, className }: ColorPicker
                                     field === "r"
                                         ? internalColor.r
                                         : field === "g"
-                                          ? internalColor.g
-                                          : field === "b"
-                                            ? internalColor.b
-                                            : Math.round(internalColor.a * 100)
+                                            ? internalColor.g
+                                            : field === "b"
+                                                ? internalColor.b
+                                                : Math.round(internalColor.a * 100)
                                 }
-                                onChange={(e) => handleRgbaChange(field as any, e.target.value)}
+                                onChange={(e) => handleRgbaChange(field as "r" | "g" | "b" | "a", e.target.value)}
                                 className="w-full h-10 bg-white border border-zinc-200 rounded text-sm text-center font-sans font-semibold text-zinc-700 focus:outline-none focus:border-zinc-400 shadow-sm hide-spin-buttons"
                             />
                         ))}

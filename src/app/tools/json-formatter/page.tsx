@@ -22,8 +22,9 @@ export default function JsonFormatterPage() {
             const parsed = JSON.parse(text);
             setOutput(JSON.stringify(parsed, null, 2));
             setError(null);
-        } catch (err: any) {
-            setError(err.message || "잘못된 JSON 형식");
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : "잘못된 JSON 형식";
+            setError(errorMessage);
             setOutput("");
         }
     };
