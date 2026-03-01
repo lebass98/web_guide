@@ -69,7 +69,10 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                 isCollapsed ? "lg:w-[80px]" : "lg:w-[240px]", // PC width
                 isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
             )}>
-                <aside className="w-full h-full glass-sidebar flex flex-col items-center py-6 overflow-y-auto overflow-x-hidden relative">
+                <aside className={cn(
+                    "w-full h-full glass-sidebar flex flex-col items-center py-6 relative transition-all duration-300",
+                    isCollapsed ? "overflow-y-visible overflow-x-visible" : "overflow-y-auto overflow-x-hidden"
+                )}>
                     {/* Mobile Close Button & Title */}
                     <div className="lg:hidden w-full px-6 mb-8 flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -120,7 +123,6 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                         ? "bg-gray-100 text-[#1c1c1c] shadow-sm"
                                         : "text-zinc-600 hover:text-[#1c1c1c] hover:bg-gray-50/50"
                                 )}
-                                title={isCollapsed ? item.label : ""}
                             >
                                 <item.icon className="w-5 h-5 relative z-10 shrink-0" />
                                 <span className={cn(
@@ -130,6 +132,16 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                 )}>
                                     {item.label}
                                 </span>
+
+                                {/* Custom Tooltip for Collapsed State */}
+                                {isCollapsed && (
+                                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900/95 backdrop-blur-md text-white text-[11px] font-bold rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-[999] shadow-2xl pointer-events-none border border-white/10 lg:block hidden">
+                                        {item.label}
+                                        {/* Tooltip Arrow */}
+                                        <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-gray-900/95 rotate-45 border-l border-b border-white/10" />
+                                    </div>
+                                )}
+
                                 {pathname === item.href && (
                                     <div className={cn(
                                         "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] rounded-r-full lg:block hidden",
