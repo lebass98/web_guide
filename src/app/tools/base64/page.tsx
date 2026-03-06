@@ -52,7 +52,7 @@ export default function Base64Page() {
                     className={cn(
                         "px-6 py-2 rounded-full text-sm font-medium transition-all",
                         mode === "encode"
-                            ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]"
+                            ? "bg-fuchsia-500/20 text-zinc-600 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]"
                             : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
                     )}
                 >
@@ -63,7 +63,7 @@ export default function Base64Page() {
                     className={cn(
                         "px-6 py-2 rounded-full text-sm font-medium transition-all",
                         mode === "decode"
-                            ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]"
+                            ? "bg-fuchsia-500/20 text-zinc-600 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]"
                             : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
                     )}
                 >
