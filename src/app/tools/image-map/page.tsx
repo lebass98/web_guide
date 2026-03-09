@@ -62,7 +62,6 @@ export default function ImageMapPage() {
         initialCoords: number[];
     } | null>(null);
 
-    const [viewMode, setViewMode] = useState<"edit" | "code">("edit");
     const [zoom, setZoom] = useState(1);
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; areaId: string } | null>(
         null
@@ -151,7 +150,7 @@ export default function ImageMapPage() {
     }, [tempPolyPoints, areas]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        if (!image || viewMode === "code") return;
+        if (!image) return;
         const { x, y } = getCoordinates(e);
 
         if (drawingMode === "select") {
@@ -481,24 +480,7 @@ export default function ImageMapPage() {
                     <div className="h-px w-full bg-zinc-200/50 my-1 hidden lg:block" />
 
                     <div className="lg:mt-auto flex lg:flex-col gap-3">
-                        <button
-                            onClick={() => setViewMode(viewMode === "edit" ? "code" : "edit")}
-                            className={cn(
-                                "relative flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-300 group",
-                                viewMode === "code"
-                                    ? "bg-fuchsia-100 text-fuchsia-600 shadow-inner"
-                                    : "text-zinc-400 hover:bg-zinc-100/50"
-                            )}
-                        >
-                            <CodeIcon className="w-6 h-6" />
-                            <span className="text-[11px] font-bold uppercase lg:hidden mt-1">
-                                코드
-                            </span>
-                            <div className="hidden lg:block absolute left-full ml-3 px-3 py-2 bg-zinc-900 text-white text-xs font-bold rounded-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 z-50">
-                                코드 보기
-                                <div className="absolute right-full top-1/2 -translate-y-1/2 border-8 border-transparent border-r-zinc-900" />
-                            </div>
-                        </button>
+
                         <button
                             onClick={() => {
                                 setImage(null);
@@ -598,299 +580,280 @@ export default function ImageMapPage() {
                     </div>
 
                     <div className="flex-1 glass-card overflow-auto relative min-h-[450px] flex justify-center items-start bg-zinc-800/10 p-8 checkerboard-pattern group/surface">
-                        {viewMode === "edit" ? (
-                            image ? (
-                                <div
-                                    className="relative transition-transform shadow-2xl bg-white my-8"
-                                    style={{ transform: `scale(${zoom})`, transformOrigin: "top center" }}
-                                    onMouseDown={handleMouseDown}
-                                    onMouseMove={handleMouseMove}
-                                    onMouseUp={handleMouseUp}
+                        {image ? (
+                            <div
+                                className="relative transition-transform shadow-2xl bg-white my-8"
+                                style={{ transform: `scale(${zoom})`, transformOrigin: "top center" }}
+                                onMouseDown={handleMouseDown}
+                                onMouseMove={handleMouseMove}
+                                onMouseUp={handleMouseUp}
+                            >
+                                <img
+                                    ref={imgRef}
+                                    src={image}
+                                    alt="Editor Workspace"
+                                    className="max-w-none select-none pointer-events-none"
+                                    draggable={false}
+                                    onLoad={(e) => {
+                                        const img = e.currentTarget;
+                                        setDimensions({
+                                            width: img.naturalWidth,
+                                            height: img.naturalHeight,
+                                        });
+                                    }}
+                                />
+                                <svg
+                                    ref={svgRef}
+                                    className={cn(
+                                        "absolute inset-0 w-full h-full pointer-events-auto transition-all",
+                                        drawingMode === "select"
+                                            ? "cursor-default"
+                                            : "cursor-crosshair"
+                                    )}
+                                    viewBox={
+                                        dimensions.width > 0
+                                            ? `0 0 ${dimensions.width} ${dimensions.height}`
+                                            : "0 0 100 100"
+                                    }
                                 >
-                                    <img
-                                        ref={imgRef}
-                                        src={image}
-                                        alt="Editor Workspace"
-                                        className="max-w-none select-none pointer-events-none"
-                                        draggable={false}
-                                        onLoad={(e) => {
-                                            const img = e.currentTarget;
-                                            setDimensions({
-                                                width: img.naturalWidth,
-                                                height: img.naturalHeight,
-                                            });
-                                        }}
-                                    />
-                                    <svg
-                                        ref={svgRef}
-                                        className={cn(
-                                            "absolute inset-0 w-full h-full pointer-events-auto transition-all",
-                                            drawingMode === "select"
-                                                ? "cursor-default"
-                                                : "cursor-crosshair"
-                                        )}
-                                        viewBox={
-                                            dimensions.width > 0
-                                                ? `0 0 ${dimensions.width} ${dimensions.height}`
-                                                : "0 0 100 100"
-                                        }
-                                    >
-                                        {areas.map((area, index) => {
-                                            const center = getAreaCenter(area);
-                                            return (
-                                                <g
-                                                    key={area.id}
-                                                    className="group/area cursor-pointer"
-                                                >
-                                                    {area.type === "rect" && (
-                                                        <rect
-                                                            x={area.coords[0]}
-                                                            y={area.coords[1]}
-                                                            width={area.coords[2] - area.coords[0]}
-                                                            height={area.coords[3] - area.coords[1]}
-                                                            className={cn(
-                                                                "transition-all cursor-move",
-                                                                selectedId === area.id
-                                                                    ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]"
-                                                                    : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
-                                                            )}
-                                                            onMouseDown={(e) =>
-                                                                handleAreaMouseDown(e, area)
-                                                            }
-                                                            onContextMenu={(e) =>
-                                                                handleContextMenu(e, area.id)
-                                                            }
-                                                        />
-                                                    )}
-                                                    {area.type === "circle" && (
-                                                        <circle
-                                                            cx={area.coords[0]}
-                                                            cy={area.coords[1]}
-                                                            r={area.coords[2]}
-                                                            className={cn(
-                                                                "transition-all cursor-move",
-                                                                selectedId === area.id
-                                                                    ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]"
-                                                                    : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
-                                                            )}
-                                                            onMouseDown={(e) =>
-                                                                handleAreaMouseDown(e, area)
-                                                            }
-                                                            onContextMenu={(e) =>
-                                                                handleContextMenu(e, area.id)
-                                                            }
-                                                        />
-                                                    )}
-                                                    {area.type === "poly" && (
-                                                        <polygon
-                                                            points={area.coords.join(",")}
-                                                            className={cn(
-                                                                "transition-all cursor-move",
-                                                                selectedId === area.id
-                                                                    ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]"
-                                                                    : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
-                                                            )}
-                                                            onMouseDown={(e) =>
-                                                                handleAreaMouseDown(e, area)
-                                                            }
-                                                            onContextMenu={(e) =>
-                                                                handleContextMenu(e, area.id)
-                                                            }
-                                                        />
-                                                    )}
+                                    {areas.map((area, index) => {
+                                        const center = getAreaCenter(area);
+                                        return (
+                                            <g
+                                                key={area.id}
+                                                className="group/area cursor-pointer"
+                                            >
+                                                {area.type === "rect" && (
+                                                    <rect
+                                                        x={area.coords[0]}
+                                                        y={area.coords[1]}
+                                                        width={area.coords[2] - area.coords[0]}
+                                                        height={area.coords[3] - area.coords[1]}
+                                                        className={cn(
+                                                            "transition-all cursor-move",
+                                                            selectedId === area.id
+                                                                ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]"
+                                                                : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                                                        )}
+                                                        onMouseDown={(e) =>
+                                                            handleAreaMouseDown(e, area)
+                                                        }
+                                                        onContextMenu={(e) =>
+                                                            handleContextMenu(e, area.id)
+                                                        }
+                                                    />
+                                                )}
+                                                {area.type === "circle" && (
+                                                    <circle
+                                                        cx={area.coords[0]}
+                                                        cy={area.coords[1]}
+                                                        r={area.coords[2]}
+                                                        className={cn(
+                                                            "transition-all cursor-move",
+                                                            selectedId === area.id
+                                                                ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]"
+                                                                : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                                                        )}
+                                                        onMouseDown={(e) =>
+                                                            handleAreaMouseDown(e, area)
+                                                        }
+                                                        onContextMenu={(e) =>
+                                                            handleContextMenu(e, area.id)
+                                                        }
+                                                    />
+                                                )}
+                                                {area.type === "poly" && (
+                                                    <polygon
+                                                        points={area.coords.join(",")}
+                                                        className={cn(
+                                                            "transition-all cursor-move",
+                                                            selectedId === area.id
+                                                                ? "fill-fuchsia-500/30 stroke-fuchsia-500 stroke-[4px]"
+                                                                : "fill-fuchsia-500/10 stroke-fuchsia-500/60 stroke-[2px] group-hover/area:fill-fuchsia-500/20"
+                                                        )}
+                                                        onMouseDown={(e) =>
+                                                            handleAreaMouseDown(e, area)
+                                                        }
+                                                        onContextMenu={(e) =>
+                                                            handleContextMenu(e, area.id)
+                                                        }
+                                                    />
+                                                )}
 
-                                                    {/* Area Number Label */}
-                                                    <g className="pointer-events-none">
-                                                        <rect
-                                                            x={center.x - 12 / zoom}
-                                                            y={center.y - 12 / zoom}
-                                                            width={24 / zoom}
-                                                            height={24 / zoom}
-                                                            rx={12 / zoom}
-                                                            className={cn(
-                                                                "fill-white/80 stroke-zinc-200 stroke-[1px] shadow-sm transition-all",
-                                                                selectedId === area.id
-                                                                    ? "fill-fuchsia-600 stroke-fuchsia-400"
-                                                                    : ""
-                                                            )}
-                                                        />
-                                                        <text
-                                                            x={center.x}
-                                                            y={center.y}
-                                                            textAnchor="middle"
-                                                            dominantBaseline="middle"
-                                                            className={cn(
-                                                                "font-bold transition-all",
-                                                                selectedId === area.id
-                                                                    ? "fill-white"
-                                                                    : "fill-zinc-700"
-                                                            )}
-                                                            style={{ fontSize: `${12 / zoom}px` }}
-                                                        >
-                                                            #{index + 1}
-                                                        </text>
-                                                    </g>
+                                                {/* Area Number Label */}
+                                                <g className="pointer-events-none">
+                                                    <rect
+                                                        x={center.x - 12 / zoom}
+                                                        y={center.y - 12 / zoom}
+                                                        width={24 / zoom}
+                                                        height={24 / zoom}
+                                                        rx={12 / zoom}
+                                                        className={cn(
+                                                            "fill-white/80 stroke-zinc-200 stroke-[1px] shadow-sm transition-all",
+                                                            selectedId === area.id
+                                                                ? "fill-fuchsia-600 stroke-fuchsia-400"
+                                                                : ""
+                                                        )}
+                                                    />
+                                                    <text
+                                                        x={center.x}
+                                                        y={center.y}
+                                                        textAnchor="middle"
+                                                        dominantBaseline="middle"
+                                                        className={cn(
+                                                            "font-bold transition-all",
+                                                            selectedId === area.id
+                                                                ? "fill-white"
+                                                                : "fill-zinc-700"
+                                                        )}
+                                                        style={{ fontSize: `${12 / zoom}px` }}
+                                                    >
+                                                        #{index + 1}
+                                                    </text>
+                                                </g>
 
-                                                    {/* Resize Handles */}
-                                                    {selectedId === area.id && (
-                                                        <g>
-                                                            {area.type === "rect" &&
-                                                                [
-                                                                    {
-                                                                        x: area.coords[0],
-                                                                        y: area.coords[1],
-                                                                        cursor: "nw-resize",
-                                                                    },
-                                                                    {
-                                                                        x: area.coords[2],
-                                                                        y: area.coords[1],
-                                                                        cursor: "ne-resize",
-                                                                    },
-                                                                    {
-                                                                        x: area.coords[2],
-                                                                        y: area.coords[3],
-                                                                        cursor: "se-resize",
-                                                                    },
-                                                                    {
-                                                                        x: area.coords[0],
-                                                                        y: area.coords[3],
-                                                                        cursor: "sw-resize",
-                                                                    },
-                                                                ].map((pos, i) => (
-                                                                    <circle
-                                                                        key={i}
-                                                                        cx={pos.x}
-                                                                        cy={pos.y}
-                                                                        r={8 / zoom}
-                                                                        className={cn(
-                                                                            "fill-white stroke-fuchsia-500 stroke-2 pointer-events-auto shadow-sm"
-                                                                        )}
-                                                                        style={{
-                                                                            cursor: pos.cursor,
-                                                                        }}
-                                                                        onMouseDown={(e) =>
-                                                                            handleResizeMouseDown(
-                                                                                e,
-                                                                                area.id,
-                                                                                i
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                ))}
-                                                            {area.type === "circle" && (
+                                                {/* Resize Handles */}
+                                                {selectedId === area.id && (
+                                                    <g>
+                                                        {area.type === "rect" &&
+                                                            [
+                                                                {
+                                                                    x: area.coords[0],
+                                                                    y: area.coords[1],
+                                                                    cursor: "nw-resize",
+                                                                },
+                                                                {
+                                                                    x: area.coords[2],
+                                                                    y: area.coords[1],
+                                                                    cursor: "ne-resize",
+                                                                },
+                                                                {
+                                                                    x: area.coords[2],
+                                                                    y: area.coords[3],
+                                                                    cursor: "se-resize",
+                                                                },
+                                                                {
+                                                                    x: area.coords[0],
+                                                                    y: area.coords[3],
+                                                                    cursor: "sw-resize",
+                                                                },
+                                                            ].map((pos, i) => (
                                                                 <circle
-                                                                    cx={
-                                                                        area.coords[0] +
-                                                                        area.coords[2]
-                                                                    }
-                                                                    cy={area.coords[1]}
+                                                                    key={i}
+                                                                    cx={pos.x}
+                                                                    cy={pos.y}
                                                                     r={8 / zoom}
-                                                                    className="fill-white stroke-fuchsia-500 stroke-2 cursor-ew-resize pointer-events-auto"
+                                                                    className={cn(
+                                                                        "fill-white stroke-fuchsia-500 stroke-2 pointer-events-auto shadow-sm"
+                                                                    )}
+                                                                    style={{
+                                                                        cursor: pos.cursor,
+                                                                    }}
                                                                     onMouseDown={(e) =>
                                                                         handleResizeMouseDown(
                                                                             e,
                                                                             area.id,
-                                                                            0
+                                                                            i
                                                                         )
                                                                     }
                                                                 />
-                                                            )}
-                                                            {area.type === "poly" &&
-                                                                Array.from({
-                                                                    length: area.coords.length / 2,
-                                                                }).map((_, i) => (
-                                                                    <circle
-                                                                        key={i}
-                                                                        cx={area.coords[i * 2]}
-                                                                        cy={area.coords[i * 2 + 1]}
-                                                                        r={8 / zoom}
-                                                                        className="fill-white stroke-fuchsia-500 stroke-2 cursor-move pointer-events-auto"
-                                                                        onMouseDown={(e) =>
-                                                                            handleResizeMouseDown(
-                                                                                e,
-                                                                                area.id,
-                                                                                i
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                ))}
-                                                        </g>
-                                                    )}
-                                                </g>
-                                            );
-                                        })}
-
-                                        {/* Poly temporary points */}
-                                        {drawingMode === "poly" && tempPolyPoints.length > 0 && (
-                                            <g>
-                                                <polyline
-                                                    points={[...tempPolyPoints, currentPos]
-                                                        .map((p) => `${p.x},${p.y}`)
-                                                        .join(" ")}
-                                                    className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[2px]"
-                                                    strokeDasharray="4,4"
-                                                />
-                                                {tempPolyPoints.map((p, i) => (
-                                                    <circle
-                                                        key={i}
-                                                        cx={p.x}
-                                                        cy={p.y}
-                                                        r={zoom > 1 ? 3 / zoom : 3}
-                                                        className="fill-fuchsia-600"
-                                                    />
-                                                ))}
-                                            </g>
-                                        )}
-
-                                        {/* Preview for dragging */}
-                                        {isDrawing && drawingMode === "rect" && (
-                                            <rect
-                                                x={Math.min(startPos.x, currentPos.x)}
-                                                y={Math.min(startPos.y, currentPos.y)}
-                                                width={Math.abs(currentPos.x - startPos.x)}
-                                                height={Math.abs(currentPos.y - startPos.y)}
-                                                className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[3px]"
-                                                strokeDasharray="8,8"
-                                            />
-                                        )}
-                                        {isDrawing && drawingMode === "circle" && (
-                                            <circle
-                                                cx={startPos.x}
-                                                cy={startPos.y}
-                                                r={Math.sqrt(
-                                                    Math.pow(currentPos.x - startPos.x, 2) +
-                                                    Math.pow(currentPos.y - startPos.y, 2)
+                                                            ))}
+                                                        {area.type === "circle" && (
+                                                            <circle
+                                                                cx={
+                                                                    area.coords[0] +
+                                                                    area.coords[2]
+                                                                }
+                                                                cy={area.coords[1]}
+                                                                r={8 / zoom}
+                                                                className="fill-white stroke-fuchsia-500 stroke-2 cursor-ew-resize pointer-events-auto"
+                                                                onMouseDown={(e) =>
+                                                                    handleResizeMouseDown(
+                                                                        e,
+                                                                        area.id,
+                                                                        0
+                                                                    )
+                                                                }
+                                                            />
+                                                        )}
+                                                        {area.type === "poly" &&
+                                                            Array.from({
+                                                                length: area.coords.length / 2,
+                                                            }).map((_, i) => (
+                                                                <circle
+                                                                    key={i}
+                                                                    cx={area.coords[i * 2]}
+                                                                    cy={area.coords[i * 2 + 1]}
+                                                                    r={8 / zoom}
+                                                                    className="fill-white stroke-fuchsia-500 stroke-2 cursor-move pointer-events-auto"
+                                                                    onMouseDown={(e) =>
+                                                                        handleResizeMouseDown(
+                                                                            e,
+                                                                            area.id,
+                                                                            i
+                                                                        )
+                                                                    }
+                                                                />
+                                                            ))}
+                                                    </g>
                                                 )}
-                                                className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[3px]"
-                                                strokeDasharray="8,8"
+                                            </g>
+                                        );
+                                    })}
+
+                                    {/* Poly temporary points */}
+                                    {drawingMode === "poly" && tempPolyPoints.length > 0 && (
+                                        <g>
+                                            <polyline
+                                                points={[...tempPolyPoints, currentPos]
+                                                    .map((p) => `${p.x},${p.y}`)
+                                                    .join(" ")}
+                                                className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[2px]"
+                                                strokeDasharray="4,4"
                                             />
-                                        )}
-                                    </svg>
-                                </div>
-                            ) : (
-                                <div className="text-zinc-400 flex flex-col items-center gap-6 animate-pulse">
-                                    <Upload className="w-16 h-16 opacity-20" />
-                                    <p className="font-bold text-center">
-                                        이미지를 업로드하거나 URL을 입력하세요
-                                    </p>
-                                </div>
-                            )
+                                            {tempPolyPoints.map((p, i) => (
+                                                <circle
+                                                    key={i}
+                                                    cx={p.x}
+                                                    cy={p.y}
+                                                    r={zoom > 1 ? 3 / zoom : 3}
+                                                    className="fill-fuchsia-600"
+                                                />
+                                            ))}
+                                        </g>
+                                    )}
+
+                                    {/* Preview for dragging */}
+                                    {isDrawing && drawingMode === "rect" && (
+                                        <rect
+                                            x={Math.min(startPos.x, currentPos.x)}
+                                            y={Math.min(startPos.y, currentPos.y)}
+                                            width={Math.abs(currentPos.x - startPos.x)}
+                                            height={Math.abs(currentPos.y - startPos.y)}
+                                            className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[3px]"
+                                            strokeDasharray="8,8"
+                                        />
+                                    )}
+                                    {isDrawing && drawingMode === "circle" && (
+                                        <circle
+                                            cx={startPos.x}
+                                            cy={startPos.y}
+                                            r={Math.sqrt(
+                                                Math.pow(currentPos.x - startPos.x, 2) +
+                                                Math.pow(currentPos.y - startPos.y, 2)
+                                            )}
+                                            className="fill-fuchsia-500/10 stroke-fuchsia-400 stroke-[3px]"
+                                            strokeDasharray="8,8"
+                                        />
+                                    )}
+                                </svg>
+                            </div>
                         ) : (
-                            <div className="w-full h-full p-0 flex flex-col bg-zinc-950 rounded-2xl overflow-hidden shadow-2xl">
-                                <div className="flex items-center justify-between p-4 bg-zinc-900">
-                                    <span className="text-sm font-mono font-bold text-zinc-500 uppercase tracking-widest">
-                                        HTML 결과 코드
-                                    </span>
-                                    <button
-                                        onClick={copyToClipboard}
-                                        className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-bold transition-all"
-                                    >
-                                        <Copy className="w-3.5 h-3.5" /> 코드 복사
-                                    </button>
-                                </div>
-                                <pre className="flex-1 p-8 font-mono text-sm overflow-auto text-fuchsia-400 selection:bg-fuchsia-500/30">
-                                    {generateCode()}
-                                </pre>
+                            <div className="text-zinc-400 flex flex-col items-center gap-6 animate-pulse">
+                                <Upload className="w-16 h-16 opacity-20" />
+                                <p className="font-bold text-center">
+                                    이미지를 업로드하거나 URL을 입력하세요
+                                </p>
                             </div>
                         )}
                     </div>
@@ -908,6 +871,33 @@ export default function ImageMapPage() {
                             </button>
                         </div>
                     )}
+
+                    {/* Real-time Code Preview Section (Moved here) */}
+                    <div className="mt-8 space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <h2 className="text-lg font-bold flex items-center gap-2 uppercase tracking-tight">
+                                <CodeIcon className="w-5 h-5 text-fuchsia-500" />
+                                실시간 HTML 결과 코드
+                            </h2>
+                            <button
+                                onClick={copyToClipboard}
+                                className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-black text-white rounded-xl text-xs font-bold shadow-lg transition-all active:scale-95 group"
+                            >
+                                <Copy className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> 
+                                코드 복사
+                            </button>
+                        </div>
+                        <div className="glass-card bg-zinc-950 rounded-2xl overflow-hidden shadow-2xl border border-white/5 relative">
+                            <div className="absolute top-3 right-4 flex gap-1.5 opacity-30">
+                                <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            </div>
+                            <pre className="p-6 font-mono text-xs overflow-auto text-fuchsia-400/90 selection:bg-fuchsia-500/30 leading-relaxed max-h-[400px] custom-scrollbar">
+                                {generateCode()}
+                            </pre>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Right Properties Panel */}
@@ -1096,7 +1086,7 @@ export default function ImageMapPage() {
                                     <div className="flex items-center gap-3">
                                         <div
                                             className={cn(
-                                                "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-bold",
+                                                "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-bold area-index-badge",
                                                 selectedId === area.id
                                                     ? "bg-white text-fuchsia-600"
                                                     : "bg-zinc-800 text-zinc-500"
@@ -1137,6 +1127,8 @@ export default function ImageMapPage() {
                 </div>
             </div>
 
+
+
             <style jsx global>{`
                 .checkerboard-pattern {
                     background-image:
@@ -1157,6 +1149,9 @@ export default function ImageMapPage() {
                 .custom-scrollbar::-webkit-scrollbar-thumb {
                     background: rgba(0, 0, 0, 0.1);
                     border-radius: 10px;
+                }
+                .area-index-badge {
+                    min-width: 3rem;
                 }
             `}</style>
 
