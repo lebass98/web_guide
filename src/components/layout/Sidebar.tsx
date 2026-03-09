@@ -2,29 +2,14 @@
 
 import Link from "next/link";
 import {
-    Home,
-    Code,
-    FileText,
-    Palette,
-    Type,
-    Binary,
-    Link as LinkIcon,
-    QrCode,
-    Clock,
-    Paintbrush,
-    Layers,
-    MousePointer2,
-    Settings,
-    Hexagon,
-    Sparkles,
-    Layout,
-    Monitor,
     X,
     ChevronLeft,
     ChevronRight,
+    Hexagon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { TOOL_ITEMS } from "@/lib/constants";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -35,21 +20,6 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: SidebarProps) {
     const pathname = usePathname();
-
-    const toolItems = [
-        { icon: Home, label: "공구함 홈", href: "/" },
-        { icon: Code, label: "HTML 특수문자", href: "/tools/html-chars" },
-        { icon: FileText, label: "JSON 포매터", href: "/tools/json-formatter" },
-        { icon: Palette, label: "색상 변환기", href: "/tools/color-converter" },
-        { icon: Type, label: "텍스트 변환기", href: "/tools/text-transformer" },
-        { icon: Binary, label: "Base64 변환기", href: "/tools/base64" },
-        { icon: LinkIcon, label: "URL 인코더", href: "/tools/url-encoder" },
-        { icon: QrCode, label: "QR 생성기", href: "/tools/qr-generator" },
-        { icon: Clock, label: "타임스탬프", href: "/tools/timestamp" },
-        { icon: Paintbrush, label: "CSS 그라데이션", href: "/tools/css-gradient" },
-        { icon: Layers, label: "그라데이션 배경", href: "/tools/gradient-backgrounds" },
-        { icon: MousePointer2, label: "이미지 맵핑", href: "/tools/image-map" },
-    ];
 
     return (
         <>
@@ -76,14 +46,14 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                     {/* Mobile Close Button & Title */}
                     <div className="lg:hidden w-full px-6 mb-8 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gray-900 rounded-lg shadow-lg">
-                                <span className="text-white font-bold text-[10px]">W</span>
+                            <div className="w-8 h-8 flex items-center justify-center bg-gray-900 dark:bg-white rounded-lg shadow-lg">
+                                <span className="text-white dark:text-gray-900 font-bold text-[10px]">W</span>
                             </div>
-                            <span className="text-sm font-bold text-gray-900 tracking-tight">WebTools</span>
+                            <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">WebTools</span>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 text-zinc-600 hover:text-[#1c1c1c] active:scale-90 transition-all rounded-xl hover:bg-gray-100"
+                            className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-[#1c1c1c] dark:hover:text-white active:scale-90 transition-all rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-800"
                         >
                             <X className="w-6 h-6" />
                         </button>
@@ -93,8 +63,8 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                     <div className="mb-10 lg:block hidden">
                         <Link href="/" onClick={onClose}>
                             <div className="relative w-10 h-10 flex items-center justify-center">
-                                <Hexagon className="w-10 h-10 text-[#1c1c1c] fill-[#1c1c1c]" />
-                                <span className="absolute text-white font-bold text-xs">W</span>
+                                <Hexagon className="w-10 h-10 text-[#1c1c1c] dark:text-white fill-[#1c1c1c] dark:fill-white" />
+                                <span className="absolute text-white dark:text-gray-900 font-bold text-xs">W</span>
                             </div>
                         </Link>
                     </div>
@@ -109,7 +79,7 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                         )}>
                             Tools
                         </span>
-                        {toolItems.map((item, i) => (
+                        {TOOL_ITEMS.map((item, i) => (
                             <Link
                                 key={i}
                                 href={item.href}
@@ -120,8 +90,8 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                     "w-full gap-4 px-4",
                                     isCollapsed ? "lg:w-12 lg:h-12 lg:justify-center lg:px-0" : "lg:w-full lg:gap-4 lg:px-4",
                                     pathname === item.href
-                                        ? "bg-gray-100 text-[#1c1c1c] shadow-sm"
-                                        : "text-zinc-600 hover:text-[#1c1c1c] hover:bg-gray-50/50"
+                                        ? "bg-gray-100 dark:bg-zinc-800 text-[#1c1c1c] dark:text-white shadow-sm"
+                                        : "text-zinc-600 dark:text-zinc-400 hover:text-[#1c1c1c] dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-zinc-800/50"
                                 )}
                             >
                                 <item.icon className="w-5 h-5 relative z-10 shrink-0" />
@@ -135,16 +105,16 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
 
                                 {/* Custom Tooltip for Collapsed State */}
                                 {isCollapsed && (
-                                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900/95 backdrop-blur-md text-white text-[11px] font-bold rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-[999] shadow-2xl pointer-events-none border border-white/10 lg:block hidden">
+                                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-gray-900 text-[11px] font-bold rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-[999] shadow-2xl pointer-events-none border border-white/10 dark:border-black/10 lg:block hidden">
                                         {item.label}
                                         {/* Tooltip Arrow */}
-                                        <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-gray-900/95 rotate-45 border-l border-b border-white/10" />
+                                        <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-gray-900/95 dark:bg-white/95 rotate-45 border-l border-b border-white/10 dark:border-black/10" />
                                     </div>
                                 )}
 
                                 {pathname === item.href && (
                                     <div className={cn(
-                                        "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] rounded-r-full lg:block hidden",
+                                        "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] dark:bg-white rounded-r-full lg:block hidden",
                                         isCollapsed && "left-0"
                                     )} />
                                 )}
@@ -156,13 +126,13 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                 {/* Collapse Toggle Button (PC) */}
                 <button
                     onClick={onToggleCollapse}
-                    className="absolute top-1/2 -translate-y-1/2 -right-4 hidden lg:flex w-8 h-8 items-center justify-center bg-white border border-gray-100 rounded-full shadow-md hover:shadow-lg hover:scale-110 active:scale-95 transition-all z-[110] group/collapse"
+                    className="absolute top-1/2 -translate-y-1/2 -right-4 hidden lg:flex w-8 h-8 items-center justify-center bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 rounded-full shadow-md hover:shadow-lg hover:scale-110 active:scale-95 transition-all z-[110] group/collapse"
                     title={isCollapsed ? "메뉴 펼치기" : "메뉴 접기"}
                 >
                     {isCollapsed ? (
-                        <ChevronRight className="w-4 h-4 text-gray-800 transition-transform group-hover/collapse:translate-x-0.5" />
+                        <ChevronRight className="w-4 h-4 text-gray-800 dark:text-zinc-200 transition-transform group-hover/collapse:translate-x-0.5" />
                     ) : (
-                        <ChevronLeft className="w-4 h-4 text-gray-800 transition-transform group-hover/collapse:-translate-x-0.5" />
+                        <ChevronLeft className="w-4 h-4 text-gray-800 dark:text-zinc-200 transition-transform group-hover/collapse:-translate-x-0.5" />
                     )}
                 </button>
             </div>

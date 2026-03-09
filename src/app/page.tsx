@@ -102,10 +102,10 @@ export default function Home() {
         <div className="space-y-10">
             {/* Header Section */}
             <section>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2 mb-2">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
                     WebTools 프리미엄 공구함 👋
                 </h1>
-                <p className="text-sm text-gray-400 max-w-2xl font-medium">
+                <p className="text-sm text-gray-400 dark:text-zinc-500 max-w-2xl font-medium">
                     웹개발과 디자인을 위한 가장 강력하고 아름다운 유틸리티 모음입니다.
                     모든 도구는 클라이언트 사이드에서 안전하게 작동합니다.
                 </p>
@@ -139,20 +139,20 @@ function ToolCard({ tool }: { tool: Tool }) {
         >
             <div className="flex items-center justify-between mb-6">
                 <div className={cn(
-                    "w-14 h-14 rounded-[20px] flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] backdrop-blur-md",
+                    "w-14 h-14 rounded-[20px] flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-md",
                     getColorClasses(tool.color)
                 )}>
                     <Icon className="w-7 h-7" />
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center rounded-full glass border border-white/40 text-gray-400 group-hover:text-gray-900 transition-all duration-300">
+                <div className="w-10 h-10 flex items-center justify-center rounded-full glass border border-white/40 text-gray-400 dark:text-zinc-500 group-hover:text-gray-900 dark:group-hover:text-white transition-all duration-300">
                     <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
                 </div>
             </div>
             <div>
-                <h3 className="text-[19px] font-bold text-gray-900 mb-2 tracking-tight">
+                <h3 className="text-[19px] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
                     {tool.title}
                 </h3>
-                <p className="text-[13px] text-gray-400 leading-relaxed font-medium">
+                <p className="text-[13px] text-gray-400 dark:text-zinc-500 leading-relaxed font-medium">
                     {tool.desc}
                 </p>
             </div>
@@ -162,17 +162,17 @@ function ToolCard({ tool }: { tool: Tool }) {
 
 function getColorClasses(color: string) {
     const classes: Record<string, string> = {
-        indigo: "bg-indigo-500/10 text-indigo-600",
-        orange: "bg-orange-500/10 text-orange-600",
-        pink: "bg-pink-500/10 text-pink-600",
-        blue: "bg-blue-500/10 text-blue-600",
-        emerald: "bg-emerald-500/10 text-emerald-600",
-        cyan: "bg-cyan-500/10 text-cyan-600",
-        fuchsia: "bg-fuchsia-500/10 text-fuchsia-600",
-        amber: "bg-amber-500/10 text-amber-600",
-        teal: "bg-teal-500/10 text-teal-600",
-        rose: "bg-rose-500/10 text-rose-600",
-        yellow: "bg-yellow-500/10 text-yellow-600",
+        indigo: "bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400",
+        orange: "bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400",
+        pink: "bg-pink-500/10 text-pink-600 dark:bg-pink-500/20 dark:text-pink-400",
+        blue: "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+        emerald: "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400",
+        cyan: "bg-cyan-500/10 text-cyan-600 dark:bg-cyan-500/20 dark:text-cyan-400",
+        fuchsia: "bg-fuchsia-500/10 text-fuchsia-600 dark:bg-fuchsia-500/20 dark:text-fuchsia-400",
+        amber: "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
+        teal: "bg-teal-500/10 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400",
+        rose: "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400",
+        yellow: "bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400",
     };
-    return classes[color] || "bg-gray-500/10 text-gray-600";
+    return classes[color] || "bg-gray-500/10 text-gray-600 dark:bg-zinc-800 dark:text-zinc-400";
 }
