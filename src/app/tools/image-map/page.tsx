@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
     Square,
@@ -23,6 +24,7 @@ import {
     Hand,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToolState } from "@/components/providers/TabProvider";
 
 type ShapeType = "select" | "rect" | "circle" | "poly";
 type CreationMethod = "drag" | "click";
@@ -38,36 +40,68 @@ interface MapArea {
 }
 
 export default function ImageMapPage() {
-    const [image, setImage] = useState<string | null>(null);
-    const [imageUrl, setImageUrl] = useState("");
-    const [mapName, setMapName] = useState("workmap");
-    const [areas, setAreas] = useState<MapArea[]>([]);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
-    const [drawingMode, setDrawingMode] = useState<ShapeType>("rect");
-    const [creationMethod, setCreationMethod] = useState<CreationMethod>("drag");
-    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const pathname = usePathname();
+    const [state, setState] = useToolState(pathname, {
+        image: null as string | null,
+        imageUrl: "",
+        mapName: "workmap",
+        areas: [] as MapArea[],
+        selectedId: null as string | null,
+        drawingMode: "rect" as ShapeType,
+        creationMethod: "drag" as CreationMethod,
+        dimensions: { width: 0, height: 0 },
+        zoom: 1
+    });
 
+    const {
+        image,
+        imageUrl,
+        mapName,
+        areas,
+        selectedId,
+        drawingMode,
+        creationMethod,
+        dimensions,
+        zoom
+    } = state;
+
+    // Non-persistent state (UI interaction state)
     const [isDrawing, setIsDrawing] = useState(false);
     const [startPos, setStartPos] = useState({ x: 0, y: 0 });
     const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
     const [tempPolyPoints, setTempPolyPoints] = useState<{ x: number; y: number }[]>([]);
     const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
-    const [resizingHandle, setResizingHandle] = useState<{ id: string; index: number } | null>(
-        null
-    );
+    const [resizingHandle, setResizingHandle] = useState<{ id: string; index: number } | null>(null);
     const [movingArea, setMovingArea] = useState<{
         id: string;
         startX: number;
         startY: number;
         initialCoords: number[];
     } | null>(null);
-
-    const [zoom, setZoom] = useState(1);
-    const [contextMenu, setContextMenu] = useState<{ x: number; y: number; areaId: string } | null>(
-        null
-    );
+    const [contextMenu, setContextMenu] = useState<{ x: number; y: number; areaId: string } | null>(null);
     const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
     const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
+
+    const updateState = (updates: Partial<typeof state> | ((prev: typeof state) => Partial<typeof state>)) => {
+        setState(prev => {
+            const up = typeof updates === 'function' ? updates(prev) : updates;
+            return { ...prev, ...up };
+        });
+    };
+
+    const setImage = (val: string | null) => updateState({ image: val });
+    const setImageUrl = (val: string) => updateState({ imageUrl: val });
+    const setMapName = (val: string) => updateState({ mapName: val });
+    const setAreas = (val: MapArea[] | ((prev: MapArea[]) => MapArea[])) => {
+        updateState(prev => ({
+            areas: typeof val === 'function' ? val(prev.areas) : val
+        }));
+    };
+    const setSelectedId = (val: string | null) => updateState({ selectedId: val });
+    const setDrawingMode = (val: ShapeType) => updateState({ drawingMode: val });
+    const setCreationMethod = (val: CreationMethod) => updateState({ creationMethod: val });
+    const setDimensions = (val: { width: number; height: number }) => updateState({ dimensions: val });
+    const setZoom = (val: number) => updateState({ zoom: val });
 
     const imgRef = useRef<HTMLImageElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
@@ -611,7 +645,7 @@ export default function ImageMapPage() {
                                             : "cursor-crosshair"
                                     )}
                                     viewBox={
-                                        dimensions.width > 0
+                                        (dimensions?.width || 0) > 0
                                             ? `0 0 ${dimensions.width} ${dimensions.height}`
                                             : "0 0 100 100"
                                     }
@@ -883,7 +917,7 @@ export default function ImageMapPage() {
                                 onClick={copyToClipboard}
                                 className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-black text-white rounded-xl text-xs font-bold shadow-lg transition-all active:scale-95 group"
                             >
-                                <Copy className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> 
+                                <Copy className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
                                 코드 복사
                             </button>
                         </div>

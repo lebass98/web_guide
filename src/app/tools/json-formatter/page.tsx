@@ -1,31 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Copy, Trash2, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToolState } from "@/components/providers/TabProvider";
 
 export default function JsonFormatterPage() {
-    const [input, setInput] = useState("");
-    const [output, setOutput] = useState("");
-    const [error, setError] = useState<string | null>(null);
+    const pathname = usePathname();
+    const [state, setState] = useToolState(pathname, { input: "", output: "", error: null as string | null });
+    const { input, output, error } = state;
 
     const formatJson = (text: string) => {
-        setInput(text);
         if (!text.trim()) {
-            setOutput("");
-            setError(null);
+            setState({ input: text, output: "", error: null });
             return;
         }
 
         try {
             const parsed = JSON.parse(text);
-            setOutput(JSON.stringify(parsed, null, 2));
-            setError(null);
+            setState({
+                input: text,
+                output: JSON.stringify(parsed, null, 2),
+                error: null
+            });
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "잘못된 JSON 형식";
-            setError(errorMessage);
-            setOutput("");
+            setState({
+                input: text,
+                output: "",
+                error: errorMessage
+            });
         }
     };
 
@@ -42,9 +47,9 @@ export default function JsonFormatterPage() {
 
             <div className="flex flex-col lg:flex-row gap-8 h-[500px] mb-6">
                 <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-sm font-medium text-zinc-600">JSON 입력</label>
+                    <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">JSON 입력</label>
                     <textarea
-                        className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
+                        className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 dark:text-white"
                         placeholder="구조화되지 않은 JSON을 여기에 붙여넣으세요..."
                         value={input}
                         onChange={(e) => formatJson(e.target.value)}
@@ -54,11 +59,11 @@ export default function JsonFormatterPage() {
 
                 <div className="flex-1 flex flex-col gap-2">
                     <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium text-zinc-600">포맷된 결과</label>
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">포맷된 결과</label>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => formatJson("")}
-                                className="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-md transition-colors"
+                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-colors"
                                 title="지우기"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -82,7 +87,7 @@ export default function JsonFormatterPage() {
                         readOnly
                         className={cn(
                             "flex-1 w-full p-4 glass-card resize-none font-mono text-sm",
-                            error ? "text-zinc-500 opacity-50" : "text-fuchsia-100"
+                            error ? "text-zinc-500 opacity-50" : "text-fuchsia-100 dark:text-fuchsia-200"
                         )}
                         placeholder="포맷된 JSON이 여기에 표시됩니다..."
                         value={output}
