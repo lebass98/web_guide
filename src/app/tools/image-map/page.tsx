@@ -597,12 +597,12 @@ export default function ImageMapPage() {
                         </div>
                     </div>
 
-                    <div className="flex-1 glass-card overflow-auto relative min-h-[450px] flex items-center justify-center bg-zinc-800/10 p-8 checkerboard-pattern group/surface">
+                    <div className="flex-1 glass-card overflow-auto relative min-h-[450px] flex justify-center items-start bg-zinc-800/10 p-8 checkerboard-pattern group/surface">
                         {viewMode === "edit" ? (
                             image ? (
                                 <div
-                                    className="relative transition-transform shadow-2xl bg-white"
-                                    style={{ transform: `scale(${zoom})` }}
+                                    className="relative transition-transform shadow-2xl bg-white my-8"
+                                    style={{ transform: `scale(${zoom})`, transformOrigin: "top center" }}
                                     onMouseDown={handleMouseDown}
                                     onMouseMove={handleMouseMove}
                                     onMouseUp={handleMouseUp}
