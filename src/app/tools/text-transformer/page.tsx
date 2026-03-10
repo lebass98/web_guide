@@ -47,16 +47,16 @@ export default function TextTransformerPage() {
                 description="문자열 대소문자를 변환하고, 공백을 제거하며, 다양한 텍스트 조작을 적용하세요."
             />
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mb-6">
                 {transforms.map((t) => (
                     <button
                         key={t.id}
                         onClick={() => handleTransform(input, t.id)}
                         className={cn(
-                            "px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm",
+                            "px-10 py-2.5 rounded-full text-sm font-bold transition-all border shadow-sm",
                             activeTransform === t.id
-                                ? "bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30"
-                                : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-gray-100 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                                ? "bg-indigo-50 text-indigo-600 border-indigo-200"
+                                : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
                         )}
                     >
                         {t.label}

@@ -96,7 +96,7 @@ export default function TimestampPage() {
                                 />
                                 <button
                                     onClick={setNow}
-                                    className="px-6 py-3 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80 font-medium whitespace-nowrap"
+                                    className="px-10 py-3 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-full transition-all font-bold shadow-sm hover:bg-indigo-100/50 active:scale-95"
                                 >
                                     현재 시간
                                 </button>

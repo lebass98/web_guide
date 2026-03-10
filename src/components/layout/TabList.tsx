@@ -22,7 +22,7 @@ export function TabList() {
                     <div
                         key={tab.path}
                         className={cn(
-                            "group relative flex items-center h-8 px-4 min-w-[100px] rounded-xl transition-all duration-300 cursor-pointer border",
+                            "group relative flex items-center h-8 px-4 rounded-xl transition-all duration-300 cursor-pointer border",
                             isActive
                                 ? "bg-indigo-50/80 dark:bg-indigo-500/10 border-indigo-100/50 dark:border-indigo-500/20 shadow-sm backdrop-blur-md"
                                 : "bg-white/40 dark:bg-zinc-900/40 border-transparent hover:bg-white/60 dark:hover:bg-zinc-800/60 backdrop-blur-sm"
@@ -30,11 +30,11 @@ export function TabList() {
                     >
                         <Link
                             href={tab.path}
-                            className="flex items-center gap-2 flex-1 mr-2 overflow-hidden"
+                            className="flex items-center gap-2 flex-1 mr-2"
                         >
                             {Icon && <Icon className={cn("w-3.5 h-3.5 shrink-0", isActive ? "text-indigo-600 dark:text-indigo-400" : "text-zinc-400 dark:text-zinc-500")} />}
                             <span className={cn(
-                                "text-[12px] font-bold truncate whitespace-nowrap tracking-tight transition-colors",
+                                "text-[12px] font-bold whitespace-nowrap tracking-tight transition-colors",
                                 isActive ? "text-indigo-600 dark:text-indigo-400" : "text-zinc-500 dark:text-zinc-400"
                             )}>
                                 {tab.label}
