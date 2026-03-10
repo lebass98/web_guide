@@ -30,7 +30,7 @@ export function TabProvider({ children }: { children: React.ReactNode }) {
     // Add tab when navigating to a new tool
     useEffect(() => {
         const item = TOOL_ITEMS.find((t) => t.href === pathname);
-        if (item) {
+        if (item && item.id !== "home") {
             setTabs((prev) => {
                 if (prev.find((t) => t.path === pathname)) return prev;
                 return [...prev, { id: item.id, label: item.label, path: item.href }];
@@ -40,7 +40,7 @@ export function TabProvider({ children }: { children: React.ReactNode }) {
 
     const addTab = (path: string) => {
         const item = TOOL_ITEMS.find((t) => t.href === path);
-        if (item && !tabs.find((t) => t.path === path)) {
+        if (item && item.id !== "home" && !tabs.find((t) => t.path === path)) {
             setTabs((prev) => [...prev, { id: item.id, label: item.label, path: item.href }]);
         }
         router.push(path);

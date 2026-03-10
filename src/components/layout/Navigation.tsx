@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { TabList } from "./TabList";
+import { useTabs } from "@/components/providers/TabProvider";
 
 interface NavigationProps {
     children: React.ReactNode;
@@ -15,13 +17,19 @@ interface NavigationProps {
 export function Navigation({ children }: NavigationProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const pathname = usePathname();
+    const { tabs } = useTabs();
+    
+    const isHome = pathname === "/";
+    const showTabs = !isHome && tabs.length > 0;
 
     return (
         <div className="flex w-full min-h-screen bg-transparent">
             {/* Sticky Header */}
             <header
                 className={cn(
-                    "fixed top-0 right-0 left-0 h-28 glass-header z-30 flex flex-col transition-all duration-300",
+                    "fixed top-0 right-0 left-0 glass-header z-30 flex flex-col transition-all duration-300",
+                    showTabs ? "h-28" : "h-16",
                     isSidebarCollapsed ? "lg:left-[80px]" : "lg:left-[240px]"
                 )}
             >
@@ -50,7 +58,7 @@ export function Navigation({ children }: NavigationProps) {
                 </div>
 
                 {/* Bottom Row: Tab Menu */}
-                <TabList />
+                {showTabs && <TabList />}
             </header>
 
             <Sidebar
@@ -62,7 +70,8 @@ export function Navigation({ children }: NavigationProps) {
 
             <div
                 className={cn(
-                    "flex-1 px-5 pt-36 pb-10 min-w-0 transition-all duration-300",
+                    "flex-1 px-5 pb-10 min-w-0 transition-all duration-300",
+                    showTabs ? "pt-36" : "pt-24",
                     isSidebarCollapsed ? "lg:ml-[80px]" : "lg:ml-[240px]"
                 )}
             >

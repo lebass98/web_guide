@@ -46,14 +46,14 @@ export default function UrlEncoderPage() {
                 description="URI 구성요소를 안전하게 인코딩하거나 URL 문자열을 텍스트로 디코딩하세요."
             />
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3 mb-6">
                 <button
                     onClick={() => handleModeSwitch("encode")}
                     className={cn(
-                        "px-6 py-2 rounded-full text-sm font-medium transition-all",
+                        "px-10 py-2.5 rounded-full text-sm font-bold transition-all border",
                         mode === "encode"
-                            ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]"
-                            : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
+                            ? "bg-indigo-50 text-indigo-600 border-indigo-200 shadow-sm"
+                            : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
                     )}
                 >
                     인코딩
@@ -61,10 +61,10 @@ export default function UrlEncoderPage() {
                 <button
                     onClick={() => handleModeSwitch("decode")}
                     className={cn(
-                        "px-6 py-2 rounded-full text-sm font-medium transition-all",
+                        "px-10 py-2.5 rounded-full text-sm font-bold transition-all border",
                         mode === "decode"
-                            ? "bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/50 shadow-[0_0_15px_rgba(217,70,239,0.3)]"
-                            : "bg-zinc-100 text-zinc-600 border border-zinc-200/80 hover:bg-zinc-200/50 hover:text-zinc-900"
+                            ? "bg-indigo-50 text-indigo-600 border-indigo-200 shadow-sm"
+                            : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
                     )}
                 >
                     디코딩

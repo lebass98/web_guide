@@ -46,14 +46,14 @@ export default function Base64Page() {
                 description="텍스트를 Base64 형식으로 안전하게 인코딩하거나 텍스트로 디코딩하세요."
             />
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mb-6">
                 <button
                     onClick={() => handleModeSwitch("encode")}
                     className={cn(
-                        "px-6 py-2 rounded-full text-sm font-medium transition-all shadow-sm",
+                        "px-10 py-2.5 rounded-full text-sm font-bold transition-all border shadow-sm",
                         mode === "encode"
-                            ? "bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30"
-                            : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-gray-100 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                            ? "bg-indigo-50 text-indigo-600 border-indigo-200"
+                            : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
                     )}
                 >
                     인코딩
@@ -61,10 +61,10 @@ export default function Base64Page() {
                 <button
                     onClick={() => handleModeSwitch("decode")}
                     className={cn(
-                        "px-6 py-2 rounded-full text-sm font-medium transition-all shadow-sm",
+                        "px-10 py-2.5 rounded-full text-sm font-bold transition-all border shadow-sm",
                         mode === "decode"
-                            ? "bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30"
-                            : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-gray-100 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                            ? "bg-indigo-50 text-indigo-600 border-indigo-200"
+                            : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
                     )}
                 >
                     디코딩
