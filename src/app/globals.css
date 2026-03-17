@@ -112,7 +112,7 @@
 
     .glass-card {
         @apply bg-white/60 dark:bg-zinc-900/60 backdrop-blur-lg border border-white/60 dark:border-zinc-800/60 rounded-[32px] transition-all duration-300;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 20px #1e1f241a;
     }
 
     .glass-sidebar {
