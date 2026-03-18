@@ -13,7 +13,13 @@ import {
     Paintbrush,
     Layers,
     MousePointer2,
-    ChevronRight
+    ChevronRight,
+    BoxSelect,
+    Clapperboard,
+    SwatchBook,
+    FileCode2,
+    Ruler,
+    Image,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -96,6 +102,48 @@ export default function Home() {
             icon: MousePointer2,
             color: "yellow",
         },
+        {
+            title: "CSS 박스 섀도우",
+            desc: "슬라이더로 그림자를 조작하고 CSS 코드를 즉시 복사하세요.",
+            href: "/tools/css-shadow",
+            icon: BoxSelect,
+            color: "violet",
+        },
+        {
+            title: "CSS 애니메이션",
+            desc: "keyframe 애니메이션을 실시간으로 미리보고 CSS 코드를 생성하세요.",
+            href: "/tools/css-animation",
+            icon: Clapperboard,
+            color: "sky",
+        },
+        {
+            title: "색상 팔레트",
+            desc: "기준 색상에서 유사색·보색·삼색·단색 팔레트를 자동 생성하세요.",
+            href: "/tools/color-palette",
+            icon: SwatchBook,
+            color: "fuchsia",
+        },
+        {
+            title: "SVG 최적화",
+            desc: "SVG 코드에서 불필요한 요소를 제거하고 파일 크기를 줄이세요.",
+            href: "/tools/svg-optimizer",
+            icon: FileCode2,
+            color: "lime",
+        },
+        {
+            title: "단위 계산기",
+            desc: "px, rem, vw/vh, cm, 파일 크기 등 다양한 단위를 즉시 변환하세요.",
+            href: "/tools/unit-calculator",
+            icon: Ruler,
+            color: "orange",
+        },
+        {
+            title: "Favicon 생성기",
+            desc: "텍스트 또는 이모지로 favicon을 즉시 생성하고 PNG로 다운로드하세요.",
+            href: "/tools/favicon-generator",
+            icon: Image,
+            color: "indigo",
+        },
     ];
 
     return (
@@ -176,6 +224,9 @@ function getColorClasses(color: string) {
         teal: "bg-teal-500/10 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400",
         rose: "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400",
         yellow: "bg-yellow-500/10 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-400",
+        violet: "bg-violet-500/10 text-violet-600 dark:bg-violet-500/20 dark:text-violet-400",
+        sky: "bg-sky-500/10 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400",
+        lime: "bg-lime-500/10 text-lime-600 dark:bg-lime-500/20 dark:text-lime-400",
     };
     return classes[color] || "bg-gray-500/10 text-gray-600 dark:bg-zinc-800 dark:text-zinc-400";
 }
