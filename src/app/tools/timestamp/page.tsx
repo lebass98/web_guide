@@ -62,29 +62,29 @@ export default function TimestampPage() {
                     <div className="p-4 sm:p-6 glass-card border border-fuchsia-500/20 shadow-[0_0_20px_rgba(217,70,239,0.1)] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/10 blur-3xl -mr-10 -mt-10 rounded-full" />
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-zinc-600 font-medium flex items-center gap-2">
-                                <Clock className="w-4 h-4" />
+                            <span className="text-zinc-600 dark:text-zinc-400 font-bold uppercase text-[11px] tracking-widest flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-fuchsia-500" />
                                 현재 Unix 시간
                             </span>
                         </div>
                         <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-                            <span className="text-2xl sm:text-4xl font-mono font-bold tracking-tight text-white break-all">
+                            <span className="text-2xl sm:text-4xl font-mono font-bold tracking-tighter text-gray-900 dark:text-white break-all">
                                 {currentUnix}
                             </span>
                             <button
                                 onClick={() => handleCopy(currentUnix.toString())}
-                                className="p-2 bg-zinc-100 hover:bg-zinc-200/50 rounded-lg transition-colors border border-zinc-200/80 shrink-0"
+                                className="p-2.5 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400 rounded-xl transition-all border border-zinc-200 dark:border-zinc-700 shadow-sm active:scale-95"
                                 title="현재 시간 복사"
                             >
-                                <Copy className="w-4 h-4 text-zinc-600" />
+                                <Copy className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
 
                     <div className="glass-card p-4 sm:p-6 flex flex-col gap-4">
-                        <h3 className="text-lg font-semibold text-white mb-2">타임스탬프 변환</h3>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 uppercase tracking-tight">타임스탬프 변환</h3>
                         <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium text-zinc-600">
+                            <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                                 타임스탬프 (초 또는 밀리초)
                             </label>
                             <div className="flex flex-col sm:flex-row gap-2">
@@ -92,7 +92,7 @@ export default function TimestampPage() {
                                     type="text"
                                     value={inputUnix}
                                     onChange={(e) => setInputUnix(e.target.value)}
-                                    className="flex-1 bg-zinc-100/80 border border-zinc-200/80 rounded-lg px-4 py-3 font-mono text-base sm:text-lg focus:outline-none focus:border-fuchsia-500 transition-colors w-full"
+                                    className="flex-1 bg-zinc-100/80 dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 rounded-xl px-4 py-3 font-mono text-base sm:text-lg focus:outline-none focus:border-fuchsia-500 transition-all text-zinc-900 dark:text-zinc-100 w-full shadow-inner"
                                 />
                                 <button
                                     onClick={setNow}
@@ -107,14 +107,14 @@ export default function TimestampPage() {
 
                 <div className="flex flex-col gap-6">
                     <div className="glass-card p-4 sm:p-6 flex flex-col gap-6 sm:gap-8 h-full">
-                        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                            <CalendarDays className="w-5 h-5 text-fuchsia-400" />
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 uppercase tracking-tight">
+                            <CalendarDays className="w-5 h-5 text-fuchsia-500" />
                             변환된 날짜/시간
                         </h3>
 
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
-                                <label className="text-sm font-medium text-zinc-600">
+                                <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                                     로컬 타임
                                 </label>
                                 <button
@@ -131,7 +131,7 @@ export default function TimestampPage() {
 
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
-                                <label className="text-sm font-medium text-zinc-600">
+                                <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
                                     UTC 타임
                                 </label>
                                 <button

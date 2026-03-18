@@ -57,7 +57,7 @@ export default function GradientBackgroundsPage() {
                 {gradients.map((gradient, index) => (
                     <div
                         key={index}
-                        className="group relative flex flex-col bg-white rounded-2xl shadow-sm border border-zinc-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                        className="group relative flex flex-col bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden hover:shadow-md dark:hover:shadow-zinc-900/50 transition-shadow cursor-pointer"
                         onClick={() => copyToClipboard(gradient.css, index)}
                         title="Click to copy CSS"
                     >
@@ -83,12 +83,12 @@ export default function GradientBackgroundsPage() {
                         </div>
 
                         {/* Title / Description Area */}
-                        <div className="p-4 bg-white z-10 flex justify-between items-center border-t border-zinc-100">
-                            <span className="font-semibold text-zinc-800 text-sm truncate pr-2">
+                        <div className="p-4 bg-white dark:bg-zinc-900 z-10 flex justify-between items-center border-t border-zinc-100 dark:border-zinc-800">
+                            <span className="font-semibold text-zinc-800 dark:text-zinc-200 text-sm truncate pr-2">
                                 {gradient.name}
                             </span>
                             <button
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-500 hover:text-zinc-800 transition-colors flex-shrink-0"
+                                className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-100 transition-colors flex-shrink-0"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     copyToClipboard(gradient.css, index);

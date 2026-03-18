@@ -46,10 +46,10 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                     {/* Mobile Close Button & Title */}
                     <div className="lg:hidden w-full px-6 mb-8 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gray-900 dark:bg-white rounded-lg shadow-lg">
-                                <span className="text-white dark:text-gray-900 font-bold text-[10px]">W</span>
+                            <div className="w-9 h-9 flex items-center justify-center bg-indigo-600 dark:bg-indigo-500 rounded-xl shadow-lg ring-4 ring-indigo-500/10">
+                                <span className="text-white font-black text-xs">W</span>
                             </div>
-                            <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">WebTools</span>
+                            <span className="text-base font-bold text-gray-900 dark:text-white tracking-tight">WebTools</span>
                         </div>
                         <button
                             onClick={onClose}
@@ -61,10 +61,10 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
 
                     {/* PC Logo */}
                     <div className="mb-10 lg:block hidden">
-                        <Link href="/" onClick={onClose}>
-                            <div className="relative w-10 h-10 flex items-center justify-center">
-                                <Hexagon className="w-10 h-10 text-[#1c1c1c] dark:text-white fill-[#1c1c1c] dark:fill-white" />
-                                <span className="absolute text-white dark:text-gray-900 font-bold text-xs">W</span>
+                        <Link href="/" onClick={onClose} className="group/logo">
+                            <div className="relative w-12 h-12 flex items-center justify-center transition-transform duration-500 group-hover/logo:rotate-[120deg]">
+                                <Hexagon className="w-12 h-12 text-indigo-600 dark:text-indigo-400 fill-indigo-600/10 dark:fill-indigo-400/20 stroke-[2.5px]" />
+                                <span className="absolute text-indigo-700 dark:text-indigo-300 font-black text-lg transition-transform duration-500 group-hover/logo:rotate-[-120deg]">W</span>
                             </div>
                         </Link>
                     </div>

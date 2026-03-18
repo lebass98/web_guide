@@ -102,17 +102,17 @@ export default function Home() {
         <div className="space-y-10">
             {/* Header Section */}
             <section>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-2">
-                    WebTools 프리미엄 공구함 👋
+                <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-center gap-3 mb-3 tracking-tighter">
+                    WebTools 프리미엄 공구함 <span className="animate-bounce">👋</span>
                 </h1>
-                <p className="text-sm text-gray-400 dark:text-zinc-500 max-w-2xl font-medium">
+                <p className="text-base text-gray-500 dark:text-zinc-400 max-w-2xl font-medium leading-relaxed">
                     웹개발과 디자인을 위한 가장 강력하고 아름다운 유틸리티 모음입니다.
                     모든 도구는 클라이언트 사이드에서 안전하게 작동합니다.
                 </p>
             </section>
 
             {/* Tools Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {tools.map((tool) => (
                     <ToolCard key={tool.href} tool={tool} />
                 ))}
@@ -135,24 +135,27 @@ function ToolCard({ tool }: { tool: Tool }) {
     return (
         <Link
             href={tool.href}
-            className="glass-card glass-hover p-8 group flex flex-col justify-between min-h-[220px]"
+            className="glass-card glass-hover p-8 group flex flex-col justify-between min-h-[240px] relative overflow-hidden"
         >
-            <div className="flex items-center justify-between mb-6">
+            {/* Background Accent Gradient */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-500/20 transition-all duration-500" />
+            
+            <div className="relative z-10 flex items-center justify-between mb-8">
                 <div className={cn(
-                    "w-14 h-14 rounded-[20px] flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] backdrop-blur-md",
+                    "w-16 h-16 rounded-[24px] flex items-center justify-center shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-110",
                     getColorClasses(tool.color)
                 )}>
-                    <Icon className="w-7 h-7" />
+                    <Icon className="w-8 h-8" />
                 </div>
-                <div className="w-10 h-10 flex items-center justify-center rounded-full glass border border-white/40 text-gray-400 dark:text-zinc-500 group-hover:text-gray-900 dark:group-hover:text-white transition-all duration-300">
+                <div className="w-10 h-10 flex items-center justify-center rounded-full glass border border-white/20 dark:border-white/5 text-gray-400 dark:text-zinc-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-white dark:group-hover:bg-zinc-800 transition-all duration-300 shadow-sm">
                     <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
                 </div>
             </div>
-            <div>
-                <h3 className="text-[19px] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">
+            <div className="relative z-10">
+                <h3 className="text-[20px] font-bold text-gray-900 dark:text-white mb-2.5 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                     {tool.title}
                 </h3>
-                <p className="text-[13px] text-gray-400 dark:text-zinc-500 leading-relaxed font-medium">
+                <p className="text-[14px] text-gray-500 dark:text-zinc-400 leading-relaxed font-medium">
                     {tool.desc}
                 </p>
             </div>

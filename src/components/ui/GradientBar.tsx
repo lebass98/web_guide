@@ -123,10 +123,10 @@ export function GradientBar({
                     <div
                         onPointerDown={(e) => handlePointerDown(e, stop.id)}
                         className={cn(
-                            "absolute top-0 left-0 w-full h-12 rounded-full border-2 bg-white cursor-ew-resize shadow-md transition-transform flex flex-col items-center justify-center p-[2px]",
+                            "absolute top-0 left-0 w-full h-12 rounded-full border-2 bg-white dark:bg-zinc-800 cursor-ew-resize shadow-md transition-transform flex flex-col items-center justify-center p-[2px]",
                             activeStopId === stop.id
-                                ? "border-zinc-800 z-30 scale-105"
-                                : "border-zinc-400 z-10 hover:border-zinc-500"
+                                ? "border-zinc-800 dark:border-zinc-200 z-30 scale-105"
+                                : "border-zinc-400 dark:border-zinc-600 z-10 hover:border-zinc-500 dark:hover:border-zinc-400"
                         )}
                     >
                         <div
@@ -140,10 +140,10 @@ export function GradientBar({
                         {/* The vertical connector line is hidden or small. We'll simulate by margin. */}
                         <div
                             className={cn(
-                                "px-1 py-1 bg-white border rounded text-xs text-center font-mono font-medium shadow-sm",
+                                "px-1 py-1 bg-white dark:bg-zinc-800 border rounded text-xs text-center font-mono font-medium shadow-sm",
                                 activeStopId === stop.id
-                                    ? "border-zinc-800 text-zinc-900"
-                                    : "border-zinc-200 text-zinc-600"
+                                    ? "border-zinc-800 dark:border-zinc-300 text-zinc-900 dark:text-zinc-100"
+                                    : "border-zinc-200 dark:border-zinc-600 text-zinc-600 dark:text-zinc-400"
                             )}
                         >
                             {stop.position}

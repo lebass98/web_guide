@@ -113,7 +113,7 @@ export function ColorPicker({ color, opacity, onChange, className }: ColorPicker
                         type="text"
                         value={color.toUpperCase()}
                         onChange={handleHexChange}
-                        className="w-full h-10 bg-white border border-zinc-200 rounded text-sm text-center font-sans font-semibold text-zinc-700 focus:outline-none focus:border-zinc-400 shadow-sm"
+                        className="w-full h-10 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-sm text-center font-sans font-semibold text-zinc-700 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500 shadow-sm"
                     />
                 </div>
 
@@ -145,7 +145,7 @@ export function ColorPicker({ color, opacity, onChange, className }: ColorPicker
                                                 : Math.round(internalColor.a * 100)
                                 }
                                 onChange={(e) => handleRgbaChange(field as "r" | "g" | "b" | "a", e.target.value)}
-                                className="w-full h-10 bg-white border border-zinc-200 rounded text-sm text-center font-sans font-semibold text-zinc-700 focus:outline-none focus:border-zinc-400 shadow-sm hide-spin-buttons"
+                                className="w-full h-10 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-sm text-center font-sans font-semibold text-zinc-700 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500 shadow-sm hide-spin-buttons"
                             />
                         ))}
                     </div>
