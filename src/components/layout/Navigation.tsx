@@ -36,11 +36,11 @@ export function Navigation({ children }: NavigationProps) {
                 {/* Top Row: Logo & Actions */}
                 <div className="flex items-center justify-between px-6 h-16 w-full">
                     {/* Header Title / Logo Link */}
-                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="lg:hidden w-8 h-8 flex items-center justify-center bg-gray-900 dark:bg-white backdrop-blur-md rounded-lg shadow-lg">
-                            <span className="text-white dark:text-gray-900 font-bold text-[10px]">W</span>
+                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
+                        <div className="lg:hidden w-8 h-8 flex items-center justify-center bg-indigo-600 dark:bg-indigo-500 rounded-lg shadow-md ring-2 ring-indigo-500/10">
+                            <span className="text-white font-black text-[11px]">W</span>
                         </div>
-                        <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">WebTools Premium</span>
+                        <span className="text-[15px] font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">WebTools Premium</span>
                     </Link>
 
                     {/* Right Actions */}

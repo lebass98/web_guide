@@ -426,7 +426,7 @@ export default function ImageMapPage() {
 
             <div className="flex flex-col lg:flex-row gap-8 lg:max-h-[calc(100vh-250px)]">
                 {/* Left Toolbar */}
-                <div className="w-full lg:w-16 flex lg:flex-col gap-3 p-2.5 glass-card bg-white/40 shadow-xl self-start sticky top-0 z-10 transition-all duration-300">
+                <div className="w-full lg:w-16 flex lg:flex-col gap-3 p-2.5 glass-card bg-white/40 dark:bg-zinc-900/40 shadow-xl self-start sticky top-0 z-10 transition-all duration-300">
                     <button
                         onClick={() => {
                             setDrawingMode("select");
@@ -538,7 +538,7 @@ export default function ImageMapPage() {
 
                 {/* Main Editor Workarea */}
                 <div className="flex-1 flex flex-col gap-4 min-w-0">
-                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between p-4 gap-4 glass-card bg-zinc-50/50 backdrop-blur-md">
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between p-4 gap-4 glass-card bg-zinc-50/50 dark:bg-zinc-900/50 backdrop-blur-md">
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 flex-1">
                             <label className="group relative flex items-center justify-center gap-2 px-5 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer transition-all shadow-lg flex-shrink-0">
                                 <Upload className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
@@ -553,7 +553,7 @@ export default function ImageMapPage() {
 
                             <button
                                 onClick={() => setIsUrlModalOpen(true)}
-                                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 rounded-xl transition-all shadow-sm flex-shrink-0 font-semibold text-sm"
+                                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl transition-all shadow-sm flex-shrink-0 font-semibold text-sm"
                             >
                                 <LinkIcon className="w-4 h-4" />
                                 <span>URL 불러오기</span>
@@ -561,14 +561,14 @@ export default function ImageMapPage() {
                         </div>
 
                         <div className="flex items-center justify-between sm:justify-end gap-3 self-center">
-                            <div className="flex bg-zinc-100 p-1 rounded-xl border border-zinc-200 shadow-inner mr-2">
+                            <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-inner mr-2">
                                 <button
                                     onClick={() => setCreationMethod("drag")}
                                     className={cn(
                                         "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold uppercase transition-all",
                                         creationMethod === "drag"
-                                            ? "bg-white text-zinc-900 shadow-sm"
-                                            : "text-zinc-400 hover:text-zinc-600"
+                                            ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
+                                            : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
                                     )}
                                 >
                                     <Hand className="w-3.5 h-3.5" /> 드래그
@@ -578,27 +578,27 @@ export default function ImageMapPage() {
                                     className={cn(
                                         "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold uppercase transition-all",
                                         creationMethod === "click"
-                                            ? "bg-white text-zinc-900 shadow-sm"
-                                            : "text-zinc-400 hover:text-zinc-600"
+                                            ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
+                                            : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
                                     )}
                                 >
                                     <MousePointer className="w-3.5 h-3.5" /> 클릭
                                 </button>
                             </div>
 
-                            <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-lg border border-zinc-200">
+                            <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700">
                                 <button
                                     onClick={() => setZoom(Math.max(0.1, zoom - 0.1))}
-                                    className="p-1 px-2 hover:bg-white rounded transition-colors text-sm font-bold"
+                                    className="p-1 px-2 hover:bg-white dark:hover:bg-zinc-700 rounded transition-colors text-sm font-bold text-zinc-700 dark:text-zinc-300"
                                 >
                                     -
                                 </button>
-                                <span className="text-sm font-mono w-12 text-center text-zinc-500">
+                                <span className="text-sm font-mono w-12 text-center text-zinc-500 dark:text-zinc-400">
                                     {Math.round(zoom * 100)}%
                                 </span>
                                 <button
                                     onClick={() => setZoom(Math.min(3, zoom + 0.1))}
-                                    className="p-1 px-2 hover:bg-white rounded transition-colors text-sm font-bold"
+                                    className="p-1 px-2 hover:bg-white dark:hover:bg-zinc-700 rounded transition-colors text-sm font-bold text-zinc-700 dark:text-zinc-300"
                                 >
                                     +
                                 </button>
@@ -936,8 +936,8 @@ export default function ImageMapPage() {
 
                 {/* Right Properties Panel */}
                 <div className="w-full lg:w-[350px] flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
-                    <div className="glass-card bg-white p-6 shadow-xl flex flex-col gap-6">
-                        <h2 className="text-lg font-bold flex items-center gap-2 uppercase tracking-tight">
+                    <div className="glass-card bg-white dark:bg-zinc-900/80 p-6 shadow-xl flex flex-col gap-6">
+                        <h2 className="text-lg font-bold flex items-center gap-2 uppercase tracking-tight text-zinc-900 dark:text-white">
                             <Settings2 className="w-5 h-5 text-fuchsia-500" /> 설정
                         </h2>
 
@@ -950,12 +950,12 @@ export default function ImageMapPage() {
                                     type="text"
                                     value={mapName}
                                     onChange={(e) => setMapName(e.target.value)}
-                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-bold transition-all"
+                                    className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-bold transition-all text-zinc-900 dark:text-zinc-100"
                                 />
                             </div>
                         </div>
 
-                        <div className="h-px bg-zinc-100 my-2" />
+                        <div className="h-px bg-zinc-100 dark:bg-zinc-800 my-2" />
 
                         {selectedId ? (
                             <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-2">
@@ -1192,20 +1192,20 @@ export default function ImageMapPage() {
             {/* URL Input Modal */}
             {isUrlModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="w-full max-w-md glass-card bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-300">
+                    <div className="w-full max-w-md glass-card bg-white dark:bg-zinc-900 p-6 shadow-2xl animate-in zoom-in-95 duration-300">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold uppercase tracking-tight flex items-center gap-2">
+                            <h3 className="text-lg font-bold uppercase tracking-tight flex items-center gap-2 text-zinc-900 dark:text-white">
                                 <LinkIcon className="w-5 h-5 text-fuchsia-500" />
                                 이미지 URL 입력
                             </h3>
                             <button
                                 onClick={() => setIsUrlModalOpen(false)}
-                                className="text-zinc-400 hover:text-zinc-600"
+                                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <p className="text-sm text-zinc-500 mb-6">
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
                             웹상에 있는 이미지의 주소를 입력하여 바로 불러올 수 있습니다.
                         </p>
                         <div className="space-y-4">
@@ -1224,14 +1224,14 @@ export default function ImageMapPage() {
                                             setIsUrlModalOpen(false);
                                         }
                                     }}
-                                    className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-medium transition-all"
+                                    className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-sm font-medium transition-all text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                                     placeholder="https://example.com/image.jpg"
                                 />
                             </div>
                             <div className="flex gap-3 pt-2">
                                 <button
                                     onClick={() => setIsUrlModalOpen(false)}
-                                    className="flex-1 px-4 py-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-xl font-bold text-sm transition-all"
+                                    className="flex-1 px-4 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400 rounded-xl font-bold text-sm transition-all"
                                 >
                                     취소
                                 </button>
@@ -1252,7 +1252,7 @@ export default function ImageMapPage() {
             {/* Context Menu */}
             {contextMenu && (
                 <div
-                    className="fixed z-[101] bg-white border border-zinc-200 shadow-xl rounded-lg py-1.5 min-w-[120px] animate-in fade-in zoom-in duration-100"
+                    className="fixed z-[101] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-xl rounded-lg py-1.5 min-w-[120px] animate-in fade-in zoom-in duration-100"
                     style={{ top: contextMenu.y, left: contextMenu.x }}
                     onClick={(e) => e.stopPropagation()}
                 >
@@ -1262,18 +1262,18 @@ export default function ImageMapPage() {
                             setIsPropertyModalOpen(true);
                             setContextMenu(null);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-fuchsia-50 text-zinc-700 text-sm font-bold transition-colors flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-500/10 text-zinc-700 dark:text-zinc-300 text-sm font-bold transition-colors flex items-center gap-2"
                     >
                         <Settings2 className="w-4 h-4 text-fuchsia-500" />
                         속성 편집
                     </button>
-                    <div className="h-px bg-zinc-100 my-1.5" />
+                    <div className="h-px bg-zinc-100 dark:bg-zinc-800 my-1.5" />
                     <button
                         onClick={() => {
                             deleteArea(contextMenu.areaId);
                             setContextMenu(null);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-rose-50 text-rose-500 text-sm font-bold transition-colors flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 text-sm font-bold transition-colors flex items-center gap-2"
                     >
                         <Trash2 className="w-4 h-4" />
                         영역 삭제
@@ -1293,10 +1293,10 @@ export default function ImageMapPage() {
                         .map((area) => (
                             <div
                                 key={area.id}
-                                className="relative w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 animate-in zoom-in-95 duration-200"
+                                className="relative w-[320px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-700 animate-in zoom-in-95 duration-200"
                             >
                                 {/* Modal Header */}
-                                <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 bg-zinc-50/50">
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/50">
                                     <div className="flex items-center gap-2 text-zinc-400">
                                         <div className="flex flex-col gap-0.5 opacity-50">
                                             <div className="w-3 h-0.5 bg-zinc-400 rounded-full" />

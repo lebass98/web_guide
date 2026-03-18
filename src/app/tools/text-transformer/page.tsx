@@ -55,8 +55,8 @@ export default function TextTransformerPage() {
                         className={cn(
                             "px-10 py-2.5 rounded-full text-sm font-bold transition-all border shadow-sm",
                             activeTransform === t.id
-                                ? "bg-indigo-50 text-indigo-600 border-indigo-200"
-                                : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
+                                ? "bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30"
+                                : "bg-white dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-300"
                         )}
                     >
                         {t.label}

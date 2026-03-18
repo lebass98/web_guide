@@ -52,8 +52,8 @@ export default function UrlEncoderPage() {
                     className={cn(
                         "px-10 py-2.5 rounded-full text-sm font-bold transition-all border",
                         mode === "encode"
-                            ? "bg-indigo-50 text-indigo-600 border-indigo-200 shadow-sm"
-                            : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
+                            ? "bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30 shadow-sm"
+                            : "bg-white dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-300"
                     )}
                 >
                     인코딩
@@ -63,8 +63,8 @@ export default function UrlEncoderPage() {
                     className={cn(
                         "px-10 py-2.5 rounded-full text-sm font-bold transition-all border",
                         mode === "decode"
-                            ? "bg-indigo-50 text-indigo-600 border-indigo-200 shadow-sm"
-                            : "bg-white text-zinc-400 border-zinc-100 hover:bg-zinc-50 hover:text-zinc-600"
+                            ? "bg-indigo-50 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30 shadow-sm"
+                            : "bg-white dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-300"
                     )}
                 >
                     디코딩
@@ -73,7 +73,7 @@ export default function UrlEncoderPage() {
 
             <div className="flex flex-col lg:flex-row gap-6 h-[400px]">
                 <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-sm font-medium text-zinc-600">입력</label>
+                    <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">입력</label>
                     <textarea
                         className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
                         placeholder={
@@ -88,11 +88,11 @@ export default function UrlEncoderPage() {
 
                 <div className="flex-1 flex flex-col gap-2">
                     <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium text-zinc-600">변환 결과</label>
+                        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">변환 결과</label>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => processText("", mode)}
-                                className="p-1.5 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-md transition-colors"
+                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-700/50 rounded-md transition-colors"
                                 title="지우기"
                             >
                                 <Trash2 className="w-4 h-4" />

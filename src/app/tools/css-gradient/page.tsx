@@ -145,9 +145,9 @@ export default function CssGradientPage() {
             </div>
 
             {/* Main Designer Workspace */}
-            <div className="bg-white rounded-[28px] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white dark:bg-zinc-900 rounded-[28px] shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden">
                 {/* Top Bar: Gradient Bar & Controls */}
-                <div className="flex flex-col lg:flex-row p-8 items-center gap-10 border-b border-gray-100 bg-gray-50/30">
+                <div className="flex flex-col lg:flex-row p-8 items-center gap-10 border-b border-gray-100 dark:border-zinc-800 bg-gray-50/30 dark:bg-zinc-800/30">
                     {/* Left: Gradient Bar */}
                     <div className="flex-1 w-full relative">
                         <GradientBar
@@ -161,14 +161,14 @@ export default function CssGradientPage() {
 
                     {/* Right: Controls */}
                     <div className="flex items-center gap-6 pt-4 lg:pt-0">
-                        <div className="flex bg-white rounded-md border border-zinc-200 shadow-sm p-1">
-                            <button
+                        <div className="flex bg-white dark:bg-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-700 shadow-sm p-1">
+                             <button
                                 onClick={() => setGradientType("linear")}
                                 className={cn(
                                     "px-4 py-1.5 text-sm font-semibold rounded transition-colors",
                                     gradientType === "linear"
-                                        ? "bg-zinc-100 text-zinc-900"
-                                        : "text-zinc-500 hover:text-zinc-700"
+                                        ? "bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-white"
+                                        : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
                                 )}
                             >
                                 Linear
@@ -178,8 +178,8 @@ export default function CssGradientPage() {
                                 className={cn(
                                     "px-4 py-1.5 text-sm font-semibold rounded transition-colors",
                                     gradientType === "radial"
-                                        ? "bg-zinc-100 text-zinc-900"
-                                        : "text-zinc-500 hover:text-zinc-700"
+                                        ? "bg-zinc-100 dark:bg-zinc-700 text-zinc-900 dark:text-white"
+                                        : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
                                 )}
                             >
                                 Radial
@@ -225,7 +225,7 @@ export default function CssGradientPage() {
                     )}
 
                     {/* Col 3: Stops List */}
-                    <div className="flex flex-col gap-3 flex-1 lg:border-l border-zinc-200 lg:pl-8">
+                    <div className="flex flex-col gap-3 flex-1 lg:border-l border-zinc-200 dark:border-zinc-700 lg:pl-8">
                         <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                             Stops
                         </label>
@@ -237,8 +237,8 @@ export default function CssGradientPage() {
                                     className={cn(
                                         "flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors border",
                                         activeStopId === stop.id
-                                            ? "bg-zinc-100 border-zinc-200 shadow-sm"
-                                            : "bg-transparent border-transparent hover:bg-zinc-50"
+                                            ? "bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 shadow-sm"
+                                            : "bg-transparent border-transparent hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                                     )}
                                 >
                                     {/* Color Preview */}
@@ -260,7 +260,7 @@ export default function CssGradientPage() {
                                                 updateStopColor(stop.id, val);
                                             }
                                         }}
-                                        className="w-24 px-3 py-2 bg-white border border-zinc-200 rounded text-sm font-sans font-semibold text-zinc-700 focus:outline-none focus:border-zinc-400"
+                                        className="w-24 px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-sm font-sans font-semibold text-zinc-700 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500"
                                     />
 
                                     {/* Position Input */}
@@ -270,7 +270,7 @@ export default function CssGradientPage() {
                                         onChange={(e) =>
                                             updateStopPosition(stop.id, Number(e.target.value))
                                         }
-                                        className="w-16 px-3 py-2 bg-white border border-zinc-200 rounded text-sm text-center font-sans font-bold text-zinc-700 focus:outline-none focus:border-zinc-400 hide-spin-buttons"
+                                        className="w-16 px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-sm text-center font-sans font-bold text-zinc-700 dark:text-zinc-200 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500 hide-spin-buttons"
                                     />
 
                                     {/* Remove Button */}

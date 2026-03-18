@@ -9,7 +9,7 @@ export function PageHeader({ title, description }: PageHeaderProps) {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
                 {title}
             </h1>
-            <p className="text-sm text-gray-400 dark:text-zinc-500 font-medium max-w-2xl">
+            <p className="text-[15px] text-gray-500 dark:text-zinc-400 font-medium max-w-2xl leading-relaxed">
                 {description}
             </p>
         </div>

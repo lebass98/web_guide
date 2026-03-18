@@ -63,7 +63,7 @@ export default function JsonFormatterPage() {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => formatJson("")}
-                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-colors"
+                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-all active:scale-95"
                                 title="지우기"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -87,7 +87,7 @@ export default function JsonFormatterPage() {
                         readOnly
                         className={cn(
                             "flex-1 w-full p-4 glass-card resize-none font-mono text-sm",
-                            error ? "text-zinc-500 opacity-50" : "text-fuchsia-100 dark:text-fuchsia-200"
+                            error ? "text-zinc-400 dark:text-zinc-500 opacity-60" : "text-fuchsia-600 dark:text-fuchsia-300"
                         )}
                         placeholder="포맷된 JSON이 여기에 표시됩니다..."
                         value={output}

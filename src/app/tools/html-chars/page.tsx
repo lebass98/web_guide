@@ -50,14 +50,14 @@ export default function HtmlCharsPage() {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => handleConvert("")}
-                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-colors"
+                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-all active:scale-95"
                                 title="지우기"
                             >
                                 <Trash2 className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={handleCopy}
-                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-colors"
+                                className="p-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-md transition-all active:scale-95"
                                 title="클립보드에 복사"
                             >
                                 <Copy className="w-4 h-4" />
