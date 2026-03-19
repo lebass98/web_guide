@@ -213,7 +213,7 @@ export default function CssAnimationPage() {
     ] as const;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="space-y-10 pb-10">
             <style>{`
                 @keyframes cssAnimPreview {
                     from { transform: none; box-shadow: none; opacity: 1; filter: none; }
@@ -364,34 +364,49 @@ export default function CssAnimationPage() {
                             </label>
                             <span className="text-[10px] font-bold text-zinc-400 px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-full">{presets.length} Presets Available</span>
                         </div>
-                        <div className="presets-grid grid grid-cols-2 md:grid-cols-4 gap-3 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin">
+                        <div className="presets-grid grid grid-cols-2 lg:grid-cols-3 gap-4 max-h-[450px] overflow-y-auto pr-3 scrollbar-thin">
                             {presets.map((preset) => {
                                 const Icon = preset.icon;
                                 const isCurrentTrigger = config.trigger === preset.config.trigger;
+                                // Check if this preset is exactly what's currently configured
+                                const isSelected = Object.keys(defaultConfig).every(key => 
+                                    config[key as keyof AnimConfig] === preset.config[key as keyof AnimConfig]
+                                );
+
                                 return (
                                     <button
                                         key={preset.name}
                                         onClick={() => setConfig({ ...preset.config })}
                                         className={cn(
-                                            "flex items-center gap-3 p-3 rounded-xl border transition-all group relative overflow-hidden",
+                                            "flex items-center gap-4 p-4 rounded-2xl border transition-all group relative overflow-hidden",
                                             isCurrentTrigger 
-                                                ? "bg-white dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-indigo-500/50" 
+                                                ? (isSelected 
+                                                    ? "bg-white dark:bg-zinc-800 border-indigo-500 shadow-md ring-1 ring-indigo-500/20" 
+                                                    : "bg-white dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 shadow-sm hover:border-zinc-300 dark:hover:border-zinc-600")
                                                 : "bg-zinc-50/50 dark:bg-zinc-900/30 border-transparent opacity-50 grayscale hover:opacity-80 hover:grayscale-0"
                                         )}
                                     >
                                         <div className={cn(
-                                            "p-2 rounded-lg transition-all",
-                                            isCurrentTrigger ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                                            "p-2.5 rounded-xl transition-all",
+                                            isSelected ? "bg-indigo-500 text-white" : (isCurrentTrigger ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400")
                                         )}>
-                                            <Icon className="w-3.5 h-3.5 group-hover:scale-110" />
+                                            <Icon className="w-4.5 h-4.5 group-hover:scale-110" />
                                         </div>
                                         <div className="flex flex-col items-start min-w-0">
-                                            <span className="text-[10px] font-black text-zinc-700 dark:text-zinc-300 truncate w-full group-hover:text-indigo-500 transition-colors">{preset.name}</span>
-                                            <span className="text-[8px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-tighter">{preset.config.trigger}</span>
+                                            <span className={cn(
+                                                "text-xs font-black truncate w-full transition-colors",
+                                                isSelected ? "text-indigo-600 dark:text-indigo-400" : "text-zinc-700 dark:text-zinc-300 group-hover:text-indigo-500"
+                                            )}>{preset.name}</span>
+                                            <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-tighter">{preset.config.trigger}</span>
                                         </div>
                                         {!isCurrentTrigger && (
                                             <div className="absolute inset-0 bg-white/20 dark:bg-black/10 backdrop-blur-[1px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span className="text-[9px] font-black text-indigo-600 bg-white px-2 py-0.5 rounded shadow-sm">CLICK TO APPLY</span>
+                                                <span className="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-lg shadow-sm">CLICK TO APPLY</span>
+                                            </div>
+                                        )}
+                                        {isSelected && (
+                                            <div className="absolute top-2 right-2">
+                                                <div className="w-2 h-2 rounded-full bg-indigo-500" />
                                             </div>
                                         )}
                                     </button>
