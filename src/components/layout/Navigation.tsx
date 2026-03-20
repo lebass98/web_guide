@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
@@ -16,9 +16,15 @@ interface NavigationProps {
 
 export function Navigation({ children }: NavigationProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
     const pathname = usePathname();
     const { tabs } = useTabs();
+
+    useEffect(() => {
+        if (pathname === "/") {
+            setIsSidebarCollapsed(true);
+        }
+    }, [pathname]);
     
     const isHome = pathname === "/";
     const showTabs = !isHome && tabs.length > 0;
