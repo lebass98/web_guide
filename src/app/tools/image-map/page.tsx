@@ -81,6 +81,8 @@ export default function ImageMapPage() {
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; areaId: string } | null>(null);
     const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
     const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
+    const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+    const [pastedCode, setPastedCode] = useState("");
 
     const updateState = (updates: Partial<typeof state> | ((prev: typeof state) => Partial<typeof state>)) => {
         setState(prev => {
@@ -127,6 +129,66 @@ export default function ImageMapPage() {
             setAreas([]);
             setSelectedId(null);
             setTempPolyPoints([]);
+        }
+    };
+
+    const handleCodeImport = () => {
+        if (!pastedCode.trim()) return;
+
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(pastedCode, "text/html");
+            
+            // Try to find map element
+            const mapElement = doc.querySelector("map");
+            if (!mapElement) {
+                alert("유효한 <map> 태그를 찾을 수 없습니다.");
+                return;
+            }
+
+            // Update map name
+            const name = mapElement.getAttribute("name");
+            if (name) setMapName(name);
+
+            // Try to find image and its src
+            const imgElement = doc.querySelector("img");
+            if (imgElement) {
+                const src = imgElement.getAttribute("src");
+                if (src && src !== "IMAGE_PATH.jpg") {
+                    setImage(src);
+                    setImageUrl(src);
+                }
+            }
+
+            // Parse areas
+            const areaElements = mapElement.querySelectorAll("area");
+            const newAreas: MapArea[] = Array.from(areaElements).map((el, idx) => {
+                const shape = (el.getAttribute("shape") || "rect") as ShapeType;
+                const coordsStr = el.getAttribute("coords") || "";
+                const coords = coordsStr.split(",").map((v) => parseInt(v.trim()) || 0);
+                
+                return {
+                    id: Math.random().toString(36).substr(2, 9) + idx,
+                    type: shape,
+                    coords,
+                    href: el.getAttribute("href") || "https://",
+                    alt: el.getAttribute("alt") || "",
+                    title: el.getAttribute("title") || "",
+                    target: (el.getAttribute("target") || "_blank") as any,
+                };
+            });
+
+            if (newAreas.length > 0) {
+                setAreas(newAreas);
+                setSelectedId(null);
+                setIsCodeModalOpen(false);
+                setPastedCode("");
+            } else {
+                alert("불러올 수 있는 <area> 태그가 없습니다.");
+            }
+        } catch (error) {
+            console.error("Failed to parse code:", error);
+            alert("코드 파싱 중 오류가 발생했습니다.");
         }
     };
 
@@ -557,6 +619,14 @@ export default function ImageMapPage() {
                             >
                                 <LinkIcon className="w-4 h-4" />
                                 <span>URL 불러오기</span>
+                            </button>
+
+                            <button
+                                onClick={() => setIsCodeModalOpen(true)}
+                                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl transition-all shadow-sm flex-shrink-0 font-semibold text-sm"
+                            >
+                                <CodeIcon className="w-4 h-4" />
+                                <span>코드 불러오기</span>
                             </button>
                         </div>
 
@@ -1421,6 +1491,62 @@ export default function ImageMapPage() {
                                 </div>
                             </div>
                         ))}
+                </div>
+            )}
+            {/* Code Import Modal */}
+            {isCodeModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="w-full max-w-2xl glass-card bg-white dark:bg-zinc-900 p-6 shadow-2xl animate-in zoom-in-95 duration-300">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-bold uppercase tracking-tight flex items-center gap-2 text-zinc-900 dark:text-white">
+                                <CodeIcon className="w-5 h-5 text-fuchsia-500" />
+                                이미지 맵 코드 불러오기
+                            </h3>
+                            <button
+                                onClick={() => setIsCodeModalOpen(false)}
+                                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+                            기존의 &lt;map&gt; 코드를 붙여넣어 영역을 한꺼번에 불러올 수 있습니다.
+                        </p>
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-widest">
+                                    HTML Code
+                                </label>
+                                <textarea
+                                    autoFocus
+                                    value={pastedCode}
+                                    onChange={(e) => setPastedCode(e.target.value)}
+                                    className="w-full h-64 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-500 outline-none text-xs font-mono transition-all text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 resize-none"
+                                    placeholder='<img src="..." usemap="#workmap">
+<map name="workmap">
+  <area shape="rect" coords="0,0,100,100" href="...">
+</map>'
+                                />
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <button
+                                    onClick={() => {
+                                        setIsCodeModalOpen(false);
+                                        setPastedCode("");
+                                    }}
+                                    className="flex-1 px-4 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400 rounded-xl font-bold text-sm transition-all"
+                                >
+                                    취소
+                                </button>
+                                <button
+                                    onClick={handleCodeImport}
+                                    className="flex-1 px-4 py-3 bg-fuchsia-500 hover:bg-fuchsia-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-fuchsia-500/20 transition-all"
+                                >
+                                    영역 불러오기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </>
