@@ -95,7 +95,17 @@ export default function SvgOptimizerPage() {
             <div className="flex flex-col lg:flex-row gap-6 h-[560px]">
                 {/* Input */}
                 <div className="flex-1 flex flex-col gap-2">
-                    <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">원본 SVG</label>
+                    <div className="flex items-center justify-between h-[38px]">
+                        <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                            원본 SVG
+                        </label>
+                        <button
+                            onClick={() => handleOptimize("")}
+                            className="text-xs font-bold text-zinc-400 hover:text-rose-500 transition-colors"
+                        >
+                            지우기
+                        </button>
+                    </div>
                     <textarea
                         className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white text-gray-900 placeholder:text-zinc-400"
                         placeholder={`<svg xmlns="http://www.w3.org/2000/svg" ...>\n  <!-- SVG 코드를 여기에 붙여넣으세요 -->\n</svg>`}
@@ -107,8 +117,10 @@ export default function SvgOptimizerPage() {
 
                 {/* Output */}
                 <div className="flex-1 flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                        <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">최적화된 SVG</label>
+                    <div className="flex items-center justify-between h-[38px]">
+                        <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                            최적화된 SVG
+                        </label>
                         <button
                             onClick={handleCopy}
                             disabled={!optimized}
