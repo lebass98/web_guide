@@ -60,18 +60,6 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                         </button>
                     </div>
 
-                    <div className={cn(
-                        "mb-10 lg:block hidden px-6 w-full",
-                        isCollapsed && "hidden"
-                    )}>
-                        <Link href="/" onClick={onClose} className="hover:opacity-80 transition-opacity">
-                            <img 
-                                src="/JKWEBTOOLS.svg" 
-                                alt="JKWEBTOOLS" 
-                                className="h-[19px] w-auto dark:invert" 
-                            />
-                        </Link>
-                    </div>
 
                     {/* Menu Section */}
                     <div className="flex flex-col items-center gap-2 w-full mb-6 flex-1 overflow-visible px-4">
