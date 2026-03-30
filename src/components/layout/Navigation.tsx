@@ -44,7 +44,7 @@ export function Navigation({ children }: NavigationProps) {
                     {/* Header Title / Logo Link */}
                     <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
                         <img 
-                            src="/JKWEBTOOLS.svg" 
+                            src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/JKWEBTOOLS.svg`}
                             alt="JKWEBTOOLS" 
                             className="h-[14px] w-auto dark:invert" 
                         />

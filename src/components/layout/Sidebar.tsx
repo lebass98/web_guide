@@ -47,7 +47,7 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                     <div className="lg:hidden w-full px-6 mb-8 flex items-center justify-between">
                         <div className="flex items-center">
                             <img 
-                                src="/JKWEBTOOLS.svg" 
+                                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/JKWEBTOOLS.svg`}
                                 alt="JKWEBTOOLS" 
                                 className="h-[14px] w-auto dark:invert" 
                             />
