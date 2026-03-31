@@ -32,32 +32,34 @@ function RemTab() {
     const onRem = (v: string) => { setRem(v); setPx(v ? (parseFloat(v) * base).toFixed(2) : ""); };
 
     return (
-        <div className="glass-card p-6 flex flex-col gap-6">
-            <div className="flex items-center gap-4">
+        <div className="glass-card p-4 sm:p-6 flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <label className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest shrink-0">기준 폰트</label>
-                <input type="range" min={8} max={24} value={base} onChange={(e) => { setBase(+e.target.value); onPx(px); }} className="flex-1 accent-indigo-500" />
-                <span className="font-mono font-bold text-indigo-500 w-12 text-right">{base}px</span>
+                <div className="flex items-center gap-4 flex-1">
+                    <input type="range" min={8} max={24} value={base} onChange={(e) => { setBase(+e.target.value); onPx(px); }} className="flex-1 accent-indigo-500" />
+                    <span className="font-mono font-bold text-indigo-500 w-12 text-right shrink-0">{base}px</span>
+                </div>
             </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-                <div className="flex flex-col gap-2">
+            <div className="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4">
+                <div className="flex flex-col gap-2 w-full">
                     <label className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">px</label>
                     <div className="flex gap-2">
-                        <input type="number" value={px} onChange={(e) => onPx(e.target.value)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 font-mono text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 font-bold text-lg" />
+                        <input type="number" value={px} onChange={(e) => onPx(e.target.value)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 font-mono text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 font-bold text-lg min-w-0" />
                         <CopyBtn value={px} unit="px" onCopy={copy} />
                     </div>
                 </div>
-                <div className="flex justify-center"><ArrowRightLeft className="w-6 h-6 text-zinc-400" /></div>
-                <div className="flex flex-col gap-2">
+                <div className="flex justify-center transform rotate-90 sm:rotate-0 py-2 sm:py-0"><ArrowRightLeft className="w-6 h-6 text-zinc-400" /></div>
+                <div className="flex flex-col gap-2 w-full">
                     <label className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">rem</label>
                     <div className="flex gap-2">
-                        <input type="number" value={rem} onChange={(e) => onRem(e.target.value)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 font-mono text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 font-bold text-lg" />
+                        <input type="number" value={rem} onChange={(e) => onRem(e.target.value)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-4 py-3 font-mono text-gray-900 dark:text-white focus:outline-none focus:border-indigo-500 font-bold text-lg min-w-0" />
                         <CopyBtn value={rem} unit="rem" onCopy={copy} />
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {[12, 14, 16, 18, 20, 24, 32, 48].map((s) => (
-                    <button key={s} onClick={() => onPx(String(s))} className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-indigo-500/10 text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl text-xs font-mono font-bold transition-all">
+                    <button key={s} onClick={() => onPx(String(s))} className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-indigo-500/10 text-zinc-600 dark:text-zinc-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl text-[10px] sm:text-xs font-mono font-bold transition-all text-center">
                         {s}px → {(s / base).toFixed(3)}rem
                     </button>
                 ))}
@@ -78,8 +80,8 @@ function ViewportTab() {
     const pxH = vhPct ? (parseFloat(vhPct) * vh / 100).toFixed(1) : "";
 
     return (
-        <div className="glass-card p-6 flex flex-col gap-6">
-            <div className="grid grid-cols-2 gap-4">
+        <div className="glass-card p-4 sm:p-6 flex flex-col gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[{ label: "뷰포트 너비", val: vw, set: setVw }, { label: "뷰포트 높이", val: vh, set: setVh }].map(({ label, val, set }) => (
                     <div key={label} className="flex flex-col gap-2">
                         <label className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{label} (px)</label>
@@ -87,7 +89,7 @@ function ViewportTab() {
                     </div>
                 ))}
             </div>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[{ label: "vw (%)", pct: vwPct, setPct: setVwPct, result: pxW, unit: "vw" }, { label: "vh (%)", pct: vhPct, setPct: setVhPct, result: pxH, unit: "vh" }].map(({ label, pct, setPct, result, unit }) => (
                     <div key={unit} className="flex flex-col gap-3">
                         <label className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">{label}</label>
@@ -170,9 +172,9 @@ export default function UnitCalculatorPage() {
     return (
         <>
             <PageHeader title="반응형 단위 계산기" description="px, rem, em, vw, vh, cm 등 다양한 단위를 즉시 변환하세요." />
-            <div className="flex flex-wrap gap-3 mb-8">
+            <div className="flex items-center gap-3 mb-8 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
                 {GROUPS.map(({ key, label, emoji }) => (
-                    <button key={key} onClick={() => setTab(key)} className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-all ${tab === key ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"}`}>
+                    <button key={key} onClick={() => setTab(key)} className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap ${tab === key ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"}`}>
                         {emoji} {label}
                     </button>
                 ))}
