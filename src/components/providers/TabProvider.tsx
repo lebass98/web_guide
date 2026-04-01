@@ -23,12 +23,35 @@ const TabContext = createContext<TabContextType | undefined>(undefined);
 
 export function TabProvider({ children }: { children: React.ReactNode }) {
     const [tabs, setTabs] = useState<Tab[]>([]);
+    const [isInitialized, setIsInitialized] = useState(false);
     const [toolStates, setToolStates] = useState<Record<string, any>>({});
     const pathname = usePathname();
     const router = useRouter();
 
+    // Load tabs from localStorage on mount
+    useEffect(() => {
+        const savedTabs = localStorage.getItem("recent_tabs");
+        if (savedTabs) {
+            try {
+                setTabs(JSON.parse(savedTabs));
+            } catch (e) {
+                console.error("Failed to load tabs from localStorage", e);
+            }
+        }
+        setIsInitialized(true);
+    }, []);
+
+    // Save tabs to localStorage whenever they change
+    useEffect(() => {
+        if (isInitialized) {
+            localStorage.setItem("recent_tabs", JSON.stringify(tabs));
+        }
+    }, [tabs, isInitialized]);
+
     // Add tab when navigating to a new tool
     useEffect(() => {
+        if (!isInitialized) return;
+
         const item = TOOL_ITEMS.find((t) => t.href === pathname);
         if (item && item.id !== "home") {
             setTabs((prev) => {
@@ -36,7 +59,7 @@ export function TabProvider({ children }: { children: React.ReactNode }) {
                 return [...prev, { id: item.id, label: item.label, path: item.href }];
             });
         }
-    }, [pathname]);
+    }, [pathname, isInitialized]);
 
     const addTab = (path: string) => {
         const item = TOOL_ITEMS.find((t) => t.href === path);

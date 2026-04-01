@@ -4,31 +4,57 @@ WebTools는 웹 개발자, 디자이너, 그리고 IT 전문가들이 일상적�
 
 ## 🌟 주요 기능 (Features)
 
-현재 제공되는 10가지 이상의 핵심 도구는 다음과 같습니다:
+현재 제공되는 17가지 이상의 핵심 도구는 다음과 같습니다:
 
+### 🛠️ 디자인 및 CSS 도구 (Design & CSS)
 1. 🎨 **CSS 그라데이션 생성기 (Advanced)**
     - 시각적인 그라데이션 바(Timeline)와 양방향 2D 컬러 피커 지원.
     - 드래그 & 드롭으로 색상 정지점(Color stop) 추가/이동 및 실시간 CSS 코드 생성.
 2. 🌈 **CSS 그라데이션 배경 갤러리**
     - 영감을 주는 20+ 개의 큐레이팅된 아름다운 CSS 그라데이션 프리셋 제공.
-    - 클릭 한 번으로 CSS 배경 코드 클립보드 복사.
-3. 🖌️ **색상 변환기 (Color Converter)**
+3. 📦 **CSS 박스 섀도우 생성기**
+    - 실시간 미리보기를 통한 그림자 효과 설정 및 CSS 코드 추출.
+4. 🎬 **CSS 애니메이션 생성기**
+    - 복잡한 `keyframes` 애니메이션을 시각적으로 구성하고 즉시 적용 가능.
+5. 🖼️ **SVG 최적화 (SVG Optimizer)**
+    - SVG 파일의 용량을 줄이고 코드를 깨끗하게 정리.
+6. 📐 **이미지 맵핑 (Image Mapping)**
+    - 이미지의 특정 영역에 링크를 걸 수 있는 HTML `map` 코드 생성 지원.
+7. 🧊 **Favicon 생성기**
+    - 모든 사이즈의 파비콘과 아이콘 파일을 한 번에 생성.
+
+### 🎨 색상 도구 (Color Tools)
+8. 🖌️ **색상 변환기 (Color Converter)**
     - HEX, RGB, HSL 포맷 간의 양방향 실시간 변환 지원.
-4. 📝 **JSON 포매터 (JSON Formatter)**
+9. 📚 **색상 팔레트 (Color Palette)**
+    - 전문적인 색상 조합 및 팔레트 추천 기능.
+
+### 📝 데이터 및 텍스트 도구 (Data & Text)
+10. 📝 **JSON 포매터 (JSON Formatter)**
     - 복잡하고 압축된 JSON 데이터를 보기 좋게 정렬(Beautify)하거나 압축(Minify).
-    - 실시간 문법 유효성 검사(Validation) 기능 포함.
-5. 🔣 **HTML 특수문자 변환기**
+11. 🔣 **HTML 특수문자 변환기**
     - 텍스트 내의 특수 기호를 안전한 HTML Entity 문자로 인코딩/디코딩.
-6. 🔠 **텍스트 변환기 (Text Transformer)**
+12. 🔠 **텍스트 변환기 (Text Transformer)**
     - 대소문자 변환, 단어 수 세기, 공백 제거, 텍스트 치환 등 텍스트 가공.
-7. 🔐 **Base64 변환기**
+13. 🔐 **Base64 변환기**
     - 문자열 데이터를 Base64 형식으로 빠르게 인코딩 및 디코딩.
-8. 🔗 **URL 인코더 (URL Encoder/Decoder)**
+14. 🔗 **URL 인코더 (URL Encoder/Decoder)**
     - URL 매개변수를 안전하게 전송하기 위한 인코딩 및 디코딩 기능.
-9. 📱 **QR 코드 생성기**
+
+### ⚙️ 유틸리티 (Utilities)
+15. 📱 **QR 코드 생성기**
     - URL이나 텍스트를 입력하면 즉석에서 스캔 가능한 QR 코드로 변환 및 다운로드.
-10. ⏱️ **타임스탬프 변환기 (Timestamp Converter)**
+16. ⏱️ **타임스탬프 변환기 (Timestamp Converter)**
     - Unix 에포크 시점(Epoch time)을 사람이 읽을 수 있는 날짜/시간 포맷으로 변환.
+17. 📏 **단위 계산기 (Unit Calculator)**
+    - PX, REM, EM 등 웹 디자인 단위 간 실시간 상호 변환.
+
+## ✨ UI/UX 및 편의 기능 (UX Features)
+
+- **최근 메뉴 유지 (Persistence)**: `localStorage`를 사용하여 새로고침을 해도 이전에 방문했던 도구 목록(상단 탭)이 그대로 유지됩니다.
+- **Glassmorphism UI**: 현대적이고 세련된 투명 배경 기반의 디자인 시스템 적용.
+- **Responsive Navigation**: PC와 모바일 환경 모두에 최적화된 사이드바 및 헤더 시스템.
+- **Dark Mode Support**: 눈이 편안한 다크 모드와 깨끗한 라이트 모드 간 실시간 전환 지원.
 
 ## 🚀 기술 스택 (Tech Stack)
 
