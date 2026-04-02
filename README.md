@@ -4,12 +4,13 @@ WebTools는 웹 개발자, 디자이너, 그리고 IT 전문가들이 일상적�
 
 ## 🌟 주요 기능 (Features)
 
-현재 제공되는 17가지 이상의 핵심 도구는 다음과 같습니다:
+현재 제공되는 **18가지 이상의 핵심 도구**는 다음과 같습니다:
 
 ### 🛠️ 디자인 및 CSS 도구 (Design & CSS)
 1. 🎨 **CSS 그라데이션 생성기 (Advanced)**
     - 시각적인 그라데이션 바(Timeline)와 양방향 2D 컬러 피커 지원.
     - 드래그 & 드롭으로 색상 정지점(Color stop) 추가/이동 및 실시간 CSS 코드 생성.
+    - **모바일 최적화**: 좁은 화면에서도 RGBA 입력 및 컨트롤러가 유연하게 반응합니다.
 2. 🌈 **CSS 그라데이션 배경 갤러리**
     - 영감을 주는 20+ 개의 큐레이팅된 아름다운 CSS 그라데이션 프리셋 제공.
 3. 📦 **CSS 박스 섀도우 생성기**
@@ -28,6 +29,7 @@ WebTools는 웹 개발자, 디자이너, 그리고 IT 전문가들이 일상적�
     - HEX, RGB, HSL 포맷 간의 양방향 실시간 변환 지원.
 9. 📚 **색상 팔레트 (Color Palette)**
     - 전문적인 색상 조합 및 팔레트 추천 기능.
+    - **모바일 레이아웃**: 스마트폰 환경에서는 한 줄에 2개씩 배치되어 가독성이 극대화되었습니다.
 
 ### 📝 데이터 및 텍스트 도구 (Data & Text)
 10. 📝 **JSON 포매터 (JSON Formatter)**
@@ -41,36 +43,38 @@ WebTools는 웹 개발자, 디자이너, 그리고 IT 전문가들이 일상적�
 14. 🔗 **URL 인코더 (URL Encoder/Decoder)**
     - URL 매개변수를 안전하게 전송하기 위한 인코딩 및 디코딩 기능.
 
-### ⚙️ 유틸리티 (Utilities)
-15. 📱 **QR 코드 생성기**
+### 🌐 네트워크 및 유틸리티 (Network & Utilities)
+15. 🌐 **내 IP 확인하기 (My IP Checker)**
+    - 현재 사용 중인 공인 IP 주소(IPv4/IPv6)와 ISP, 위치 정보를 즉시 확인.
+    - **IPv6 완벽 지원**: 5G/LTE 환경의 긴 주소도 잘림 없이 표시되며, IPv4 동시 확인 기능을 제공합니다.
+16. 📱 **QR 코드 생성기**
     - URL이나 텍스트를 입력하면 즉석에서 스캔 가능한 QR 코드로 변환 및 다운로드.
-16. ⏱️ **타임스탬프 변환기 (Timestamp Converter)**
+17. ⏱️ **타임스탬프 변환기 (Timestamp Converter)**
     - Unix 에포크 시점(Epoch time)을 사람이 읽을 수 있는 날짜/시간 포맷으로 변환.
-17. 📏 **단위 계산기 (Unit Calculator)**
+18. 📏 **단위 계산기 (Unit Calculator)**
     - PX, REM, EM 등 웹 디자인 단위 간 실시간 상호 변환.
 
-## ✨ UI/UX 및 편의 기능 (UX Features)
+## ✨ 독보적인 UI/UX 강점 (Premium UX)
 
-- **최근 메뉴 유지 (Persistence)**: `localStorage`를 사용하여 새로고침을 해도 이전에 방문했던 도구 목록(상단 탭)이 그대로 유지됩니다.
-- **Glassmorphism UI**: 현대적이고 세련된 투명 배경 기반의 디자인 시스템 적용.
-- **Responsive Navigation**: PC와 모바일 환경 모두에 최적화된 사이드바 및 헤더 시스템.
-- **Dark Mode Support**: 눈이 편안한 다크 모드와 깨끗한 라이트 모드 간 실시간 전환 지원.
+- **상단 탭 시스템 (Smart Tabs)**: 방문했던 도구들이 상단 탭으로 자동 등록되어 여러 도구를 동시에 오가며 작업할 수 있습니다.
+- **최근 메뉴 유지 (Persistence)**: `localStorage` 연동으로 새로고침 후에도 사용자의 탭 상태와 최근 이용 정보가 유지됩니다.
+- **완벽한 반응형 (Mobile First)**: 
+    - 모바일 햄버거 메뉴 내 수직 스크롤 지원.
+    - 긴 텍스트(긴 IP 주소 등)의 자동 줄바꿈 및 오버플로우 방지.
+    - 모바일 기기에서의 터치 친화적 인터폼 요소들.
+- **Glassmorphism Design**: 현대적이고 세련된 투명 배경 기반의 고품질 디자인 시스템.
+- **Dark/Light Mode**: 시스템 설정 및 수동 전환을 완벽하게 지원하는 가변 테마.
 
 ## 🚀 기술 스택 (Tech Stack)
 
-본 프로젝트는 최첨단 현대 웹 생태계를 기반으로 구축되었습니다:
-
-- **Framework**: [Next.js](https://nextjs.org/) (App Router 기반)
+- **Framework**: [Next.js](https://nextjs.org/) (App Router기반)
 - **Language**: TypeScript
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **UI Components**: 기능성에 초점을 맞춘 커스텀 Glassmorphism 스타일 및 다크 테마/라이트 테마 가변 대응.
-- **Color Picker**: [react-colorful](https://github.com/omgovich/react-colorful) (빠르고 가벼운 컬러 픽커)
-- **Deployment**: **GitHub Pages** (Static HTML Export + GitHub Actions 자동화)
+- **State Management**: React Context (Tab Persistence & Theme)
+- **Deployment**: **GitHub Pages** (GitHub Actions를 통한 정적 배포 자동화)
 
 ## 📦 설치 및 실행 방법 (Installation & Getting Started)
-
-이 프로젝트를 로컬 환경에서 실행하려면 Node.js(v18 이상 권장)가 필요합니다.
 
 ```bash
 # 1. 저장소 클론
@@ -86,18 +90,10 @@ npm run dev
 
 터미널에서 서버가 성공적으로 실행되면 브라우저를 열고 [http://localhost:3000](http://localhost:3000) 로 접속하세요.
 
-## 🌐 GitHub Pages 배포 (Deployment)
+## 🌐 배포 안내 (Deployment)
 
-이 프로젝트는 `.github/workflows/deploy.yml` 설정을 통해 GitHub Actions로 **완전 자동화된 배포**를 지원합니다.
+이 프로젝트는 `.github/workflows/deploy.yml` 설정을 통해 GitHub Actions로 배포됩니다.
+- **접속 가능 URL**: `https://lebass98.github.io/web_guide`
 
-1. 로컬에서 변경된 코드를 `main` 브랜치에 Push (`git push origin main`)
-2. GitHub 서버가 변경 사항을 감지하고 `next build` (output: 'export' 설정에 의한 정적 사이트 렌더링)
-3. 빌드된 정적 결과물(`out/`)이 자동으로 GitHub Pages 환경으로 배포됩니다.
-4. **접속 가능 URL**: `https://lebass98.github.io/web_guide` (GitHub Pages 옵션 활성화 후 구동됩니다.)
-
-_(참고: `next.config.ts` 파일 내에 `basePath: '/web_guide'`가 알맞게 설정되어 있어 하위 경로 에셋 깨짐 현상이 방지되어 있습니다.)_
-
-## 🤝 라이선스 (License)
-
-이 프로젝트는 오픈소스로 누구나 자유롭게 참고하고 활용할 수 있습니다.
+---
 Happy Coding! 🎉
