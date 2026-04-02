@@ -119,18 +119,18 @@ export function ColorPicker({ color, opacity, onChange, className }: ColorPicker
 
                 <div className="flex flex-col gap-2 mt-2">
                     {/* Labels Row */}
-                    <div className="flex items-center gap-2">
+                    <div className="grid grid-cols-4 gap-2">
                         {["R", "G", "B", "A"].map((label) => (
                             <label
                                 key={label}
-                                className="flex-1 text-[10px] font-bold text-zinc-400 uppercase tracking-wider text-center"
+                                className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider text-center"
                             >
                                 {label}
                             </label>
                         ))}
                     </div>
                     {/* Inputs Row */}
-                    <div className="flex items-center gap-2">
+                    <div className="grid grid-cols-4 gap-2">
                         {["r", "g", "b", "a"].map((field) => (
                             <input
                                 key={field}

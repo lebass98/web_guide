@@ -147,7 +147,7 @@ export default function CssGradientPage() {
             {/* Main Designer Workspace */}
             <div className="bg-white dark:bg-zinc-900 rounded-[28px] shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden">
                 {/* Top Bar: Gradient Bar & Controls */}
-                <div className="flex flex-col lg:flex-row p-8 items-center gap-10 border-b border-gray-100 dark:border-zinc-800 bg-gray-50/30 dark:bg-zinc-800/30">
+                <div className="flex flex-col lg:flex-row p-6 md:p-8 items-center gap-8 md:gap-10 border-b border-gray-100 dark:border-zinc-800 bg-gray-50/30 dark:bg-zinc-800/30">
                     {/* Left: Gradient Bar */}
                     <div className="flex-1 w-full relative">
                         <GradientBar
@@ -160,7 +160,7 @@ export default function CssGradientPage() {
                     </div>
 
                     {/* Right: Controls */}
-                    <div className="flex items-center gap-6 pt-4 lg:pt-0">
+                    <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 pt-4 lg:pt-0">
                         <div className="flex bg-white dark:bg-zinc-800 rounded-md border border-zinc-200 dark:border-zinc-700 shadow-sm p-1">
                              <button
                                 onClick={() => setGradientType("linear")}
@@ -190,7 +190,7 @@ export default function CssGradientPage() {
                             <AngleDial angle={angle} onChange={setAngle} />
                         )}
 
-                        <div className="flex gap-2 border-l border-zinc-200 pl-6 h-8 items-center">
+                        <div className="flex flex-wrap justify-center gap-2 border-zinc-200 md:border-l md:pl-6 h-auto md:h-8 items-center">
                             {presets.map((p, i) => (
                                 <button
                                     key={i}
@@ -207,7 +207,7 @@ export default function CssGradientPage() {
                 </div>
 
                 {/* Edit Area: 3 Columns */}
-                <div className="flex flex-col lg:flex-row p-8 gap-10">
+                <div className="flex flex-col lg:flex-row p-6 md:p-8 gap-8 md:gap-10">
                     {/* Cols 1 & 2: Picker and HEX/RGBA (From ColorPicker component) */}
                     {stops.find((s) => s.id === activeStopId) ? (
                         <div className="lg:w-[432px]">
@@ -221,7 +221,7 @@ export default function CssGradientPage() {
                             />
                         </div>
                     ) : (
-                        <div className="w-[432px]" /> // Placeholder width
+                        <div className="hidden lg:block lg:w-[432px]" /> // Placeholder width
                     )}
 
                     {/* Col 3: Stops List */}
@@ -235,7 +235,7 @@ export default function CssGradientPage() {
                                     key={stop.id}
                                     onClick={() => setActiveStopId(stop.id)}
                                     className={cn(
-                                        "flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors border",
+                                        "flex items-center gap-2 md:gap-3 p-2 rounded-lg cursor-pointer transition-colors border",
                                         activeStopId === stop.id
                                             ? "bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 shadow-sm"
                                             : "bg-transparent border-transparent hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
