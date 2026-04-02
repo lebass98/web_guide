@@ -41,7 +41,7 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
             )}>
                 <aside className={cn(
                     "w-full h-full glass-sidebar flex flex-col items-center py-6 relative transition-all duration-300",
-                    isCollapsed ? "overflow-y-visible overflow-x-visible" : "overflow-y-auto overflow-x-hidden"
+                    (isCollapsed && !isOpen) ? "overflow-y-visible overflow-x-visible" : "overflow-y-auto overflow-x-hidden"
                 )}>
                     {/* Mobile Close Button & Title */}
                     <div className="lg:hidden w-full px-6 mb-8 flex items-center justify-between">
