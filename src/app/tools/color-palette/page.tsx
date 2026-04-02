@@ -140,7 +140,7 @@ export default function ColorPalettePage() {
                 </div>
 
                 {/* Palette Display */}
-                <div className="grid grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     {palette.map((color, i) => (
                         <button
                             key={i}
@@ -160,7 +160,7 @@ export default function ColorPalettePage() {
                 {/* Tints & Shades */}
                 <div className="glass-card p-6 flex flex-col gap-4">
                     <h3 className="font-bold text-gray-900 dark:text-white text-lg">명도 변형</h3>
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-5 md:flex gap-2">
                         {[95, 85, 75, 65, 55, 45, 35, 25, 15, 5].map((lightness) => {
                             const hex = hslToHex(h, s, lightness);
                             return (
