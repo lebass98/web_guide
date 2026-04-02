@@ -20,6 +20,7 @@ import {
     FileCode2,
     Ruler,
     Image,
+    Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -143,6 +144,13 @@ export default function Home() {
             href: "/tools/favicon-generator",
             icon: Image,
             color: "indigo",
+        },
+        {
+            title: "내 IP 확인하기",
+            desc: "현재 접속 중인 공인 IP 주소와 간략한 네트워크 정보를 확인해보세요.",
+            href: "/tools/my-ip",
+            icon: Globe,
+            color: "emerald",
         },
     ];
 
