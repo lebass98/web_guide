@@ -83,7 +83,7 @@ export default function MyIpPage() {
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-200" />
                 <div className="relative bg-white dark:bg-zinc-900 rounded-[28px] shadow-sm border border-gray-100 dark:border-zinc-800 p-8 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
                     {/* Decorative Background */}
-                    <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-500/5 dark:bg-emerald-400/5 rounded-full blur-3xl opacity-50" />
+                    
                     
                     <div className="flex flex-col md:flex-row items-center gap-6 z-10 w-full lg:w-auto text-center md:text-left">
                         <div className="w-20 h-20 rounded-3xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner shrink-0 scale-90 md:scale-100">
