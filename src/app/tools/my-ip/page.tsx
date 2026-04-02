@@ -81,7 +81,7 @@ export default function MyIpPage() {
             {/* Main IP Card */}
             <div className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-200" />
-                <div className="relative bg-white dark:bg-zinc-900 rounded-[28px] shadow-sm border border-gray-100 dark:border-zinc-800 p-8 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 overflow-hidden">
+                <div className="relative bg-white dark:bg-zinc-900 rounded-[28px] shadow-sm border border-gray-100 dark:border-zinc-800 p-8 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
                     {/* Decorative Background */}
                     <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-500/5 dark:bg-emerald-400/5 rounded-full blur-3xl opacity-50" />
                     
@@ -238,7 +238,7 @@ function InfoCard({ icon: Icon, label, value, subValue }: { icon: any, label: st
                 <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{label}</span>
             </div>
             <div className="space-y-1">
-                <p className="text-lg font-bold text-zinc-900 dark:text-white truncate">
+                <p className="text-lg font-bold text-zinc-900 dark:text-white break-all">
                     {value || "정보 없음"}
                 </p>
                 {subValue && (
