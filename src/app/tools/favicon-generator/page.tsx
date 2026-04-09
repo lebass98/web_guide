@@ -28,58 +28,15 @@ export default function FaviconGeneratorPage() {
     const [bold, setBold] = useState(true);
     const [selectedSize, setSelectedSize] = useState(64);
 
-    const draw = useCallback(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
+    const drawToCanvas = useCallback((canvas: HTMLCanvasElement, size: number) => {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        canvas.width = selectedSize;
-        canvas.height = selectedSize;
-        ctx.clearRect(0, 0, selectedSize, selectedSize);
-
-        // Background with rounded corners
-        const radius = (borderRadius / 100) * (selectedSize / 2);
-        ctx.beginPath();
-        ctx.moveTo(radius, 0);
-        ctx.lineTo(selectedSize - radius, 0);
-        ctx.quadraticCurveTo(selectedSize, 0, selectedSize, radius);
-        ctx.lineTo(selectedSize, selectedSize - radius);
-        ctx.quadraticCurveTo(selectedSize, selectedSize, selectedSize - radius, selectedSize);
-        ctx.lineTo(radius, selectedSize);
-        ctx.quadraticCurveTo(0, selectedSize, 0, selectedSize - radius);
-        ctx.lineTo(0, radius);
-        ctx.quadraticCurveTo(0, 0, radius, 0);
-        ctx.closePath();
-        ctx.fillStyle = bgColor;
-        ctx.fill();
-
-        // Text / Emoji
-        const content = mode === "emoji" ? emoji : text;
-        const size = Math.round(selectedSize * (fontSize / 100));
-        ctx.font = `${bold && mode === "text" ? "900" : "400"} ${size}px ${mode === "emoji" ? "Segoe UI Emoji, Apple Color Emoji, sans-serif" : "system-ui, -apple-system, sans-serif"}`;
-        ctx.fillStyle = mode === "emoji" ? "transparent" : textColor;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        if (mode === "emoji") {
-            ctx.font = `${size}px Segoe UI Emoji, Apple Color Emoji, sans-serif`;
-            ctx.fillStyle = "black";
-        } else {
-            ctx.fillStyle = textColor;
-        }
-        ctx.fillText(content.slice(0, 2), selectedSize / 2, selectedSize / 2 + (mode === "emoji" ? 1 : 2));
-    }, [bgColor, borderRadius, bold, emoji, fontSize, mode, selectedSize, text, textColor]);
-
-    useEffect(() => { draw(); }, [draw]);
-
-    const downloadPng = (size: number) => {
-        const canvas = document.createElement("canvas");
         canvas.width = size;
         canvas.height = size;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
+        ctx.clearRect(0, 0, size, size);
 
+        // Background with rounded corners
         const radius = (borderRadius / 100) * (size / 2);
         ctx.beginPath();
         ctx.moveTo(radius, 0);
@@ -95,13 +52,45 @@ export default function FaviconGeneratorPage() {
         ctx.fillStyle = bgColor;
         ctx.fill();
 
+        // Text / Emoji
         const content = mode === "emoji" ? emoji : text;
         const fSize = Math.round(size * (fontSize / 100));
-        ctx.font = `${bold && mode === "text" ? "900" : "400"} ${fSize}px ${mode === "emoji" ? "Segoe UI Emoji, Apple Color Emoji, sans-serif" : "system-ui, -apple-system, sans-serif"}`;
-        ctx.fillStyle = mode === "emoji" ? "black" : textColor;
+        
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(content.slice(0, 2), size / 2, size / 2 + 2);
+
+        if (mode === "emoji") {
+            ctx.font = `${fSize}px "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif`;
+            ctx.fillStyle = "black"; // Color doesn't matter much for emojis but good practice
+        } else {
+            ctx.font = `${bold ? "900" : "400"} ${fSize}px system-ui, -apple-system, sans-serif`;
+            ctx.fillStyle = textColor;
+        }
+
+        // Adjust Y position slightly for better centering
+        const yOffset = mode === "emoji" ? size * 0.05 : size * 0.02;
+        ctx.fillText(content.slice(0, 2), size / 2, size / 2 + yOffset);
+    }, [bgColor, borderRadius, bold, emoji, fontSize, mode, text, textColor]);
+
+    const previewCanvasesRef = useRef<Record<number, HTMLCanvasElement>>({});
+    const tabPreviewRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+        // Draw to all preview sizes
+        [16, 32, 64, 128].forEach(s => {
+            const canvas = previewCanvasesRef.current[s];
+            if (canvas) drawToCanvas(canvas, s);
+        });
+        
+        // Draw to tab preview
+        if (tabPreviewRef.current) {
+            drawToCanvas(tabPreviewRef.current, 16);
+        }
+    }, [drawToCanvas]);
+
+    const downloadPng = (size: number) => {
+        const canvas = document.createElement("canvas");
+        drawToCanvas(canvas, size);
 
         const link = document.createElement("a");
         link.download = `favicon-${size}x${size}.png`;
@@ -126,7 +115,8 @@ export default function FaviconGeneratorPage() {
                         <div className="flex gap-6 items-end">
                             {[16, 32, 64, 128].map((s) => (
                                 <div key={s} className="flex flex-col items-center gap-2">
-                                    <canvas ref={s === selectedSize ? canvasRef : undefined}
+                                    <canvas 
+                                        ref={el => { if (el) previewCanvasesRef.current[s] = el; }}
                                         width={s} height={s}
                                         className="rounded shadow-lg"
                                         style={{ imageRendering: s <= 32 ? "pixelated" : "auto", width: s, height: s }}
@@ -135,10 +125,9 @@ export default function FaviconGeneratorPage() {
                                 </div>
                             ))}
                         </div>
-                        <canvas ref={selectedSize === 64 ? undefined : canvasRef} width={selectedSize} height={selectedSize} className="hidden" />
                         <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-zinc-100 rounded-xl">
                             <div className="w-4 h-4 rounded-[3px] overflow-hidden">
-                                <canvas ref={canvasRef} width={16} height={16} style={{ width: 16, height: 16 }} />
+                                <canvas ref={tabPreviewRef} width={16} height={16} style={{ width: 16, height: 16 }} />
                             </div>
                             <span className="text-white dark:text-zinc-900 text-sm font-semibold">Tab Preview</span>
                         </div>
