@@ -22,6 +22,7 @@ import {
     Image,
     Globe,
     Languages,
+    FileDiff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -159,6 +160,13 @@ export default function Home() {
             href: "/tools/translator",
             icon: Languages,
             color: "blue",
+        },
+        {
+            title: "코드 비교",
+            desc: "두 개의 텍스트나 코드를 좌우로 배치하여 변경된 부분을 한눈에 비교하세요.",
+            href: "/tools/code-diff",
+            icon: FileDiff,
+            color: "cyan",
         },
     ];
 
