@@ -18,6 +18,7 @@ import {
     Ruler,
     Image,
     Globe,
+    Languages,
 } from "lucide-react";
 
 export const TOOL_ITEMS = [
@@ -39,5 +40,6 @@ export const TOOL_ITEMS = [
     { icon: FileCode2, label: "SVG 최적화", href: "/tools/svg-optimizer", id: "svg-optimizer" },
     { icon: Ruler, label: "단위 계산기", href: "/tools/unit-calculator", id: "unit-calculator" },
     { icon: Image, label: "Favicon 생성기", href: "/tools/favicon-generator", id: "favicon-generator" },
+    { icon: Languages, label: "번역기", href: "/tools/translator", id: "translator" },
     { icon: Globe, label: "내 IP 확인하기", href: "/tools/my-ip", id: "my-ip" },
 ];

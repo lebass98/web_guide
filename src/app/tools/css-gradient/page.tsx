@@ -417,10 +417,27 @@ export default function CssGradientPage() {
                     )}
                     
                     {/* Center Glass Item to show off the glow */}
-                    <div className="relative z-10 w-64 h-40 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col items-center justify-center text-white/70 shadow-2xl">
-                        <Sparkles className="w-8 h-8 mb-2 opacity-50" />
-                        <span className="font-semibold tracking-wider text-sm">Glass Component</span>
-                    </div>
+
+                    {/* Random Generate Button */}
+                    <button
+                        onClick={() => {
+                            setGlowHue(Math.floor(Math.random() * 361));
+                            setGlowSaturation(Math.floor(Math.random() * 51) + 50);
+                            setGlowLightness(Math.floor(Math.random() * 51) + 30);
+                            setGlowMaskSize(Math.floor(Math.random() * 51) + 20);
+                            setGlowScale(Number((Math.random() * 1.5 + 0.5).toFixed(1)));
+                            setGlowX(Math.floor(Math.random() * 601) - 300);
+                            setGlowY(Math.floor(Math.random() * 601) - 300);
+                            if (Math.random() > 0.7) {
+                                setNoiseOverlay(true);
+                                setNoiseIntensity(Math.floor(Math.random() * 51) + 10);
+                            }
+                        }}
+                        className="absolute bottom-4 right-4 z-20 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-white/70 hover:text-white backdrop-blur-md transition-all shadow-lg flex items-center gap-1.5 active:scale-95"
+                        title="무작위 스타일 생성"
+                    >
+                        <Sparkles className="w-3.5 h-3.5" /> Random
+                    </button>
                 </div>
 
                 {/* Workspace */}
@@ -519,37 +536,18 @@ export default function CssGradientPage() {
                             )}
                         </div>
 
-                        <div className="pt-4 flex flex-col gap-3">
-                            <button
-                                onClick={() => {
-                                    setGlowHue(Math.floor(Math.random() * 361));
-                                    setGlowSaturation(Math.floor(Math.random() * 51) + 50);
-                                    setGlowLightness(Math.floor(Math.random() * 51) + 30);
-                                    setGlowMaskSize(Math.floor(Math.random() * 51) + 20);
-                                    setGlowScale(Number((Math.random() * 1.5 + 0.5).toFixed(1)));
-                                    setGlowX(Math.floor(Math.random() * 601) - 300);
-                                    setGlowY(Math.floor(Math.random() * 601) - 300);
-                                    if (Math.random() > 0.7) {
-                                        setNoiseOverlay(true);
-                                        setNoiseIntensity(Math.floor(Math.random() * 51) + 10);
-                                    }
-                                }}
-                                className="w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-[15px] bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98]"
-                            >
-                                <Sparkles className="w-4 h-4" /> 무작위 스타일 생성
-                            </button>
-
+                        <div className="pt-4">
                             <button
                                 onClick={() => {
                                     const code = `.glow-element {\n  position: absolute;\n  width: 600px;\n  height: 600px;\n  background: radial-gradient(\n    circle, \n    hsl(${glowHue}, ${glowSaturation}%, ${glowLightness}%) 0%, \n    transparent ${glowMaskSize}%\n  );\n  filter: blur(32px);\n  transform: translate(${glowX}px, ${glowY}px) scale(${glowScale});\n  mix-blend-mode: screen;\n  pointer-events: none;\n}` + (noiseOverlay ? `\n\n.glow-noise {\n  position: absolute;\n  inset: 0;\n  mix-blend-mode: overlay;\n  opacity: ${noiseIntensity / 100};\n  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");\n  pointer-events: none;\n}` : '');
                                     navigator.clipboard.writeText(code);
                                 }}
-                                className="w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
+                                className="w-full py-4 rounded-xl flex items-center justify-center gap-2 font-semibold bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
                             >
                                 <Copy className="w-4 h-4" /> CSS 코드 복사하기
                             </button>
-                            <p className="text-center text-xs text-zinc-500 mt-2 px-4 leading-relaxed">
-                                CSS <strong>radial-gradient</strong>, <strong>blur</strong>와 <strong>mix-blend-mode</strong> 조합의 점진적 네온 발광.
+                            <p className="text-center text-xs text-zinc-500 mt-4 px-4 leading-relaxed">
+                                CSS <strong>radial-gradient</strong>, <strong>blur</strong>와 <strong>mix-blend-mode</strong> 조합의 점진적 네온 발광 효과.
                             </p>
                         </div>
                     </div>

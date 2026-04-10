@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
     X,
     ChevronLeft,
@@ -20,6 +21,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: SidebarProps) {
     const pathname = usePathname();
+    const [hoverTool, setHoverTool] = useState<{ label: string; top: number } | null>(null);
 
     return (
         <>
@@ -39,10 +41,19 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                 isCollapsed ? "lg:w-[80px]" : "lg:w-[240px]", // PC width
                 isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
             )}>
-                <aside className={cn(
-                    "w-full h-full glass-sidebar flex flex-col items-center py-6 relative transition-all duration-300",
-                    (isCollapsed && !isOpen) ? "overflow-y-visible overflow-x-visible" : "overflow-y-auto overflow-x-hidden"
-                )}>
+                {/* Global Tooltip for Collapsed State */}
+                {isCollapsed && hoverTool && (
+                    <div 
+                        className="fixed left-[80px] ml-4 px-3 py-2 bg-gray-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-gray-900 text-[11px] font-bold rounded-xl whitespace-nowrap z-[999] shadow-2xl pointer-events-none border border-white/10 dark:border-black/10 lg:block hidden animate-in fade-in zoom-in-95 duration-200"
+                        style={{ top: hoverTool.top, transform: 'translateY(-50%)' }}
+                    >
+                        {hoverTool.label}
+                        {/* Tooltip Arrow */}
+                        <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-gray-900/95 dark:bg-white/95 rotate-45 border-l border-b border-white/10 dark:border-black/10" />
+                    </div>
+                )}
+
+                <aside className="w-full h-full glass-sidebar flex flex-col items-center py-6 relative transition-all duration-300 overflow-hidden">
                     {/* Mobile Close Button & Title */}
                     <div className="lg:hidden w-full px-6 mb-8 flex items-center justify-between">
                         <div className="flex items-center">
@@ -62,7 +73,7 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
 
 
                     {/* Menu Section */}
-                    <div className="flex flex-col items-center gap-2 w-full mb-6 flex-1 overflow-visible px-4">
+                    <div className="flex flex-col items-center gap-2 w-full mb-6 flex-1 px-4 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-zinc-400 dark:hover:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent pr-2">
                         <span className={cn(
                             "text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2 transition-opacity duration-300",
                             "lg:block",
@@ -76,10 +87,18 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                 key={i}
                                 href={item.href}
                                 onClick={onClose}
+                                onMouseEnter={(e) => {
+                                    if (isCollapsed) {
+                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        // Set tooltip at vertical center of hovered item
+                                        setHoverTool({ label: item.label, top: rect.top + rect.height / 2 });
+                                    }
+                                }}
+                                onMouseLeave={() => setHoverTool(null)}
                                 className={cn(
                                     "p-3 rounded-xl transition-all duration-200 group relative flex items-center justify-start",
                                     // Mobile: always full width. PC: based on collapse
-                                    "w-full gap-4 px-4",
+                                    "w-full gap-4 px-4 shrink-0",
                                     isCollapsed ? "lg:w-12 lg:h-12 lg:justify-center lg:px-0" : "lg:w-full lg:gap-4 lg:px-4",
                                     pathname === item.href
                                         ? "bg-gray-100 dark:bg-zinc-800 text-[#1c1c1c] dark:text-white shadow-sm"
@@ -94,15 +113,6 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                 )}>
                                     {item.label}
                                 </span>
-
-                                {/* Custom Tooltip for Collapsed State */}
-                                {isCollapsed && (
-                                    <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-gray-900 text-[11px] font-bold rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-[999] shadow-2xl pointer-events-none border border-white/10 dark:border-black/10 lg:block hidden">
-                                        {item.label}
-                                        {/* Tooltip Arrow */}
-                                        <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-gray-900/95 dark:bg-white/95 rotate-45 border-l border-b border-white/10 dark:border-black/10" />
-                                    </div>
-                                )}
 
                                 {pathname === item.href && (
                                     <div className={cn(

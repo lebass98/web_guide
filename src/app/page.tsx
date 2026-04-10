@@ -21,6 +21,7 @@ import {
     Ruler,
     Image,
     Globe,
+    Languages,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -151,6 +152,13 @@ export default function Home() {
             href: "/tools/my-ip",
             icon: Globe,
             color: "emerald",
+        },
+        {
+            title: "번역기",
+            desc: "입력한 텍스트를 원하는 언어로 설정하여 바로 번역 결과를 확인하세요.",
+            href: "/tools/translator",
+            icon: Languages,
+            color: "blue",
         },
     ];
 
