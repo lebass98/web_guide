@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Copy, Plus, Trash2, Palette } from "lucide-react";
+import { Copy, Plus, Trash2, Palette, Sparkles } from "lucide-react";
 import { AngleDial } from "@/components/ui/AngleDial";
 import { GradientBar } from "@/components/ui/GradientBar";
 import { ColorPicker } from "@/components/ui/ColorPicker";
@@ -34,6 +34,19 @@ const hexToRgba = (hex: string, opacity: number = 100) => {
 };
 
 export default function CssGradientPage() {
+    const [generatorMode, setGeneratorMode] = useState<"gradient" | "glow">("gradient");
+    
+    // Glow UI strict replication state
+    const [glowHue, setGlowHue] = useState(250);
+    const [glowSaturation, setGlowSaturation] = useState(80);
+    const [glowLightness, setGlowLightness] = useState(60);
+    const [glowMaskSize, setGlowMaskSize] = useState(40);
+    const [glowScale, setGlowScale] = useState(1.0);
+    const [noiseOverlay, setNoiseOverlay] = useState(false);
+    const [noiseIntensity, setNoiseIntensity] = useState(35);
+    const [glowX, setGlowX] = useState(0);
+    const [glowY, setGlowY] = useState(0);
+
     const [gradientType, setGradientType] = useState<"linear" | "radial">("linear");
     const [angle, setAngle] = useState(90);
     const [stops, setStops] = useState<ColorStop[]>([
@@ -125,12 +138,63 @@ export default function CssGradientPage() {
 
     return (
         <div className="space-y-10">
+            <style>{`
+                .glow-slider {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    height: 8px;
+                    background: #27272A;
+                    border-radius: 999px;
+                    outline: none;
+                }
+                .glow-slider::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: white;
+                    cursor: pointer;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                }
+                .hue-slider {
+                    background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+                }
+            `}</style>
             <PageHeader
-                title="CSS 그라데이션 생성기"
-                description="다양한 색상과 방향을 조합하여 아름다운 CSS 그라데이션을 만들어보세요."
+                title="CSS 스타일 생성기"
+                description="아름다운 CSS 그라데이션과 네온 Glow 효과를 손쉽게 만들어보세요."
             />
 
-            {/* Gradient Preview Area */}
+            {/* Tabs */}
+            <div className="flex justify-center mb-8 -mt-2">
+                <div className="inline-flex glass-card p-1 rounded-2xl">
+                    <button
+                        onClick={() => setGeneratorMode("gradient")}
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            generatorMode === "gradient" 
+                            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" 
+                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-white/5"
+                        }`}
+                    >
+                        <Palette className="w-4 h-4" /> CSS 그라데이션
+                    </button>
+                    <button
+                        onClick={() => setGeneratorMode("glow")}
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            generatorMode === "glow" 
+                            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" 
+                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-white/5"
+                        }`}
+                    >
+                        <Sparkles className="w-4 h-4" /> Glow 효과
+                    </button>
+                </div>
+            </div>
+
+            {generatorMode === "gradient" ? (
+                <div className="space-y-10 animate-in fade-in zoom-in-95 duration-300">
+                    {/* Gradient Preview Area */}
             <div
                 className="w-full h-64 lg:h-80 rounded-2xl shadow-inner border border-zinc-200 overflow-hidden relative group transition-all duration-300"
                 style={{
@@ -319,6 +383,179 @@ export default function CssGradientPage() {
                     <Copy className="w-4 h-4" /> Copy to clipboard
                 </button>
             </div>
+        </div>
+    ) : (
+            <div className="space-y-10 animate-in fade-in zoom-in-95 duration-300">
+                <style>{`
+                    .glow-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #27272a; border-radius: 2px; outline: none; }
+                    .glow-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #6366f1; cursor: pointer; }
+                    .hue-slider { background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+                `}</style>
+                {/* Glow Preview Area */}
+                <div className="w-full h-80 rounded-2xl shadow-inner border border-zinc-200 dark:border-zinc-800 overflow-hidden relative flex items-center justify-center bg-zinc-950">
+                    {/* Blob */}
+                    <div 
+                        className="absolute rounded-full transition-all duration-100 pointer-events-none"
+                        style={{
+                            width: '600px',
+                            height: '600px',
+                            background: `radial-gradient(circle, hsl(${glowHue}, ${glowSaturation}%, ${glowLightness}%) 0%, transparent ${glowMaskSize}%)`,
+                            filter: 'blur(32px)',
+                            transform: `translate(${glowX}px, ${glowY}px) scale(${glowScale})`,
+                            mixBlendMode: 'screen'
+                        }}
+                    />
+                    
+                    {noiseOverlay && (
+                        <div 
+                            className="absolute inset-0 pointer-events-none mix-blend-overlay"
+                            style={{
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                                opacity: noiseIntensity / 100
+                            }}
+                        />
+                    )}
+                    
+                    {/* Center Glass Item to show off the glow */}
+                    <div className="relative z-10 w-64 h-40 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col items-center justify-center text-white/70 shadow-2xl">
+                        <Sparkles className="w-8 h-8 mb-2 opacity-50" />
+                        <span className="font-semibold tracking-wider text-sm">Glass Component</span>
+                    </div>
+                </div>
+
+                {/* Workspace */}
+                <div className="bg-[#18181B] rounded-[28px] shadow-sm border border-zinc-800 overflow-hidden p-6 md:p-8 flex flex-col md:flex-row gap-10 text-white">
+                    
+                    {/* Left Col: Color & Shape */}
+                    <div className="flex-1 space-y-8">
+                        {/* Color Section */}
+                        <div className="space-y-5">
+                            <div className="flex justify-between items-center group mb-2">
+                                <label className="text-sm font-medium text-zinc-400">Lightness</label>
+                                <span className="text-sm text-zinc-500 font-mono">{glowLightness}%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value={glowLightness} onChange={(e) => setGlowLightness(Number(e.target.value))} className="w-full glow-slider" />
+
+                            <div className="flex justify-between items-center group mb-2">
+                                <label className="text-sm font-medium text-zinc-400">Saturation (Chroma)</label>
+                                <span className="text-sm text-zinc-500 font-mono">{glowSaturation}%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value={glowSaturation} onChange={(e) => setGlowSaturation(Number(e.target.value))} className="w-full glow-slider" />
+
+                            <div className="flex justify-between items-center group mb-2">
+                                <label className="text-sm font-medium text-zinc-400">Hue</label>
+                                <span className="text-sm text-zinc-500 font-mono">{glowHue}°</span>
+                            </div>
+                            <input 
+                                type="range" min="0" max="360" value={glowHue} onChange={(e) => setGlowHue(Number(e.target.value))} 
+                                className="w-full glow-slider hue-slider" 
+                            />
+                        </div>
+
+                        <hr className="border-zinc-800" />
+
+                        {/* Position */}
+                        <div className="space-y-5">
+                            <h3 className="font-semibold text-sm text-zinc-300 uppercase tracking-widest mb-4">Glow Position</h3>
+                            
+                            <div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <label className="text-sm font-medium text-zinc-400">Horizontal (X)</label>
+                                    <span className="text-sm text-zinc-500 font-mono">{glowX}px</span>
+                                </div>
+                                <input type="range" min="-500" max="500" value={glowX} onChange={(e) => setGlowX(Number(e.target.value))} className="w-full glow-slider" />
+                            </div>
+
+                            <div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <label className="text-sm font-medium text-zinc-400">Vertical (Y)</label>
+                                    <span className="text-sm text-zinc-500 font-mono">{glowY}px</span>
+                                </div>
+                                <input type="range" min="-500" max="500" value={glowY} onChange={(e) => setGlowY(Number(e.target.value))} className="w-full glow-slider" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Col: Shape Config & Code */}
+                    <div className="flex-1 space-y-8 md:border-l border-zinc-800 md:pl-10">
+                        {/* Shape Config */}
+                        <div className="space-y-5">
+                            <h3 className="font-semibold text-sm text-zinc-300 uppercase tracking-widest mb-4">Shape Configuration</h3>
+                            
+                            <div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <label className="text-sm font-medium text-zinc-400">Gradient Mask Size</label>
+                                    <span className="text-sm text-zinc-500 font-mono">{glowMaskSize}%</span>
+                                </div>
+                                <input type="range" min="10" max="100" value={glowMaskSize} onChange={(e) => setGlowMaskSize(Number(e.target.value))} className="w-full glow-slider" />
+                            </div>
+
+                            <div>
+                                <div className="flex justify-between items-center mb-3">
+                                    <label className="text-sm font-medium text-zinc-400">Glow Scale</label>
+                                    <span className="text-sm text-zinc-500 font-mono">{glowScale}x</span>
+                                </div>
+                                <input type="range" min="0.1" max="3" step="0.1" value={glowScale} onChange={(e) => setGlowScale(Number(e.target.value))} className="w-full glow-slider" />
+                            </div>
+
+                            <div className="flex justify-between items-center pt-2">
+                                <label className="text-sm font-medium text-zinc-400">Noise Overlay</label>
+                                <button 
+                                    onClick={() => setNoiseOverlay(!noiseOverlay)}
+                                    className={`w-12 h-6 rounded-full transition-colors relative focus:outline-none ${noiseOverlay ? 'bg-indigo-500' : 'bg-zinc-800'}`}
+                                >
+                                    <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${noiseOverlay ? 'left-7' : 'left-1'}`} />
+                                </button>
+                            </div>
+
+                            {noiseOverlay && (
+                                <div className="pt-2 animate-in fade-in zoom-in-95">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <label className="text-sm font-medium text-zinc-400">Noise Intensity</label>
+                                        <span className="text-sm text-zinc-500 font-mono">{noiseIntensity}%</span>
+                                    </div>
+                                    <input type="range" min="0" max="100" value={noiseIntensity} onChange={(e) => setNoiseIntensity(Number(e.target.value))} className="w-full glow-slider" />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="pt-4 flex flex-col gap-3">
+                            <button
+                                onClick={() => {
+                                    setGlowHue(Math.floor(Math.random() * 361));
+                                    setGlowSaturation(Math.floor(Math.random() * 51) + 50);
+                                    setGlowLightness(Math.floor(Math.random() * 51) + 30);
+                                    setGlowMaskSize(Math.floor(Math.random() * 51) + 20);
+                                    setGlowScale(Number((Math.random() * 1.5 + 0.5).toFixed(1)));
+                                    setGlowX(Math.floor(Math.random() * 601) - 300);
+                                    setGlowY(Math.floor(Math.random() * 601) - 300);
+                                    if (Math.random() > 0.7) {
+                                        setNoiseOverlay(true);
+                                        setNoiseIntensity(Math.floor(Math.random() * 51) + 10);
+                                    }
+                                }}
+                                className="w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-[15px] bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98]"
+                            >
+                                <Sparkles className="w-4 h-4" /> 무작위 스타일 생성
+                            </button>
+
+                            <button
+                                onClick={() => {
+                                    const code = `.glow-element {\n  position: absolute;\n  width: 600px;\n  height: 600px;\n  background: radial-gradient(\n    circle, \n    hsl(${glowHue}, ${glowSaturation}%, ${glowLightness}%) 0%, \n    transparent ${glowMaskSize}%\n  );\n  filter: blur(32px);\n  transform: translate(${glowX}px, ${glowY}px) scale(${glowScale});\n  mix-blend-mode: screen;\n  pointer-events: none;\n}` + (noiseOverlay ? `\n\n.glow-noise {\n  position: absolute;\n  inset: 0;\n  mix-blend-mode: overlay;\n  opacity: ${noiseIntensity / 100};\n  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");\n  pointer-events: none;\n}` : '');
+                                    navigator.clipboard.writeText(code);
+                                }}
+                                className="w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold bg-zinc-800 hover:bg-zinc-700 text-white transition-colors"
+                            >
+                                <Copy className="w-4 h-4" /> CSS 코드 복사하기
+                            </button>
+                            <p className="text-center text-xs text-zinc-500 mt-2 px-4 leading-relaxed">
+                                CSS <strong>radial-gradient</strong>, <strong>blur</strong>와 <strong>mix-blend-mode</strong> 조합의 점진적 네온 발광.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            )}
         </div>
     );
 }
