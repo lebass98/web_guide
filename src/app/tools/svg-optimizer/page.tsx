@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Copy, Minimize2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Copy, Minimize2, AlertCircle, CheckCircle2, Upload, FileCode2 } from "lucide-react";
 import { useToast } from "@/components/providers/ToastProvider";
 
 function optimizeSvg(svg: string): { result: string; savings: number } {
@@ -46,6 +46,8 @@ export default function SvgOptimizerPage() {
     const [optimized, setOptimized] = useState("");
     const [savings, setSavings] = useState(0);
     const [error, setError] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [inputMode, setInputMode] = useState<"upload" | "code">("upload");
 
     const handleOptimize = (value: string) => {
         setInput(value);
@@ -66,12 +68,94 @@ export default function SvgOptimizerPage() {
         toast("최적화된 SVG가 복사되었습니다!", "success");
     };
 
+    const handleFileUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const text = event.target?.result as string;
+            if (text) {
+                handleOptimize(text);
+                toast("SVG 파일이 업로드되었습니다.", "success");
+            }
+        };
+        reader.onerror = () => {
+            setError("파일을 읽는 중 오류가 발생했습니다.");
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const file = e.dataTransfer.files?.[0];
+        if (!file) return;
+        
+        if (!file.name.toLowerCase().endsWith('.svg')) {
+            setError("유효한 SVG 파일을 업로드해주세요.");
+            setOptimized(""); 
+            setSavings(0);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const text = event.target?.result as string;
+            if (text) {
+                handleOptimize(text);
+                toast("SVG 파일이 업로드되었습니다.", "success");
+            }
+        };
+        reader.onerror = () => {
+            setError("파일을 읽는 중 오류가 발생했습니다.");
+        };
+        reader.readAsText(file);
+    };
+
     const inputKb = (input.length / 1024).toFixed(2);
     const outputKb = (optimized.length / 1024).toFixed(2);
 
     return (
         <>
             <PageHeader title="SVG 최적화기" description="SVG 코드에서 불필요한 요소를 제거하고 파일 크기를 줄이세요." />
+
+            {/* Tabs */}
+            <div className="flex justify-center mb-8 -mt-2">
+                <div className="inline-flex glass-card p-1 rounded-2xl">
+                    <button
+                        onClick={() => setInputMode("upload")}
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            inputMode === "upload" 
+                            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" 
+                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-white/5"
+                        }`}
+                    >
+                        <Upload className="w-4 h-4" /> 파일 업로드 하기
+                    </button>
+                    <button
+                        onClick={() => setInputMode("code")}
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            inputMode === "code" 
+                            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25" 
+                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-white/5"
+                        }`}
+                    >
+                        <FileCode2 className="w-4 h-4" /> 코드 직접 삽입
+                    </button>
+                </div>
+            </div>
 
             {/* Stats Bar */}
             {optimized && (
@@ -94,26 +178,70 @@ export default function SvgOptimizerPage() {
 
             <div className="flex flex-col lg:flex-row gap-6 h-[560px]">
                 {/* Input */}
-                <div className="flex-1 flex flex-col gap-2">
-                    <div className="flex items-center justify-between h-[38px]">
-                        <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
-                            원본 SVG
-                        </label>
-                        <button
-                            onClick={() => handleOptimize("")}
-                            className="text-xs font-bold text-zinc-400 hover:text-rose-500 transition-colors"
-                        >
-                            지우기
-                        </button>
+                {inputMode === "code" ? (
+                    <div className="flex-1 flex flex-col gap-2">
+                        <div className="flex items-center justify-between h-[38px]">
+                            <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                                원본 SVG
+                            </label>
+                            <button
+                                onClick={() => handleOptimize("")}
+                                className="text-xs font-bold text-zinc-400 hover:text-rose-500 transition-colors"
+                            >
+                                지우기
+                            </button>
+                        </div>
+                        <textarea
+                            className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white text-gray-900 placeholder:text-zinc-400"
+                            placeholder={`<svg xmlns="http://www.w3.org/2000/svg" ...>\n  <!-- SVG 코드를 여기에 붙여넣으세요 -->\n</svg>`}
+                            value={input}
+                            onChange={(e) => handleOptimize(e.target.value)}
+                            spellCheck={false}
+                        />
                     </div>
-                    <textarea
-                        className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white text-gray-900 placeholder:text-zinc-400"
-                        placeholder={`<svg xmlns="http://www.w3.org/2000/svg" ...>\n  <!-- SVG 코드를 여기에 붙여넣으세요 -->\n</svg>`}
-                        value={input}
-                        onChange={(e) => handleOptimize(e.target.value)}
-                        spellCheck={false}
-                    />
-                </div>
+                ) : (
+                    <div className="flex-1 flex flex-col gap-2">
+                        <div className="flex items-center justify-between h-[38px]">
+                            <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+                                파일 업로드
+                            </label>
+                            {input && (
+                                <button
+                                    onClick={() => handleOptimize("")}
+                                    className="text-xs font-bold text-zinc-400 hover:text-rose-500 transition-colors"
+                                >
+                                    지우기
+                                </button>
+                            )}
+                        </div>
+                        <div 
+                            className="flex-1 w-full glass-card flex flex-col items-center justify-center border-2 border-dashed border-zinc-300/50 dark:border-zinc-700/50 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all cursor-pointer group"
+                            onClick={handleFileUploadClick}
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                        >
+                            <input
+                                type="file"
+                                accept=".svg"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                            />
+                            <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <Upload className="w-8 h-8 text-indigo-500" />
+                            </div>
+                            <p className="text-base font-bold text-gray-900 dark:text-white mb-2">클릭하여 파일 선택</p>
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400">또는 SVG 파일을 이곳으로 드래그 하세요</p>
+                            
+                            {input && !error && (
+                                <div className="mt-6 px-4 py-2 bg-emerald-500/10 rounded-full flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">정상적으로 로드됨</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Output */}
                 <div className="flex-1 flex flex-col gap-2">
