@@ -13,24 +13,38 @@ import {
     WrapText,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
+
+type FlexDirectionValue = "row" | "row-reverse" | "column" | "column-reverse";
+type JustifyContentValue =
+    | "flex-start"
+    | "center"
+    | "flex-end"
+    | "space-between"
+    | "space-around"
+    | "space-evenly";
+type AlignItemsValue = "stretch" | "flex-start" | "center" | "flex-end" | "baseline";
+type FlexWrapValue = "nowrap" | "wrap" | "wrap-reverse";
+type JustifyItemsValue = "stretch" | "start" | "center" | "end";
+type AlignContentValue = "start" | "center" | "end" | "space-between" | "space-around" | "space-evenly";
 
 export default function FlexGridEditorPage() {
     const [mode, setMode] = useState<"flex" | "grid">("flex");
 
-    const [flexDirection, setFlexDirection] = useState("row");
-    const [justifyContent, setJustifyContent] = useState("center");
-    const [alignItems, setAlignItems] = useState("center");
-    const [flexWrap, setFlexWrap] = useState("nowrap");
+    const [flexDirection, setFlexDirection] = useState<FlexDirectionValue>("row");
+    const [justifyContent, setJustifyContent] = useState<JustifyContentValue>("center");
+    const [alignItems, setAlignItems] = useState<AlignItemsValue>("center");
+    const [flexWrap, setFlexWrap] = useState<FlexWrapValue>("nowrap");
     const [gap, setGap] = useState(12);
 
     const [columns, setColumns] = useState(3);
     const [rowHeight, setRowHeight] = useState(72);
     const [gridGap, setGridGap] = useState(12);
-    const [justifyItems, setJustifyItems] = useState("stretch");
-    const [alignContent, setAlignContent] = useState("start");
+    const [justifyItems, setJustifyItems] = useState<JustifyItemsValue>("stretch");
+    const [alignContent, setAlignContent] = useState<AlignContentValue>("start");
 
-    const containerStyle = useMemo(() => {
+    const containerStyle = useMemo<CSSProperties>(() => {
         if (mode === "flex") {
             return {
                 display: "flex",
@@ -150,7 +164,7 @@ export default function FlexGridEditorPage() {
                             <OptionButtonGroup
                                 label="flex-direction"
                                 value={flexDirection}
-                                onChange={setFlexDirection}
+                                onChange={(value) => setFlexDirection(value as FlexDirectionValue)}
                                 options={[
                                     { value: "row", label: "row", description: "가로 정방향 배치", icon: ArrowRight },
                                     { value: "row-reverse", label: "row-reverse", description: "가로 역방향 배치", icon: ArrowLeft },
@@ -161,7 +175,7 @@ export default function FlexGridEditorPage() {
                             <OptionButtonGroup
                                 label="justify-content"
                                 value={justifyContent}
-                                onChange={setJustifyContent}
+                                onChange={(value) => setJustifyContent(value as JustifyContentValue)}
                                 options={[
                                     { value: "flex-start", label: "flex-start", description: "시작 기준 정렬", icon: ArrowLeft },
                                     { value: "center", label: "center", description: "가운데 정렬", icon: Minus },
@@ -174,7 +188,7 @@ export default function FlexGridEditorPage() {
                             <OptionButtonGroup
                                 label="align-items"
                                 value={alignItems}
-                                onChange={setAlignItems}
+                                onChange={(value) => setAlignItems(value as AlignItemsValue)}
                                 options={[
                                     { value: "stretch", label: "stretch", description: "교차축으로 늘려 채움", icon: Plus },
                                     { value: "flex-start", label: "flex-start", description: "교차축 시작 정렬", icon: ArrowUp },
@@ -186,7 +200,7 @@ export default function FlexGridEditorPage() {
                             <OptionButtonGroup
                                 label="flex-wrap"
                                 value={flexWrap}
-                                onChange={setFlexWrap}
+                                onChange={(value) => setFlexWrap(value as FlexWrapValue)}
                                 options={[
                                     { value: "nowrap", label: "nowrap", description: "줄바꿈 없이 한 줄 배치", icon: ArrowRight },
                                     { value: "wrap", label: "wrap", description: "공간 부족 시 다음 줄", icon: WrapText },
@@ -231,7 +245,7 @@ export default function FlexGridEditorPage() {
                             <OptionButtonGroup
                                 label="justify-items"
                                 value={justifyItems}
-                                onChange={setJustifyItems}
+                                onChange={(value) => setJustifyItems(value as JustifyItemsValue)}
                                 options={[
                                     { value: "stretch", label: "stretch", description: "셀 가로 영역 채움", icon: Plus },
                                     { value: "start", label: "start", description: "셀 시작 정렬", icon: ArrowLeft },
@@ -242,7 +256,7 @@ export default function FlexGridEditorPage() {
                             <OptionButtonGroup
                                 label="align-content"
                                 value={alignContent}
-                                onChange={setAlignContent}
+                                onChange={(value) => setAlignContent(value as AlignContentValue)}
                                 options={[
                                     { value: "start", label: "start", description: "콘텐츠 시작 정렬", icon: ArrowUp },
                                     { value: "center", label: "center", description: "콘텐츠 중앙 정렬", icon: Minus },
