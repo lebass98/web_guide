@@ -24,6 +24,7 @@ import {
     Languages,
     FileDiff,
     Share2,
+    LayoutGrid,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -175,6 +176,13 @@ export default function Home() {
             href: "/tools/og-card-preview",
             icon: Share2,
             color: "indigo",
+        },
+        {
+            title: "Flexbox·Grid 시각 에디터",
+            desc: "Flex와 Grid 레이아웃을 시각적으로 조정하고 CSS/HTML 코드를 즉시 생성하세요.",
+            href: "/tools/flex-grid-editor",
+            icon: LayoutGrid,
+            color: "teal",
         },
     ];
 
