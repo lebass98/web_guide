@@ -17,8 +17,35 @@ interface NavigationProps {
 export function Navigation({ children }: NavigationProps) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+    const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
     const pathname = usePathname();
     const { tabs } = useTabs();
+    const familySites = [
+        {
+            name: "KRDS 예시 사이트",
+            url: "https://lebass98.github.io/KRDS/",
+        },
+        {
+            name: "Portfolio 2026",
+            url: "https://lebass98.github.io/Portfolio_2026/",
+        },
+        {
+            name: "BLOG. C (Editor)",
+            url: "https://lebass98.github.io/Editor/",
+        },
+        {
+            name: "Vision Pulse Dashboard",
+            url: "https://lebass98.github.io/react_dashboard_01/",
+        },
+        {
+            name: "출석체크",
+            url: "https://lebass98.github.io/attendance/",
+        },
+        {
+            name: "WebTools",
+            url: "https://lebass98.github.io/web_guide/",
+        },
+    ];
 
     useEffect(() => {
         if (pathname === "/") {
@@ -86,6 +113,50 @@ export function Navigation({ children }: NavigationProps) {
                     {children}
                 </main>
             </div>
+
+            <button
+                onClick={() => setIsFamilyModalOpen(true)}
+                className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold shadow-xl shadow-indigo-500/30 transition-colors"
+                aria-label="패밀리 사이트 열기"
+            >
+                F
+            </button>
+
+            {isFamilyModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <button
+                        className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+                        onClick={() => setIsFamilyModalOpen(false)}
+                        aria-label="패밀리 사이트 모달 닫기"
+                    />
+                    <div className="relative w-full max-w-md rounded-2xl p-6 space-y-4 bg-white/90 dark:bg-zinc-900/85 backdrop-blur-xl border border-white/70 dark:border-white/10 shadow-2xl shadow-black/10">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">패밀리 사이트</h2>
+                            <button
+                                onClick={() => setIsFamilyModalOpen(false)}
+                                className="text-sm px-2.5 py-1.5 rounded-lg bg-white/80 dark:bg-zinc-800/90 border border-zinc-200/80 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200"
+                            >
+                                닫기
+                            </button>
+                        </div>
+                        <p className="text-sm text-zinc-500 dark:text-zinc-400">이동할 사이트를 선택하세요.</p>
+                        <div className="space-y-2">
+                            {familySites.map((site) => (
+                                <button
+                                    key={site.url}
+                                    onClick={() => {
+                                        window.open(site.url, "_blank", "noopener,noreferrer");
+                                    }}
+                                    className="w-full text-left px-4 py-3 rounded-xl border border-white/70 dark:border-white/10 bg-white/55 dark:bg-zinc-900/40 backdrop-blur-md hover:bg-sky-100/70 dark:hover:bg-sky-500/15 hover:border-sky-300 dark:hover:border-sky-400/60 hover:shadow-md hover:shadow-sky-500/10 transition-all"
+                                >
+                                    <p className="font-semibold text-zinc-800 dark:text-zinc-100">{site.name}</p>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 break-all">{site.url}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
