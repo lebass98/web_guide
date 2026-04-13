@@ -25,6 +25,7 @@ import {
     FileDiff,
     Share2,
     LayoutGrid,
+    MonitorCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -183,6 +184,13 @@ export default function Home() {
             href: "/tools/flex-grid-editor",
             icon: LayoutGrid,
             color: "teal",
+        },
+        {
+            title: "반응형 이미지 헬퍼",
+            desc: "srcset, sizes, picture 코드를 자동 생성해 반응형 이미지를 빠르게 적용하세요.",
+            href: "/tools/responsive-image-helper",
+            icon: MonitorCog,
+            color: "sky",
         },
     ];
 

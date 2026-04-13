@@ -1,7 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Copy } from "lucide-react";
+import {
+    ArrowDown,
+    ArrowLeft,
+    ArrowRight,
+    ArrowUp,
+    Copy,
+    Minus,
+    Plus,
+    Rows3,
+    WrapText,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function FlexGridEditorPage() {
@@ -136,50 +147,50 @@ export default function FlexGridEditorPage() {
 
                     {mode === "flex" ? (
                         <div className="space-y-4">
-                            <SelectField
+                            <OptionButtonGroup
                                 label="flex-direction"
                                 value={flexDirection}
                                 onChange={setFlexDirection}
                                 options={[
-                                    { value: "row", label: "row (가로 정방향)" },
-                                    { value: "row-reverse", label: "row-reverse (가로 역방향)" },
-                                    { value: "column", label: "column (세로 정방향)" },
-                                    { value: "column-reverse", label: "column-reverse (세로 역방향)" },
+                                    { value: "row", label: "row", description: "가로 정방향 배치", icon: ArrowRight },
+                                    { value: "row-reverse", label: "row-reverse", description: "가로 역방향 배치", icon: ArrowLeft },
+                                    { value: "column", label: "column", description: "세로 정방향 배치", icon: ArrowDown },
+                                    { value: "column-reverse", label: "column-reverse", description: "세로 역방향 배치", icon: ArrowUp },
                                 ]}
                             />
-                            <SelectField
+                            <OptionButtonGroup
                                 label="justify-content"
                                 value={justifyContent}
                                 onChange={setJustifyContent}
                                 options={[
-                                    { value: "flex-start", label: "flex-start (시작 정렬)" },
-                                    { value: "center", label: "center (가운데 정렬)" },
-                                    { value: "flex-end", label: "flex-end (끝 정렬)" },
-                                    { value: "space-between", label: "space-between (양끝 기준 균등)" },
-                                    { value: "space-around", label: "space-around (주변 여백 균등)" },
-                                    { value: "space-evenly", label: "space-evenly (간격 완전 균등)" },
+                                    { value: "flex-start", label: "flex-start", description: "시작 기준 정렬", icon: ArrowLeft },
+                                    { value: "center", label: "center", description: "가운데 정렬", icon: Minus },
+                                    { value: "flex-end", label: "flex-end", description: "끝 기준 정렬", icon: ArrowRight },
+                                    { value: "space-between", label: "space-between", description: "양끝 기준 균등 간격", icon: Rows3 },
+                                    { value: "space-around", label: "space-around", description: "주변 여백 포함 균등", icon: WrapText },
+                                    { value: "space-evenly", label: "space-evenly", description: "완전 균등 간격", icon: Plus },
                                 ]}
                             />
-                            <SelectField
+                            <OptionButtonGroup
                                 label="align-items"
                                 value={alignItems}
                                 onChange={setAlignItems}
                                 options={[
-                                    { value: "stretch", label: "stretch (높이/너비 채움)" },
-                                    { value: "flex-start", label: "flex-start (교차축 시작)" },
-                                    { value: "center", label: "center (교차축 가운데)" },
-                                    { value: "flex-end", label: "flex-end (교차축 끝)" },
-                                    { value: "baseline", label: "baseline (텍스트 기준선)" },
+                                    { value: "stretch", label: "stretch", description: "교차축으로 늘려 채움", icon: Plus },
+                                    { value: "flex-start", label: "flex-start", description: "교차축 시작 정렬", icon: ArrowUp },
+                                    { value: "center", label: "center", description: "교차축 가운데 정렬", icon: Minus },
+                                    { value: "flex-end", label: "flex-end", description: "교차축 끝 정렬", icon: ArrowDown },
+                                    { value: "baseline", label: "baseline", description: "텍스트 기준선 정렬", icon: Rows3 },
                                 ]}
                             />
-                            <SelectField
+                            <OptionButtonGroup
                                 label="flex-wrap"
                                 value={flexWrap}
                                 onChange={setFlexWrap}
                                 options={[
-                                    { value: "nowrap", label: "nowrap (줄바꿈 없음)" },
-                                    { value: "wrap", label: "wrap (다음 줄로 줄바꿈)" },
-                                    { value: "wrap-reverse", label: "wrap-reverse (역방향 줄바꿈)" },
+                                    { value: "nowrap", label: "nowrap", description: "줄바꿈 없이 한 줄 배치", icon: ArrowRight },
+                                    { value: "wrap", label: "wrap", description: "공간 부족 시 다음 줄", icon: WrapText },
+                                    { value: "wrap-reverse", label: "wrap-reverse", description: "역방향 줄바꿈", icon: ArrowLeft },
                                 ]}
                             />
                             <RangeField
@@ -217,28 +228,28 @@ export default function FlexGridEditorPage() {
                                 onChange={setGridGap}
                                 unit="px"
                             />
-                            <SelectField
+                            <OptionButtonGroup
                                 label="justify-items"
                                 value={justifyItems}
                                 onChange={setJustifyItems}
                                 options={[
-                                    { value: "stretch", label: "stretch (셀 가로 채움)" },
-                                    { value: "start", label: "start (셀 시작 정렬)" },
-                                    { value: "center", label: "center (셀 중앙 정렬)" },
-                                    { value: "end", label: "end (셀 끝 정렬)" },
+                                    { value: "stretch", label: "stretch", description: "셀 가로 영역 채움", icon: Plus },
+                                    { value: "start", label: "start", description: "셀 시작 정렬", icon: ArrowLeft },
+                                    { value: "center", label: "center", description: "셀 중앙 정렬", icon: Minus },
+                                    { value: "end", label: "end", description: "셀 끝 정렬", icon: ArrowRight },
                                 ]}
                             />
-                            <SelectField
+                            <OptionButtonGroup
                                 label="align-content"
                                 value={alignContent}
                                 onChange={setAlignContent}
                                 options={[
-                                    { value: "start", label: "start (콘텐츠 시작)" },
-                                    { value: "center", label: "center (콘텐츠 중앙)" },
-                                    { value: "end", label: "end (콘텐츠 끝)" },
-                                    { value: "space-between", label: "space-between (행 간격 균등)" },
-                                    { value: "space-around", label: "space-around (행 주변 균등)" },
-                                    { value: "space-evenly", label: "space-evenly (행 완전 균등)" },
+                                    { value: "start", label: "start", description: "콘텐츠 시작 정렬", icon: ArrowUp },
+                                    { value: "center", label: "center", description: "콘텐츠 중앙 정렬", icon: Minus },
+                                    { value: "end", label: "end", description: "콘텐츠 끝 정렬", icon: ArrowDown },
+                                    { value: "space-between", label: "space-between", description: "행 간격 균등", icon: Rows3 },
+                                    { value: "space-around", label: "space-around", description: "행 주변 균등", icon: WrapText },
+                                    { value: "space-evenly", label: "space-evenly", description: "행 완전 균등", icon: Plus },
                                 ]}
                             />
                         </div>
@@ -285,7 +296,7 @@ export default function FlexGridEditorPage() {
     );
 }
 
-function SelectField({
+function OptionButtonGroup({
     label,
     value,
     onChange,
@@ -294,23 +305,39 @@ function SelectField({
     label: string;
     value: string;
     onChange: (value: string) => void;
-    options: { value: string; label: string }[];
+    options: { value: string; label: string; description: string; icon: LucideIcon }[];
 }) {
+    const selected = options.find((option) => option.value === value);
+
     return (
-        <label className="block">
+        <div className="block">
             <span className="text-xs font-bold tracking-wider text-zinc-500 dark:text-zinc-400 uppercase">{label}</span>
-            <select
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                className="w-full mt-2 px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-            >
+            <div className="mt-2 flex flex-wrap gap-2">
                 {options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
+                    <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => onChange(option.value)}
+                        aria-label={`${option.label} ${option.description}`}
+                        className={`relative group w-10 h-10 rounded-lg border transition-colors inline-flex items-center justify-center ${
+                            value === option.value
+                                ? "bg-indigo-600 text-white border-indigo-600"
+                                : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 hover:border-indigo-300 dark:hover:border-indigo-500"
+                        }`}
+                    >
+                        <option.icon className="w-4 h-4 shrink-0" />
+                        <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[calc(100%+8px)] hidden whitespace-nowrap rounded-md bg-zinc-900 text-white text-[11px] px-2 py-1 shadow-lg group-hover:block z-20">
+                            {option.label} ({option.description})
+                        </span>
+                    </button>
                 ))}
-            </select>
-        </label>
+            </div>
+            {selected ? (
+                <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-300">
+                    선택됨: <span className="font-semibold">{selected.label}</span> ({selected.description})
+                </p>
+            ) : null}
+        </div>
     );
 }
 
