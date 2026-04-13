@@ -20,6 +20,7 @@ import {
     Globe,
     Languages,
     FileDiff,
+    Share2,
 } from "lucide-react";
 
 export const TOOL_ITEMS = [
@@ -43,5 +44,6 @@ export const TOOL_ITEMS = [
     { icon: Image, label: "Favicon 생성기", href: "/tools/favicon-generator", id: "favicon-generator" },
     { icon: Languages, label: "번역기", href: "/tools/translator", id: "translator" },
     { icon: FileDiff, label: "코드 비교", href: "/tools/code-diff", id: "code-diff" },
+    { icon: Share2, label: "OG 카드 미리보기", href: "/tools/og-card-preview", id: "og-card-preview" },
     { icon: Globe, label: "내 IP 확인하기", href: "/tools/my-ip", id: "my-ip" },
 ];

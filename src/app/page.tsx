@@ -23,6 +23,7 @@ import {
     Globe,
     Languages,
     FileDiff,
+    Share2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -167,6 +168,13 @@ export default function Home() {
             href: "/tools/code-diff",
             icon: FileDiff,
             color: "cyan",
+        },
+        {
+            title: "OG·트위터 카드 미리보기",
+            desc: "Open Graph와 Twitter Card 메타 태그를 미리 확인하고 바로 복사하세요.",
+            href: "/tools/og-card-preview",
+            icon: Share2,
+            color: "indigo",
         },
     ];
 

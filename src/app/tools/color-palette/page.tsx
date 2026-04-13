@@ -312,7 +312,7 @@ export default function ColorPalettePage() {
                             : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-white/5"
                         }`}
                     >
-                        <RefreshCw className="w-4 h-4" /> Generator
+                        <RefreshCw className="w-4 h-4" /> 조합 생성기
                     </button>
                     <button
                         onClick={() => setInputMode("image")}
@@ -322,7 +322,7 @@ export default function ColorPalettePage() {
                             : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-white/5"
                         }`}
                     >
-                        <ImageIcon className="w-4 h-4" /> Image Extract
+                        <ImageIcon className="w-4 h-4" /> 이미지에서 추출
                     </button>
                 </div>
             </div>
