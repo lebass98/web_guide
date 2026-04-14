@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { TabList } from "./TabList";
@@ -134,9 +134,10 @@ export function Navigation({ children }: NavigationProps) {
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white">패밀리 사이트</h2>
                             <button
                                 onClick={() => setIsFamilyModalOpen(false)}
-                                className="text-sm px-2.5 py-1.5 rounded-lg bg-white/80 dark:bg-zinc-800/90 border border-zinc-200/80 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200"
+                                className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-colors"
+                                aria-label="닫기"
                             >
-                                닫기
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
                         <p className="text-sm text-zinc-500 dark:text-zinc-400">이동할 사이트를 선택하세요.</p>
