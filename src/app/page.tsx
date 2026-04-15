@@ -28,6 +28,7 @@ import {
     MonitorCog,
     Tags,
     FileImage,
+    Hash,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -209,6 +210,13 @@ export default function Home() {
             href: "/tools/text-transformer",
             icon: Type,
             color: "blue",
+        },
+        {
+            title: "특수문자 모음",
+            desc: "Unicode 특수문자를 카테고리별로 탐색하고 클릭하여 복사하세요. HTML 엔티티와 코드포인트도 확인할 수 있습니다.",
+            href: "/tools/special-chars",
+            icon: Hash,
+            color: "amber",
         },
     ];
 

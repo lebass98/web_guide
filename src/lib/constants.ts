@@ -24,6 +24,7 @@ import {
     MonitorCog,
     Tags,
     FileImage,
+    Hash,
 } from "lucide-react";
 
 export const TOOL_ITEMS = [
@@ -54,4 +55,5 @@ export const TOOL_ITEMS = [
     { icon: FileDiff, label: "코드 비교", href: "/tools/code-diff", id: "code-diff" },
     { icon: Clock, label: "타임스탬프", href: "/tools/timestamp", id: "timestamp" },
     { icon: Type, label: "텍스트 변환기", href: "/tools/text-transformer", id: "text-transformer" },
+    { icon: Hash, label: "특수문자 모음", href: "/tools/special-chars", id: "special-chars" },
 ];
