@@ -181,7 +181,7 @@ export default function SpecialCharsPage() {
                     )}
 
                     {/* Character Grid */}
-                    <div className="glass-card p-4 md:p-5">
+                    <div className="glass-card p-4 md:p-5 overflow-visible">
                         {chars.length > 0 ? (
                             <div className="grid grid-cols-[repeat(auto-fill,minmax(48px,1fr))] gap-1">
                                 {chars.map((item) => (
@@ -307,17 +307,29 @@ interface CharButtonProps {
 
 function CharButton({ item, isSelected, onClick }: CharButtonProps) {
     return (
-        <button
-            onClick={() => onClick(item)}
-            title={`${item.code}  ${item.html}`}
-            className={cn(
-                "h-[48px] w-full flex items-center justify-center rounded-lg border text-lg font-mono transition-all duration-150 active:scale-90 select-none",
-                isSelected
-                    ? "bg-indigo-500/15 border-indigo-500/50 text-indigo-700 dark:text-indigo-300 shadow-sm shadow-indigo-500/10"
-                    : "bg-white/40 dark:bg-zinc-800/40 border-white/50 dark:border-zinc-700/50 text-gray-800 dark:text-zinc-200 hover:bg-indigo-500/10 hover:border-indigo-400/30 hover:text-indigo-700 dark:hover:text-indigo-400"
-            )}
-        >
-            {item.char}
-        </button>
+        <div className="relative group">
+            <button
+                onClick={() => onClick(item)}
+                className={cn(
+                    "h-[48px] w-full flex items-center justify-center rounded-lg border text-lg font-mono transition-all duration-150 active:scale-90 select-none",
+                    isSelected
+                        ? "bg-indigo-500/15 border-indigo-500/50 text-indigo-700 dark:text-indigo-300 shadow-sm shadow-indigo-500/10"
+                        : "bg-white/40 dark:bg-zinc-800/40 border-white/50 dark:border-zinc-700/50 text-gray-800 dark:text-zinc-200 hover:bg-indigo-500/10 hover:border-indigo-400/30 hover:text-indigo-700 dark:hover:text-indigo-400"
+                )}
+            >
+                {item.char}
+            </button>
+
+            {/* Hover tooltip */}
+            <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                <div className="bg-zinc-900/95 dark:bg-zinc-800/95 backdrop-blur-md border border-zinc-700/60 rounded-2xl shadow-2xl shadow-black/30 px-4 py-3 flex flex-col items-center gap-1.5 min-w-[88px]">
+                    <span className="text-[72px] leading-none text-white select-none">{item.char}</span>
+                    <span className="text-[11px] font-mono text-indigo-400 font-medium">{item.code}</span>
+                    <span className="text-[10px] font-mono text-zinc-500">{item.html}</span>
+                </div>
+                {/* Arrow */}
+                <div className="w-3 h-3 bg-zinc-900/95 dark:bg-zinc-800/95 border-r border-b border-zinc-700/60 rotate-45 mx-auto -mt-1.5" />
+            </div>
+        </div>
     );
 }
