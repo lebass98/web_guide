@@ -74,7 +74,7 @@ const ITEM_PALETTE = [
 
 function Svg({ c, title }: { c: React.ReactNode; title?: string }) {
     return (
-        <svg viewBox="0 0 16 16" fill="currentColor" className="w-[14px] h-[14px]" aria-hidden={!title}>
+        <svg viewBox="0 0 16 16" fill="currentColor" className="w-7 h-7" aria-hidden={!title}>
             {title && <title>{title}</title>}
             {c}
         </svg>
@@ -289,7 +289,7 @@ export default function FlexGridEditorPage() {
             />
 
             {/* ── 3-Column Layout ─────────────────────────────────────────────── */}
-            <div className="grid grid-cols-1 xl:grid-cols-[260px_1fr_288px] gap-4 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-[300px_1fr_288px] gap-4 items-start">
 
                 {/* ══ Left: Properties Panel ══════════════════════════════════════ */}
                 <aside className="xl:sticky xl:top-24 space-y-1.5">
@@ -782,7 +782,7 @@ function PropRow({ label, children }: { label: string; children: React.ReactNode
 }
 
 function IconGroup({ children }: { children: React.ReactNode }) {
-    return <div className="flex flex-wrap gap-1">{children}</div>;
+    return <div className="flex flex-wrap gap-1.5">{children}</div>;
 }
 
 function IconBtn({ children, active, onClick, title }: {
@@ -796,7 +796,7 @@ function IconBtn({ children, active, onClick, title }: {
             onClick={onClick}
             title={title}
             className={cn(
-                "relative group w-7 h-7 rounded-md border flex items-center justify-center transition-all",
+                "relative group w-12 h-12 rounded-lg border flex items-center justify-center transition-all",
                 active
                     ? "bg-indigo-100 dark:bg-indigo-500/20 border-indigo-400 dark:border-indigo-500/50 text-indigo-700 dark:text-indigo-300"
                     : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-200"
