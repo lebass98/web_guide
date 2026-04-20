@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:wepplication.github.io)",
+      "Bash(npm run *)"
+    ]
+  }
+}

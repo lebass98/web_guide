@@ -25,6 +25,7 @@ import {
     Tags,
     FileImage,
     Hash,
+    AppWindow,
 } from "lucide-react";
 
 export const TOOL_ITEMS = [
@@ -42,6 +43,7 @@ export const TOOL_ITEMS = [
     { icon: QrCode, label: "QR 생성기", href: "/tools/qr-generator", id: "qr-generator" },
     { icon: FileCode2, label: "SVG 최적화", href: "/tools/svg-optimizer", id: "svg-optimizer" },
     { icon: LinkIcon, label: "URL 인코더", href: "/tools/url-encoder", id: "url-encoder" },
+    { icon: AppWindow, label: "웹 에디터", href: "/tools/web-editor", id: "web-editor" },
     // ── 한글 ──
     { icon: Layers, label: "그라데이션 배경", href: "/tools/gradient-backgrounds", id: "gradient-backgrounds" },
     { icon: Globe, label: "내 IP 확인하기", href: "/tools/my-ip", id: "my-ip" },

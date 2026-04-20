@@ -29,6 +29,7 @@ import {
     Tags,
     FileImage,
     Hash,
+    AppWindow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -132,6 +133,13 @@ export default function Home() {
             href: "/tools/url-encoder",
             icon: LinkIcon,
             color: "cyan",
+        },
+        {
+            title: "웹 에디터",
+            desc: "HTML·CSS·JS를 실시간으로 편집하고 미리보기. 완성된 소스 코드를 바로 복사하거나 다운로드하세요.",
+            href: "/tools/web-editor",
+            icon: AppWindow,
+            color: "violet",
         },
         // ── 한글 ──
         {
