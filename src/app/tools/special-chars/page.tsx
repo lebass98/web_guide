@@ -77,6 +77,7 @@ export default function SpecialCharsPage() {
     const [search, setSearch] = useState("");
     const [selected, setSelected] = useState<CharItem | null>(null);
     const [copied, setCopied] = useState<"char" | "html" | "code" | null>(null);
+    const [fontSize, setFontSize] = useState(18);
 
     const currentCategory = CATEGORIES.find((c) => c.id === selectedCat)!;
 
@@ -116,24 +117,38 @@ export default function SpecialCharsPage() {
             <div className="flex flex-col lg:flex-row gap-6">
                 {/* Left: Grid Area */}
                 <div className="flex-1 min-w-0">
-                    {/* Search */}
-                    <div className="relative mb-5 max-w-sm">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="문자 또는 U+코드 검색..."
-                            className="w-full pl-9 pr-9 py-2.5 glass-card text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white placeholder:text-zinc-400"
-                        />
-                        {search && (
-                            <button
-                                onClick={() => setSearch("")}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-                            >
-                                <X className="w-4 h-4" />
-                            </button>
-                        )}
+                    {/* Search + Font Size */}
+                    <div className="flex flex-wrap items-center gap-3 mb-5">
+                        <div className="relative flex-1 min-w-[200px] max-w-sm">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="문자 또는 U+코드 검색..."
+                                className="w-full pl-9 pr-9 py-2.5 glass-card text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white placeholder:text-zinc-400"
+                            />
+                            {search && (
+                                <button
+                                    onClick={() => setSearch("")}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-2 glass-card px-3 py-2">
+                            <span className="text-xs text-zinc-500 dark:text-zinc-400 shrink-0">크기</span>
+                            <input
+                                type="range"
+                                min={10}
+                                max={30}
+                                value={fontSize}
+                                onChange={(e) => setFontSize(Number(e.target.value))}
+                                className="w-24 accent-indigo-500"
+                            />
+                            <span className="text-xs font-mono text-zinc-700 dark:text-zinc-300 w-8 text-right">{fontSize}px</span>
+                        </div>
                     </div>
 
                     {/* Category tabs */}
@@ -190,6 +205,7 @@ export default function SpecialCharsPage() {
                                         item={item}
                                         isSelected={selected?.code === item.code}
                                         onClick={handleCharClick}
+                                        fontSize={fontSize}
                                     />
                                 ))}
                             </div>
@@ -303,15 +319,17 @@ interface CharButtonProps {
     item: CharItem;
     isSelected: boolean;
     onClick: (item: CharItem) => void;
+    fontSize: number;
 }
 
-function CharButton({ item, isSelected, onClick }: CharButtonProps) {
+function CharButton({ item, isSelected, onClick, fontSize }: CharButtonProps) {
     return (
         <div className="relative group">
             <button
                 onClick={() => onClick(item)}
+                style={{ fontSize }}
                 className={cn(
-                    "h-[48px] w-full flex items-center justify-center rounded-lg border text-lg font-mono transition-all duration-150 active:scale-90 select-none",
+                    "h-[48px] w-full flex items-center justify-center rounded-lg border font-mono transition-all duration-150 active:scale-90 select-none",
                     isSelected
                         ? "bg-indigo-500/15 border-indigo-500/50 text-indigo-700 dark:text-indigo-300 shadow-sm shadow-indigo-500/10"
                         : "bg-white/40 dark:bg-zinc-800/40 border-white/50 dark:border-zinc-700/50 text-gray-800 dark:text-zinc-200 hover:bg-indigo-500/10 hover:border-indigo-400/30 hover:text-indigo-700 dark:hover:text-indigo-400"
