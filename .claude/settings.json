@@ -3,6 +3,9 @@
     "allow": [
       "WebFetch(domain:wepplication.github.io)",
       "Bash(npm run *)"
+    ],
+    "additionalDirectories": [
+      "/Users/ijaegwang/wordncode/React/Project/WebGuide/src/app/tools"
     ]
   }
 }

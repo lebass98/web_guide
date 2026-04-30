@@ -30,6 +30,7 @@ import {
     FileImage,
     Hash,
     AppWindow,
+    Table2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -91,6 +92,13 @@ export default function Home() {
             href: "/tools/html-chars",
             icon: Code,
             color: "indigo",
+        },
+        {
+            title: "HTML 테이블 에디터",
+            desc: "테이블을 시각적으로 편집하고 HTML 코드를 즉시 생성하세요. 셀 병합, 스타일 프리셋, CSV 가져오기를 지원합니다.",
+            href: "/tools/html-table-editor",
+            icon: Table2,
+            color: "emerald",
         },
         {
             title: "JSON 포매터",

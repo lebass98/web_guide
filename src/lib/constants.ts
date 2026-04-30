@@ -26,6 +26,7 @@ import {
     FileImage,
     Hash,
     AppWindow,
+    Table2,
 } from "lucide-react";
 
 export const TOOL_ITEMS = [
@@ -37,6 +38,7 @@ export const TOOL_ITEMS = [
     { icon: Clapperboard, label: "CSS 애니메이션", href: "/tools/css-animation", id: "css-animation" },
     { icon: Image, label: "Favicon 생성기", href: "/tools/favicon-generator", id: "favicon-generator" },
     { icon: Code, label: "HTML 특수문자", href: "/tools/html-chars", id: "html-chars" },
+    { icon: Table2, label: "HTML 테이블 에디터", href: "/tools/html-table-editor", id: "html-table-editor" },
     { icon: FileText, label: "JSON 포매터", href: "/tools/json-formatter", id: "json-formatter" },
     { icon: Tags, label: "Meta Tags 생성기", href: "/tools/meta-tags-generator", id: "meta-tags-generator" },
     { icon: Share2, label: "OG 카드 미리보기", href: "/tools/og-card-preview", id: "og-card-preview" },
