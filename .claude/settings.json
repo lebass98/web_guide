@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:wepplication.github.io)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "WebFetch(domain:tableconvert.com)"
     ],
     "additionalDirectories": [
       "/Users/ijaegwang/wordncode/React/Project/WebGuide/src/app/tools"

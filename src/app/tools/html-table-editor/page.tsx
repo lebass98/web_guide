@@ -9,7 +9,7 @@ import {
     ArrowLeft, ArrowRight,
     Merge, Scissors, Download, Upload, RotateCcw,
     Bold, AlignLeft, AlignCenter, AlignRight, Palette,
-    Code2, LayoutGrid, RefreshCw,
+    Code2, LayoutGrid, RefreshCw, ArrowUpDown, Minimize2, Settings2,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -79,8 +79,17 @@ tbody tr:hover td { background: #2a2a3e; }`,
 
 // ─── HTML Generator ───────────────────────────────────────────────────────────
 
-function generateHTML(rows: CellData[][], hasHeader: boolean, tableStyle: TableStyle): string {
+interface GenOptions {
+    caption?: string;
+    tableId?: string;
+    tableClass?: string;
+    minify?: boolean;
+}
+
+function generateHTML(rows: CellData[][], hasHeader: boolean, tableStyle: TableStyle, opts: GenOptions = {}): string {
+    const { caption = "", tableId = "", tableClass = "", minify = false } = opts;
     const css = STYLE_PRESETS[tableStyle].css;
+
     const tableRows = rows.map((row) => {
         const cells = row.map((cell) => {
             if (cell.hidden) return "";
@@ -95,24 +104,46 @@ function generateHTML(rows: CellData[][], hasHeader: boolean, tableStyle: TableS
             if (cell.textColor) styles.push(`color:${cell.textColor}`);
             if (styles.length) attrs.push(`style="${styles.join(";")}"`);
             const attrStr = attrs.length ? " " + attrs.join(" ") : "";
+            if (minify) return `<${tag}${attrStr}>${cell.content}</${tag}>`;
             return `    <${tag}${attrStr}>${cell.content}</${tag}>`;
-        }).filter(Boolean).join("\n");
+        }).filter(Boolean).join(minify ? "" : "\n");
+        if (minify) return `<tr>${cells}</tr>`;
         return `  <tr>\n${cells}\n  </tr>`;
     });
 
     let body: string;
     if (hasHeader && tableRows.length > 0) {
-        body = `  <thead>\n${tableRows[0]}\n  </thead>\n  <tbody>\n${tableRows.slice(1).join("\n")}\n  </tbody>`;
+        body = minify
+            ? `<thead>${tableRows[0]}</thead><tbody>${tableRows.slice(1).join("")}</tbody>`
+            : `  <thead>\n${tableRows[0]}\n  </thead>\n  <tbody>\n${tableRows.slice(1).join("\n")}\n  </tbody>`;
     } else {
-        body = `  <tbody>\n${tableRows.join("\n")}\n  </tbody>`;
+        body = minify
+            ? `<tbody>${tableRows.join("")}</tbody>`
+            : `  <tbody>\n${tableRows.join("\n")}\n  </tbody>`;
     }
 
-    return `<style>\n${css}\n</style>\n\n<table>\n${body}\n</table>`;
+    const tableAttrs: string[] = [];
+    if (tableId) tableAttrs.push(`id="${tableId}"`);
+    if (tableClass) tableAttrs.push(`class="${tableClass}"`);
+    const tableAttrStr = tableAttrs.length ? " " + tableAttrs.join(" ") : "";
+    const captionStr = caption
+        ? (minify ? `<caption>${caption}</caption>` : `  <caption>${caption}</caption>\n`)
+        : "";
+
+    if (minify) {
+        const cssMin = css
+            .replace(/\/\*[\s\S]*?\*\//g, "")
+            .replace(/\s+/g, " ")
+            .replace(/\s*{\s*/g, "{").replace(/\s*}\s*/g, "}")
+            .replace(/\s*:\s*/g, ":").replace(/\s*;\s*/g, ";")
+            .trim();
+        return `<style>${cssMin}</style><table${tableAttrStr}>${captionStr}${body}</table>`;
+    }
+
+    return `<style>\n${css}\n</style>\n\n<table${tableAttrStr}>\n${captionStr}${body}\n</table>`;
 }
 
 function buildSrcdoc(html: string): string {
-    // Base styles are declared first — user's <style> blocks inside the body come later
-    // in the cascade and will override these automatically.
     const baseStyle = `
 *{box-sizing:border-box}
 body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;color:#1e293b}
@@ -218,15 +249,67 @@ export default function HtmlTableEditorPage() {
     const [isSelecting, setIsSelecting] = useState(false);
     const editRef = useRef<HTMLInputElement>(null);
 
+    // ── Column width state ────────────────────────────────────────────────────
+    const [colWidths, setColWidths] = useState<number[]>(() => Array(4).fill(120));
+    const resizingRef = useRef<{ col: number; startX: number; startWidth: number } | null>(null);
+
+    // ── Output options state ──────────────────────────────────────────────────
+    const [caption, setCaption] = useState("");
+    const [tableId, setTableId] = useState("");
+    const [tableClass, setTableClass] = useState("");
+    const [minifyOutput, setMinifyOutput] = useState(false);
+
     // ── Source editor state ───────────────────────────────────────────────────
     const [mode, setMode] = useState<Mode>("visual");
     const [sourceHTML, setSourceHTML] = useState("");
     const [sourceCopied, setSourceCopied] = useState(false);
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
+    // ── Dimension input state ─────────────────────────────────────────────────
     const rowCount = rows.length;
     const colCount = rows[0]?.length ?? 0;
-    const generatedHTML = generateHTML(rows, hasHeader, tableStyle);
+    const [dimRows, setDimRows] = useState(rowCount);
+    const [dimCols, setDimCols] = useState(colCount);
+    const [dimPickerOpen, setDimPickerOpen] = useState(false);
+    const [hoverDim, setHoverDim] = useState<{ r: number; c: number } | null>(null);
+    const dimPickerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => { setDimRows(rowCount); }, [rowCount]);
+    useEffect(() => { setDimCols(colCount); }, [colCount]);
+
+    useEffect(() => {
+        if (!dimPickerOpen) return;
+        const handler = (e: MouseEvent) => {
+            if (dimPickerRef.current && !dimPickerRef.current.contains(e.target as Node))
+                setDimPickerOpen(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [dimPickerOpen]);
+
+    // ── Column resize drag ────────────────────────────────────────────────────
+    useEffect(() => {
+        const onMove = (e: MouseEvent) => {
+            if (!resizingRef.current) return;
+            const { col, startX, startWidth } = resizingRef.current;
+            setColWidths(prev => {
+                const next = [...prev];
+                next[col] = Math.max(60, startWidth + e.clientX - startX);
+                return next;
+            });
+        };
+        const onUp = () => { resizingRef.current = null; };
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onUp);
+        return () => {
+            document.removeEventListener("mousemove", onMove);
+            document.removeEventListener("mouseup", onUp);
+        };
+    }, []);
+
+    const generatedHTML = generateHTML(rows, hasHeader, tableStyle, {
+        caption, tableId, tableClass, minify: minifyOutput,
+    });
 
     // ── Mode switch ────────────────────────────────────────────────────────────
 
@@ -245,6 +328,7 @@ export default function HtmlTableEditorPage() {
         }
         setRows(result.rows);
         setHasHeader(result.hasHeader);
+        setColWidths(Array(result.rows[0].length).fill(120));
         setSelectedCells(new Set());
         setEditingCell(null);
         setMode("visual");
@@ -308,6 +392,11 @@ export default function HtmlTableEditorPage() {
             next.splice(after + 1, 0, defaultCell(hasHeader && ri === 0));
             return next;
         }));
+        setColWidths(prev => {
+            const next = [...prev];
+            next.splice(after + 1, 0, 120);
+            return next;
+        });
     };
 
     const removeRow = (ri: number) => {
@@ -320,6 +409,7 @@ export default function HtmlTableEditorPage() {
     const removeCol = (ci: number) => {
         if (rows[0].length <= 1) return;
         setRows(prev => prev.map(row => row.filter((_, i) => i !== ci)));
+        setColWidths(prev => prev.filter((_, i) => i !== ci));
         setSelectedCells(new Set());
         setEditingCell(null);
     };
@@ -378,6 +468,103 @@ export default function HtmlTableEditorPage() {
         });
     };
 
+    // ── Table Operations ────────────────────────────────────────────────────────
+
+    const transpose = () => {
+        const hasMerge = rows.some(row => row.some(c => c.colspan > 1 || c.rowspan > 1));
+        if (hasMerge) {
+            showToast("병합된 셀이 있으면 전치할 수 없습니다.", "error");
+            return;
+        }
+        const numCols = rows[0]?.length ?? 0;
+        if (numCols === 0) return;
+        setRows(
+            Array.from({ length: numCols }, (_, ci) =>
+                Array.from({ length: rows.length }, (_, ri) => ({ ...rows[ri][ci] }))
+            )
+        );
+        // After transpose, new col count = old row count → reset widths
+        setColWidths(Array(rows.length).fill(120));
+        setSelectedCells(new Set());
+        setEditingCell(null);
+        showToast("행과 열을 전치했습니다.", "success");
+    };
+
+    const deleteBlankRows = () => {
+        const filtered = rows.filter(row => row.some(c => !c.hidden && c.content.trim() !== ""));
+        if (filtered.length === rows.length) { showToast("빈 행이 없습니다.", "info"); return; }
+        if (filtered.length === 0) { showToast("모든 행을 삭제할 수 없습니다.", "error"); return; }
+        setRows(filtered);
+        setSelectedCells(new Set());
+        showToast(`빈 행 ${rows.length - filtered.length}개를 삭제했습니다.`, "success");
+    };
+
+    const deleteBlankCols = () => {
+        const numCols = rows[0]?.length ?? 0;
+        const keepCols = Array.from({ length: numCols }, (_, ci) =>
+            rows.some(row => row[ci] && !row[ci].hidden && row[ci].content.trim() !== "")
+        );
+        const removed = keepCols.filter(k => !k).length;
+        if (removed === 0) { showToast("빈 열이 없습니다.", "info"); return; }
+        if (keepCols.filter(Boolean).length === 0) { showToast("모든 열을 삭제할 수 없습니다.", "error"); return; }
+        setRows(prev => prev.map(row => row.filter((_, ci) => keepCols[ci])));
+        setColWidths(prev => prev.filter((_, ci) => keepCols[ci]));
+        setSelectedCells(new Set());
+        showToast(`빈 열 ${removed}개를 삭제했습니다.`, "success");
+    };
+
+    const removeDuplicateRows = () => {
+        const seen = new Set<string>();
+        const filtered = rows.filter(row => {
+            const key = row.map(c => c.content).join("\x00");
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+        const removed = rows.length - filtered.length;
+        if (removed === 0) { showToast("중복 행이 없습니다.", "info"); return; }
+        setRows(filtered);
+        setSelectedCells(new Set());
+        showToast(`중복 행 ${removed}개를 삭제했습니다.`, "success");
+    };
+
+    const applyDimensions = () => {
+        const targetR = Math.max(1, Math.min(50, dimRows));
+        const targetC = Math.max(1, Math.min(50, dimCols));
+        setColWidths(prev => {
+            if (targetC > prev.length) return [...prev, ...Array(targetC - prev.length).fill(120)];
+            return prev.slice(0, targetC);
+        });
+        setRows(prev => {
+            let result = prev.map(row => [...row]);
+            const curCols = result[0]?.length ?? 0;
+            if (targetC > curCols) {
+                result = result.map((row, ri) => [
+                    ...row,
+                    ...Array.from({ length: targetC - curCols }, () => defaultCell(hasHeader && ri === 0)),
+                ]);
+            } else if (targetC < curCols) {
+                result = result.map(row => row.slice(0, targetC));
+            }
+            const curRows = result.length;
+            const newCols = result[0]?.length ?? targetC;
+            if (targetR > curRows) {
+                result = [
+                    ...result,
+                    ...Array.from({ length: targetR - curRows }, () =>
+                        Array.from({ length: newCols }, () => defaultCell())
+                    ),
+                ];
+            } else if (targetR < curRows) {
+                result = result.slice(0, targetR);
+            }
+            return result;
+        });
+        setSelectedCells(new Set());
+        setEditingCell(null);
+        showToast(`테이블 크기를 ${targetR}×${targetC}로 변경했습니다.`, "success");
+    };
+
     // ── CSV Import ───────────────────────────────────────────────────────────────
 
     const importCSV = () => {
@@ -394,6 +581,7 @@ export default function HtmlTableEditorPage() {
             }))
         );
         setRows(newRows);
+        setColWidths(Array(maxCols).fill(120));
         showToast("CSV를 가져왔습니다.", "success");
     };
 
@@ -406,6 +594,7 @@ export default function HtmlTableEditorPage() {
             [defaultCell(), defaultCell(), defaultCell(), defaultCell()],
             [defaultCell(), defaultCell(), defaultCell(), defaultCell()],
         ]);
+        setColWidths(Array(4).fill(120));
         setSelectedCells(new Set());
         setEditingCell(null);
         setHasHeader(true);
@@ -452,7 +641,25 @@ export default function HtmlTableEditorPage() {
         });
     };
 
+    const applyTextTransform = (t: "upper" | "lower" | "capitalize") => {
+        const transform = (s: string) => {
+            if (t === "upper") return s.toUpperCase();
+            if (t === "lower") return s.toLowerCase();
+            return s.replace(/\b\w/g, ch => ch.toUpperCase());
+        };
+        setRows(prev => {
+            const next = prev.map(row => row.map(cell => ({ ...cell })));
+            selectedList.forEach(({ r, c }) => {
+                next[r][c].content = transform(next[r][c].content);
+            });
+            return next;
+        });
+    };
+
     // ─────────────────────────────────────────────────────────────────────────────
+
+    const inputCls = "w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 outline-none focus:ring-2 focus:ring-indigo-500/40 transition-all";
+    const opBtnCls = "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all";
 
     return (
         <div className="space-y-6">
@@ -494,7 +701,7 @@ export default function HtmlTableEditorPage() {
                 <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6">
                     {/* ── Left: Editor ── */}
                     <div className="space-y-4">
-                        {/* Toolbar */}
+                        {/* Toolbar Row 1: Style & Merge */}
                         <div className="glass-card p-3 flex flex-wrap items-center gap-2">
                             <button
                                 onClick={() => setHasHeader(v => !v)}
@@ -532,23 +739,20 @@ export default function HtmlTableEditorPage() {
                             <button
                                 onClick={mergeSelected}
                                 disabled={selectedCells.size < 2}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                                className={cn(opBtnCls, "disabled:opacity-40 disabled:cursor-not-allowed")}
                             >
                                 <Merge className="w-3.5 h-3.5" /> 병합
                             </button>
                             <button
                                 onClick={unmergeSelected}
                                 disabled={selectedList.length === 0}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                                className={cn(opBtnCls, "disabled:opacity-40 disabled:cursor-not-allowed")}
                             >
                                 <Scissors className="w-3.5 h-3.5" /> 병합 해제
                             </button>
 
                             <div className="ml-auto flex items-center gap-2">
-                                <button
-                                    onClick={importCSV}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all"
-                                >
+                                <button onClick={importCSV} className={opBtnCls}>
                                     <Upload className="w-3.5 h-3.5" /> CSV
                                 </button>
                                 <button
@@ -560,6 +764,52 @@ export default function HtmlTableEditorPage() {
                             </div>
                         </div>
 
+                        {/* Toolbar Row 2: Table Operations */}
+                        <div className="glass-card p-3 flex flex-wrap items-center gap-2">
+                            {/* Dimension controls */}
+                            <div className="flex items-center gap-1.5">
+                                <span className="text-xs font-semibold text-gray-500 dark:text-zinc-400">크기</span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={50}
+                                    value={dimRows}
+                                    onChange={e => setDimRows(parseInt(e.target.value) || 1)}
+                                    className="w-12 px-1.5 py-1 text-xs text-center rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                />
+                                <span className="text-xs text-gray-400 dark:text-zinc-500">×</span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={50}
+                                    value={dimCols}
+                                    onChange={e => setDimCols(parseInt(e.target.value) || 1)}
+                                    className="w-12 px-1.5 py-1 text-xs text-center rounded-lg border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                />
+                                <button
+                                    onClick={applyDimensions}
+                                    className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-900/50 transition-all"
+                                >
+                                    적용
+                                </button>
+                            </div>
+
+                            <div className="w-px h-5 bg-gray-200 dark:bg-zinc-700" />
+
+                            <button onClick={transpose} className={opBtnCls} title="행과 열 교환">
+                                <ArrowUpDown className="w-3.5 h-3.5" /> 전치
+                            </button>
+                            <button onClick={deleteBlankRows} className={opBtnCls} title="빈 행 삭제">
+                                <Trash2 className="w-3 h-3" /> 빈 행 삭제
+                            </button>
+                            <button onClick={deleteBlankCols} className={opBtnCls} title="빈 열 삭제">
+                                <Trash2 className="w-3 h-3" /> 빈 열 삭제
+                            </button>
+                            <button onClick={removeDuplicateRows} className={opBtnCls} title="중복 행 제거">
+                                중복 제거
+                            </button>
+                        </div>
+
                         {/* Cell Properties */}
                         {selectedList.length > 0 && (
                             <div className="glass-card p-3 flex flex-wrap items-center gap-3">
@@ -568,6 +818,7 @@ export default function HtmlTableEditorPage() {
                                 </span>
                                 <div className="w-px h-5 bg-gray-200 dark:bg-zinc-700" />
 
+                                {/* Alignment */}
                                 <div className="flex items-center gap-1">
                                     {(["left", "center", "right"] as const).map(align => {
                                         const Icon = align === "left" ? AlignLeft : align === "center" ? AlignCenter : AlignRight;
@@ -587,6 +838,7 @@ export default function HtmlTableEditorPage() {
                                     })}
                                 </div>
 
+                                {/* Bold */}
                                 <button
                                     onClick={() => applyToSelected({ bold: !(singleSel?.cell.bold ?? false) })}
                                     className={cn(
@@ -599,6 +851,27 @@ export default function HtmlTableEditorPage() {
 
                                 <div className="w-px h-5 bg-gray-200 dark:bg-zinc-700" />
 
+                                {/* Text transforms */}
+                                <div className="flex items-center gap-0.5">
+                                    {([
+                                        { label: "AA", action: "upper" as const, title: "대문자 변환" },
+                                        { label: "aa", action: "lower" as const, title: "소문자 변환" },
+                                        { label: "Aa", action: "capitalize" as const, title: "첫글자 대문자" },
+                                    ]).map(({ label, action, title }) => (
+                                        <button
+                                            key={action}
+                                            onClick={() => applyTextTransform(action)}
+                                            title={title}
+                                            className="px-2 h-7 rounded text-xs font-mono font-bold hover:bg-gray-100 dark:hover:bg-zinc-700 text-gray-500 dark:text-zinc-400 transition-all"
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="w-px h-5 bg-gray-200 dark:bg-zinc-700" />
+
+                                {/* Color pickers */}
                                 <div className="flex items-center gap-1.5">
                                     <Palette className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
                                     <span className="text-xs text-gray-500 dark:text-zinc-400">배경</span>
@@ -629,12 +902,20 @@ export default function HtmlTableEditorPage() {
                         )}
 
                         {/* Table Editor */}
-                        <div className="glass-card p-4 overflow-auto">
+                        <div className="glass-card p-4 overflow-x-auto">
                             <div className="relative">
                                 <table
-                                    className="border-collapse w-full"
+                                    className="border-collapse"
+                                    style={{ tableLayout: "fixed", width: colWidths.reduce((a, b) => a + b, 0) + 58 }}
                                     onMouseLeave={() => { if (isSelecting) setIsSelecting(false); }}
                                 >
+                                    <colgroup>
+                                        <col style={{ width: 28 }} />
+                                        {Array.from({ length: colCount }, (_, ci) => (
+                                            <col key={ci} style={{ width: colWidths[ci] ?? 120 }} />
+                                        ))}
+                                        <col style={{ width: 28 }} />
+                                    </colgroup>
                                     <tbody>
                                         {rows.map((row, ri) => (
                                             <tr key={ri}>
@@ -690,7 +971,7 @@ export default function HtmlTableEditorPage() {
                                                             onMouseUp={() => setIsSelecting(false)}
                                                             onDoubleClick={() => handleCellDoubleClick(ri, ci)}
                                                             className={cn(
-                                                                "relative border min-w-[80px] max-w-[240px] cursor-cell select-none transition-colors",
+                                                                "relative border cursor-cell select-none transition-colors overflow-hidden",
                                                                 isHeaderRow
                                                                     ? "border-gray-300 dark:border-zinc-600 font-semibold bg-gray-50 dark:bg-zinc-800/80"
                                                                     : "border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900",
@@ -763,15 +1044,16 @@ export default function HtmlTableEditorPage() {
                                     </tbody>
                                 </table>
 
-                                {/* Column controls */}
-                                <div className="flex mt-1 ml-7 gap-0">
+                                {/* Column controls + resize handles */}
+                                <div className="flex mt-1" style={{ marginLeft: 28 }}>
                                     {rows[0]?.map((cell, ci) => {
                                         if (cell.hidden) return null;
+                                        const w = colWidths[ci] ?? 120;
                                         return (
                                             <div
                                                 key={ci}
-                                                className="flex items-center justify-center gap-1 min-w-[80px] max-w-[240px] flex-1"
-                                                style={{ width: `${100 / colCount}%` }}
+                                                className="relative flex items-center justify-center gap-1 flex-shrink-0"
+                                                style={{ width: w }}
                                             >
                                                 <button onClick={() => addCol(ci - 1)} title="왼쪽에 열 추가"
                                                     className="w-5 h-5 rounded text-gray-400 hover:bg-indigo-100 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 flex items-center justify-center transition-all">
@@ -785,6 +1067,19 @@ export default function HtmlTableEditorPage() {
                                                     className="w-5 h-5 rounded text-gray-400 hover:bg-indigo-100 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 flex items-center justify-center transition-all">
                                                     <ArrowRight className="w-3 h-3" />
                                                 </button>
+
+                                                {/* Drag resize handle */}
+                                                <div
+                                                    className="absolute right-0 top-0 h-full w-2 cursor-col-resize flex items-center justify-center group/rh z-10"
+                                                    title={`열 너비: ${Math.round(w)}px`}
+                                                    onMouseDown={e => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        resizingRef.current = { col: ci, startX: e.clientX, startWidth: w };
+                                                    }}
+                                                >
+                                                    <div className="w-0.5 h-4 rounded-full bg-gray-300 dark:bg-zinc-600 group-hover/rh:bg-indigo-400 dark:group-hover/rh:bg-indigo-400 transition-colors" />
+                                                </div>
                                             </div>
                                         );
                                     })}
@@ -795,14 +1090,15 @@ export default function HtmlTableEditorPage() {
                         <div className="glass-card p-4 text-xs text-gray-500 dark:text-zinc-400 space-y-1">
                             <div className="font-semibold text-gray-700 dark:text-zinc-200 mb-2">사용 방법</div>
                             <div>• <strong>더블클릭</strong> — 셀 내용 편집 / Tab으로 다음 셀 이동</div>
-                            <div>• <strong>드래그</strong> — 여러 셀 선택 (병합 등 일괄 적용)</div>
-                            <div>• <strong>병합</strong> — 직사각형 영역을 선택 후 병합 버튼 클릭</div>
+                            <div>• <strong>드래그</strong> — 여러 셀 선택 (병합·텍스트변환·색상 일괄 적용)</div>
+                            <div>• <strong>전치</strong> — 행과 열을 교환 (병합 없는 테이블에서만 가능)</div>
                             <div>• <strong>CSV</strong> — CSV 텍스트를 붙여넣어 테이블 데이터 한 번에 입력</div>
                         </div>
                     </div>
 
-                    {/* ── Right: Preview + HTML ── */}
+                    {/* ── Right: Preview + Output Options + HTML ── */}
                     <div className="space-y-4">
+                        {/* Preview */}
                         <div className="glass-card p-4 space-y-3">
                             <h3 className="text-sm font-semibold text-gray-700 dark:text-zinc-200">미리보기</h3>
                             <div className="overflow-auto rounded-lg bg-white dark:bg-zinc-900 p-4 border border-gray-100 dark:border-zinc-800">
@@ -816,6 +1112,7 @@ export default function HtmlTableEditorPage() {
                                         .replace(/tr:hover\s+td/g, ".preview-table tr:hover td"),
                                 }} />
                                 <table className="preview-table border-collapse w-full text-sm">
+                                    {caption && <caption className="text-xs text-gray-500 mb-2 caption-top">{caption}</caption>}
                                     {hasHeader && rows.length > 0 && (
                                         <thead>
                                             <tr>
@@ -823,7 +1120,7 @@ export default function HtmlTableEditorPage() {
                                                     cell.hidden ? null : (
                                                         <th key={ci} colSpan={cell.colspan} rowSpan={cell.rowspan}
                                                             style={{ textAlign: cell.align, fontWeight: cell.bold ? "bold" : undefined, backgroundColor: cell.bgColor || undefined, color: cell.textColor || undefined }}>
-                                                            {cell.content || " "}
+                                                            {cell.content || " "}
                                                         </th>
                                                     )
                                                 )}
@@ -837,7 +1134,7 @@ export default function HtmlTableEditorPage() {
                                                     cell.hidden ? null : (
                                                         <td key={ci} colSpan={cell.colspan} rowSpan={cell.rowspan}
                                                             style={{ textAlign: cell.align, fontWeight: cell.bold ? "bold" : undefined, backgroundColor: cell.bgColor || undefined, color: cell.textColor || undefined }}>
-                                                            {cell.content || " "}
+                                                            {cell.content || " "}
                                                         </td>
                                                     )
                                                 )}
@@ -848,13 +1145,70 @@ export default function HtmlTableEditorPage() {
                             </div>
                         </div>
 
+                        {/* Output Options */}
+                        <div className="glass-card p-4 space-y-3">
+                            <h3 className="text-sm font-semibold text-gray-700 dark:text-zinc-200 flex items-center gap-2">
+                                <Settings2 className="w-4 h-4 text-gray-400 dark:text-zinc-500" /> 출력 설정
+                            </h3>
+                            <div className="space-y-2.5">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 dark:text-zinc-400 w-16 shrink-0">캡션</span>
+                                    <input
+                                        value={caption}
+                                        onChange={e => setCaption(e.target.value)}
+                                        placeholder="테이블 제목..."
+                                        className={inputCls}
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 dark:text-zinc-400 w-16 shrink-0">ID</span>
+                                    <input
+                                        value={tableId}
+                                        onChange={e => setTableId(e.target.value)}
+                                        placeholder="id 속성..."
+                                        className={inputCls}
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 dark:text-zinc-400 w-16 shrink-0">Class</span>
+                                    <input
+                                        value={tableClass}
+                                        onChange={e => setTableClass(e.target.value)}
+                                        placeholder="class 속성..."
+                                        className={inputCls}
+                                    />
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 dark:text-zinc-400 w-16 shrink-0 flex items-center gap-1">
+                                        <Minimize2 className="w-3 h-3" /> 압축
+                                    </span>
+                                    <button
+                                        onClick={() => setMinifyOutput(v => !v)}
+                                        className={cn(
+                                            "relative w-9 h-5 rounded-full transition-colors",
+                                            minifyOutput ? "bg-indigo-500" : "bg-gray-200 dark:bg-zinc-700"
+                                        )}
+                                    >
+                                        <span className={cn(
+                                            "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform",
+                                            minifyOutput ? "translate-x-4" : "translate-x-0.5"
+                                        )} />
+                                    </button>
+                                    <span className="text-xs text-gray-400 dark:text-zinc-500">
+                                        {minifyOutput ? "압축 출력" : "들여쓰기 출력"}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Generated HTML */}
                         <div className="glass-card p-4 space-y-3">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-sm font-semibold text-gray-700 dark:text-zinc-200">생성된 HTML</h3>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => downloadHTML(generatedHTML)}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all"
+                                        className={opBtnCls}
                                     >
                                         <Download className="w-3.5 h-3.5" /> 다운로드
                                     </button>
@@ -899,13 +1253,13 @@ export default function HtmlTableEditorPage() {
                             <button
                                 onClick={() => setSourceHTML(generatedHTML)}
                                 title="비주얼 편집 내용으로 초기화"
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all"
+                                className={opBtnCls}
                             >
                                 <RefreshCw className="w-3.5 h-3.5" /> 비주얼 내용 불러오기
                             </button>
                             <button
                                 onClick={() => downloadHTML(sourceHTML)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-all"
+                                className={opBtnCls}
                             >
                                 <Download className="w-3.5 h-3.5" /> 다운로드
                             </button>
