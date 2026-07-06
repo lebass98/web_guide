@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Copy, Minimize2, AlertCircle, CheckCircle2, Upload, FileCode2 } from "lucide-react";
+import { Copy, Minimize2, AlertCircle, CheckCircle2, Upload, FileCode2, Sun, Moon } from "lucide-react";
 import { useToast } from "@/components/providers/ToastProvider";
 
 function optimizeSvg(svg: string): { result: string; savings: number } {
@@ -21,6 +21,7 @@ function optimizeSvg(svg: string): { result: string; savings: number } {
     // result = result.replace(/<title>[\s\S]*?<\/title>/gi, "");
     // Remove empty groups
     result = result.replace(/<g\s*><\/g>/gi, "");
+    // Remove <g />
     result = result.replace(/<g\s*\/>/gi, "");
     // Collapse multiple spaces
     result = result.replace(/[ \t]{2,}/g, " ");
@@ -48,6 +49,8 @@ export default function SvgOptimizerPage() {
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [inputMode, setInputMode] = useState<"upload" | "code">("upload");
+    const [previewBg, setPreviewBg] = useState<"light" | "dark" | "default">("default");
+    const [zoom, setZoom] = useState(1);
 
     const handleOptimize = (value: string) => {
         setInput(value);
@@ -60,6 +63,7 @@ export default function SvgOptimizerPage() {
         const { result, savings: s } = optimizeSvg(value);
         setOptimized(result);
         setSavings(s);
+        setZoom(1);
     };
 
     const handleCopy = () => {
@@ -176,7 +180,7 @@ export default function SvgOptimizerPage() {
                 </div>
             )}
 
-            <div className="flex flex-col lg:flex-row gap-6 h-[560px]">
+            <div className="flex flex-col lg:flex-row gap-6">
                 {/* Input */}
                 {inputMode === "code" ? (
                     <div className="flex-1 flex flex-col gap-2">
@@ -192,7 +196,7 @@ export default function SvgOptimizerPage() {
                             </button>
                         </div>
                         <textarea
-                            className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white text-gray-900 placeholder:text-zinc-400"
+                            className="h-[450px] w-full p-4 glass-card resize-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 dark:text-white text-gray-900 placeholder:text-zinc-400"
                             placeholder={`<svg xmlns="http://www.w3.org/2000/svg" ...>\n  <!-- SVG 코드를 여기에 붙여넣으세요 -->\n</svg>`}
                             value={input}
                             onChange={(e) => handleOptimize(e.target.value)}
@@ -203,43 +207,125 @@ export default function SvgOptimizerPage() {
                     <div className="flex-1 flex flex-col gap-2">
                         <div className="flex items-center justify-between h-[38px]">
                             <label className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
-                                파일 업로드
+                                미리보기
                             </label>
-                            {input && (
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="file"
+                                    accept=".svg"
+                                    className="hidden"
+                                    ref={fileInputRef}
+                                    onChange={handleFileUpload}
+                                />
                                 <button
-                                    onClick={() => handleOptimize("")}
-                                    className="text-xs font-bold text-zinc-400 hover:text-rose-500 transition-colors"
+                                    onClick={handleFileUploadClick}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md shadow-indigo-500/10"
                                 >
-                                    지우기
+                                    <Upload className="w-3.5 h-3.5" /> 파일 선택
                                 </button>
-                            )}
-                        </div>
-                        <div 
-                            className="flex-1 w-full glass-card flex flex-col items-center justify-center border-2 border-dashed border-zinc-300/50 dark:border-zinc-700/50 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all cursor-pointer group"
-                            onClick={handleFileUploadClick}
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                        >
-                            <input
-                                type="file"
-                                accept=".svg"
-                                className="hidden"
-                                ref={fileInputRef}
-                                onChange={handleFileUpload}
-                            />
-                            <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <Upload className="w-8 h-8 text-indigo-500" />
+                                {input && (
+                                    <button
+                                        onClick={() => handleOptimize("")}
+                                        className="text-xs font-bold text-zinc-400 hover:text-rose-500 transition-colors ml-1"
+                                    >
+                                        지우기
+                                    </button>
+                                )}
                             </div>
-                            <p className="text-base font-bold text-gray-900 dark:text-white mb-2">클릭하여 파일 선택</p>
-                            <p className="text-sm text-zinc-500 dark:text-zinc-400">또는 SVG 파일을 이곳으로 드래그 하세요</p>
-                            
-                            {input && !error && (
-                                <div className="mt-6 px-4 py-2 bg-emerald-500/10 rounded-full flex items-center gap-2">
-                                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">정상적으로 로드됨</span>
-                                </div>
-                            )}
                         </div>
+
+                        {optimized && !error ? (
+                            <div className="w-full glass-card flex flex-col overflow-hidden h-auto">
+                                {/* Controls Area at top */}
+                                <div className="flex items-center justify-between p-3 bg-zinc-50/50 dark:bg-zinc-900/50 gap-4 border-b border-zinc-200 dark:border-zinc-800">
+                                    {/* Zoom Slider */}
+                                    <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1.5 rounded-lg">
+                                        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 min-w-[32px] text-right">{zoom.toFixed(1)}x</span>
+                                        <input
+                                            type="range"
+                                            min="0.5"
+                                            max="5"
+                                            step="0.1"
+                                            value={zoom}
+                                            onChange={(e) => setZoom(parseFloat(e.target.value))}
+                                            className="w-20 accent-indigo-600 cursor-pointer h-1 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none"
+                                        />
+                                        <button
+                                            onClick={() => setZoom(1)}
+                                            className="text-[10px] font-bold text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                                        >
+                                            초기화
+                                        </button>
+                                    </div>
+                                    
+                                    {/* Background Selector */}
+                                    <div className="flex gap-1 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
+                                        <button
+                                            onClick={() => setPreviewBg("light")}
+                                            className={`p-1 rounded-md transition-all ${
+                                                previewBg === "light"
+                                                    ? "bg-white text-zinc-900 shadow-sm"
+                                                    : "text-zinc-500 dark:text-zinc-400"
+                                            }`}
+                                            title="밝게"
+                                        >
+                                            <Sun className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                            onClick={() => setPreviewBg("dark")}
+                                            className={`p-1 rounded-md transition-all ${
+                                                previewBg === "dark"
+                                                    ? "bg-zinc-900 text-white shadow-sm"
+                                                    : "text-zinc-500 dark:text-zinc-400"
+                                            }`}
+                                            title="어둡게"
+                                        >
+                                            <Moon className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button
+                                            onClick={() => setPreviewBg("default")}
+                                            className={`px-2 py-1 rounded-md text-[10px] font-bold transition-all ${
+                                                previewBg === "default"
+                                                    ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
+                                                    : "text-zinc-500 dark:text-zinc-400"
+                                            }`}
+                                        >
+                                            기본
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Preview Area */}
+                                <div
+                                    className={`flex-1 flex items-center justify-center p-8 transition-colors ${
+                                        previewBg === "light"
+                                            ? "bg-white"
+                                            : previewBg === "dark"
+                                            ? "bg-zinc-950"
+                                            : "bg-zinc-100/50 dark:bg-zinc-800/50"
+                                    }`}
+                                >
+                                    <div
+                                        style={{ zoom: zoom, transition: "zoom 0.1s ease-out" }}
+                                        className="flex items-center justify-center"
+                                        dangerouslySetInnerHTML={{ __html: optimized }}
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            <div 
+                                className="h-[450px] w-full glass-card flex flex-col items-center justify-center border-2 border-dashed border-zinc-300/50 dark:border-zinc-700/50 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-all cursor-pointer group"
+                                onClick={handleFileUploadClick}
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <Upload className="w-6 h-6 text-indigo-500" />
+                                </div>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">SVG 파일을 드래그하여 놓거나</p>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400">우측 상단 '파일 선택' 버튼을 누르세요</p>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -258,7 +344,7 @@ export default function SvgOptimizerPage() {
                         </button>
                     </div>
                     {error ? (
-                        <div className="flex-1 flex items-center justify-center glass-card">
+                        <div className="h-[450px] w-full flex items-center justify-center glass-card">
                             <div className="flex flex-col items-center gap-3 p-8 text-center">
                                 <AlertCircle className="w-10 h-10 text-rose-400" />
                                 <p className="text-rose-400 font-semibold text-sm">{error}</p>
@@ -267,7 +353,7 @@ export default function SvgOptimizerPage() {
                     ) : (
                         <textarea
                             readOnly
-                            className="flex-1 w-full p-4 glass-card resize-none font-mono text-sm text-emerald-600 dark:text-emerald-400 focus:outline-none"
+                            className="h-[450px] w-full p-4 glass-card resize-none font-mono text-sm text-emerald-600 dark:text-emerald-400 focus:outline-none"
                             placeholder="최적화된 SVG 코드가 여기에 표시됩니다..."
                             value={optimized}
                             spellCheck={false}
@@ -276,14 +362,84 @@ export default function SvgOptimizerPage() {
                 </div>
             </div>
 
-            {/* SVG Preview */}
-            {optimized && !error && (
+            {/* SVG Preview (Code Mode Only) */}
+            {inputMode === "code" && optimized && !error && (
                 <div className="glass-card p-6 mt-6">
-                    <h3 className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-4">미리보기</h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                        <h3 className="text-sm font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">미리보기</h3>
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* Zoom Slider */}
+                            <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1.5 rounded-xl">
+                                <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 min-w-[36px] text-right">{zoom.toFixed(1)}x</span>
+                                <input
+                                    type="range"
+                                    min="0.5"
+                                    max="5"
+                                    step="0.1"
+                                    value={zoom}
+                                    onChange={(e) => setZoom(parseFloat(e.target.value))}
+                                    className="w-24 accent-indigo-600 cursor-pointer h-1 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none"
+                                />
+                                <button
+                                    onClick={() => setZoom(1)}
+                                    className="text-xs font-bold text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                                >
+                                    초기화
+                                </button>
+                            </div>
+
+                            {/* Background Selector */}
+                            <div className="flex gap-1 bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl">
+                                <button
+                                    onClick={() => setPreviewBg("light")}
+                                    className={`p-1.5 rounded-lg transition-all ${
+                                        previewBg === "light"
+                                            ? "bg-white text-zinc-900 shadow-sm"
+                                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
+                                    }`}
+                                    title="밝게"
+                                >
+                                    <Sun className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => setPreviewBg("dark")}
+                                    className={`p-1.5 rounded-lg transition-all ${
+                                        previewBg === "dark"
+                                            ? "bg-zinc-900 text-white shadow-sm"
+                                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
+                                    }`}
+                                    title="어둡게"
+                                >
+                                    <Moon className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => setPreviewBg("default")}
+                                    className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                        previewBg === "default"
+                                            ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
+                                            : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
+                                    }`}
+                                >
+                                    기본
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div
-                        className="flex items-center justify-center p-8 bg-zinc-100/50 dark:bg-zinc-800/50 rounded-2xl min-h-32"
-                        dangerouslySetInnerHTML={{ __html: optimized }}
-                    />
+                        className={`flex items-center justify-center p-8 rounded-2xl min-h-32 overflow-hidden transition-all duration-300 ${
+                            previewBg === "light"
+                                ? "bg-white border border-zinc-200"
+                                : previewBg === "dark"
+                                ? "bg-zinc-950 border border-zinc-800"
+                                : "bg-zinc-100/50 dark:bg-zinc-800/50"
+                        }`}
+                    >
+                        <div
+                            style={{ zoom: zoom, transition: "zoom 0.1s ease-out" }}
+                            className="flex items-center justify-center"
+                            dangerouslySetInnerHTML={{ __html: optimized }}
+                        />
+                    </div>
                 </div>
             )}
         </>
