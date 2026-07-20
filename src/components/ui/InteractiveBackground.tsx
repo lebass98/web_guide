@@ -48,7 +48,7 @@ export function InteractiveBackground() {
                     x: blob1X,
                     y: blob1Y,
                 }}
-                className="absolute top-[10%] left-[10%] w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-gradient-to-tr from-indigo-500/8 to-violet-500/3 dark:from-indigo-500/4 dark:to-violet-500/1 blur-[80px] md:blur-[120px]"
+                className="absolute top-[10%] left-[10%] w-[350px] md:w-[600px] h-[350px] md:h-[600px] rounded-full bg-gradient-to-tr from-indigo-500/20 to-violet-500/10 dark:from-indigo-500/15 dark:to-violet-500/5 blur-[80px] md:blur-[120px]"
             />
             {/* Blob 2: Rose & Amber (화면 우하단 기본 배치) */}
             <motion.div
@@ -56,7 +56,7 @@ export function InteractiveBackground() {
                     x: blob2X,
                     y: blob2Y,
                 }}
-                className="absolute bottom-[10%] right-[10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-gradient-to-br from-rose-500/8 to-amber-500/3 dark:from-rose-500/4 dark:to-amber-500/1 blur-[80px] md:blur-[120px]"
+                className="absolute bottom-[10%] right-[10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-gradient-to-br from-rose-500/20 to-amber-500/10 dark:from-rose-500/15 dark:to-amber-500/5 blur-[80px] md:blur-[120px]"
             />
         </div>
     );
