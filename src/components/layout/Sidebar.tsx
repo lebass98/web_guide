@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { TOOL_ITEMS } from "@/lib/constants";
+import { motion } from "framer-motion";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -101,13 +102,20 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                     "w-full gap-4 px-4 shrink-0",
                                     isCollapsed ? "lg:w-12 lg:h-12 lg:justify-center lg:px-0" : "lg:w-full lg:gap-4 lg:px-4",
                                     pathname === item.href
-                                        ? "bg-gray-100 dark:bg-zinc-800 text-[#1c1c1c] dark:text-white shadow-sm"
+                                        ? "text-[#1c1c1c] dark:text-white"
                                         : "text-zinc-600 dark:text-zinc-400 hover:text-[#1c1c1c] dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-zinc-800/50"
                                 )}
                             >
+                                {pathname === item.href && (
+                                    <motion.div
+                                        layoutId="activeSidebarBg"
+                                        className="absolute inset-0 bg-gray-100 dark:bg-zinc-800 rounded-xl -z-10 shadow-sm"
+                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                    />
+                                )}
                                 <item.icon className="w-5 h-5 relative z-10 shrink-0" />
                                 <span className={cn(
-                                    "text-sm font-semibold whitespace-nowrap transition-colors",
+                                    "text-sm font-semibold whitespace-nowrap transition-colors relative z-10",
                                     isCollapsed ? "lg:hidden" : "lg:block",
                                     "block" // Always block on mobile
                                 )}>
@@ -115,10 +123,14 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
                                 </span>
 
                                 {pathname === item.href && (
-                                    <div className={cn(
-                                        "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] dark:bg-white rounded-r-full lg:block hidden",
-                                        isCollapsed && "left-0"
-                                    )} />
+                                    <motion.div 
+                                        layoutId="activeSidebarIndicator"
+                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        className={cn(
+                                            "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] dark:bg-white rounded-r-full lg:block hidden",
+                                            isCollapsed && "left-0"
+                                        )} 
+                                    />
                                 )}
                             </Link>
                         ))}

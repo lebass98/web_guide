@@ -4,6 +4,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { TabProvider } from "@/components/providers/TabProvider";
 import { ToastProvider } from "@/components/providers/ToastProvider";
+import { InteractiveBackground } from "@/components/ui/InteractiveBackground";
 
 export const metadata: Metadata = {
     title: "WebTools - 프리미엄 개발자 유틸리티",
@@ -26,6 +27,7 @@ export default function RootLayout({
                 >
                     <ToastProvider>
                         <TabProvider>
+                            <InteractiveBackground />
                             <Navigation>{children}</Navigation>
                         </TabProvider>
                     </ToastProvider>

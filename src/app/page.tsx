@@ -33,6 +33,30 @@ import {
     Table2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.03,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            type: "spring",
+            stiffness: 100,
+            damping: 15,
+        },
+    },
+};
 
 export default function Home() {
     const tools: Tool[] = [
@@ -250,11 +274,18 @@ export default function Home() {
             </section>
 
             {/* Tools Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 px-2 md:px-0">
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 px-2 md:px-0"
+            >
                 {tools.map((tool) => (
-                    <ToolCard key={tool.href} tool={tool} />
+                    <motion.div key={tool.href} variants={itemVariants} className="h-full">
+                        <ToolCard tool={tool} />
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </div>
     );
 }
@@ -271,32 +302,43 @@ function ToolCard({ tool }: { tool: Tool }) {
     const Icon = tool.icon;
 
     return (
-        <Link
-            href={tool.href}
-            className="glass-card glass-hover p-4 md:p-8 group flex flex-col justify-between min-h-[180px] md:min-h-[240px] relative overflow-hidden"
-        >
-            {/* Background Accent Gradient */}
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-500/20 transition-all duration-500" />
-            
-            <div className="relative z-10 flex items-center justify-between mb-4 md:mb-8">
-                <div className={cn(
-                    "w-10 h-10 md:w-16 md:h-16 rounded-[12px] md:rounded-[24px] flex items-center justify-center shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-110",
-                    getColorClasses(tool.color)
-                )}>
-                    <Icon className="w-5 h-5 md:w-8 md:h-8" />
+        <Link href={tool.href} className="block h-full">
+            <motion.div
+                whileHover={{ 
+                    y: -6, 
+                    scale: 1.015,
+                    boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08)"
+                }}
+                transition={{ 
+                    type: "spring", 
+                    stiffness: 300, // 탄성 강도 (높을수록 반응이 빨라짐. 기존: 300)
+                    damping: 4     // 감쇠/마찰력 (낮을수록 흔들림이 커지고 높을수록 묵직해짐. 기존: 20)
+                }}
+                className="glass-card glass-hover p-4 md:p-8 group flex flex-col justify-between min-h-[180px] md:min-h-[240px] h-full relative overflow-hidden"
+            >
+                {/* Background Accent Gradient */}
+                <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-500/20 transition-all duration-500" />
+                
+                <div className="relative z-10 flex items-center justify-between mb-4 md:mb-8">
+                    <div className={cn(
+                        "w-10 h-10 md:w-16 md:h-16 rounded-[12px] md:rounded-[24px] flex items-center justify-center shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-110",
+                        getColorClasses(tool.color)
+                    )}>
+                        <Icon className="w-5 h-5 md:w-8 md:h-8" />
+                    </div>
+                    <div className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full glass border border-white/20 dark:border-white/5 text-gray-400 dark:text-zinc-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-white dark:group-hover:bg-zinc-800 transition-all duration-300 shadow-sm opacity-0 md:opacity-100">
+                        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
                 </div>
-                <div className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full glass border border-white/20 dark:border-white/5 text-gray-400 dark:text-zinc-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-white dark:group-hover:bg-zinc-800 transition-all duration-300 shadow-sm opacity-0 md:opacity-100">
-                    <ChevronRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-0.5 transition-transform" />
+                <div className="relative z-10">
+                    <h3 className="text-[14px] md:text-[20px] font-bold text-gray-900 dark:text-white mb-1.5 md:mb-2.5 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+                        {tool.title}
+                    </h3>
+                    <p className="text-[10px] md:text-[14px] text-gray-500 dark:text-zinc-400 leading-relaxed font-medium line-clamp-2 md:line-clamp-none">
+                        {tool.desc}
+                    </p>
                 </div>
-            </div>
-            <div className="relative z-10">
-                <h3 className="text-[14px] md:text-[20px] font-bold text-gray-900 dark:text-white mb-1.5 md:mb-2.5 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
-                    {tool.title}
-                </h3>
-                <p className="text-[10px] md:text-[14px] text-gray-500 dark:text-zinc-400 leading-relaxed font-medium line-clamp-2 md:line-clamp-none">
-                    {tool.desc}
-                </p>
-            </div>
+            </motion.div>
         </Link>
     );
 }
