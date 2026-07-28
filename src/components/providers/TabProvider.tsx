@@ -15,6 +15,7 @@ interface TabContextType {
     activeTabPath: string;
     addTab: (path: string) => void;
     removeTab: (path: string) => void;
+    removeAllTabs: () => void;
     toolStates: Record<string, any>;
     setToolState: (path: string, state: any) => void;
 }
@@ -81,6 +82,11 @@ export function TabProvider({ children }: { children: React.ReactNode }) {
         });
     };
 
+    const removeAllTabs = () => {
+        setTabs([]);
+        router.push("/");
+    };
+
     const setToolState = (path: string, state: any) => {
         setToolStates((prev) => {
             const current = prev[path];
@@ -96,6 +102,7 @@ export function TabProvider({ children }: { children: React.ReactNode }) {
                 activeTabPath: pathname,
                 addTab,
                 removeTab,
+                removeAllTabs,
                 toolStates,
                 setToolState,
             }}
