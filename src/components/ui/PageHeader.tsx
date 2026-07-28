@@ -14,7 +14,7 @@ export function PageHeader({ title, description }: PageHeaderProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2"
+                className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-2.5"
             >
                 {title}
             </motion.h1>
@@ -22,7 +22,7 @@ export function PageHeader({ title, description }: PageHeaderProps) {
                 initial={{ opacity: 0, x: -15 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.05 }}
-                className="text-[15px] text-gray-500 dark:text-zinc-400 font-medium max-w-2xl leading-relaxed"
+                className="text-base md:text-lg text-gray-600 dark:text-zinc-300 font-medium max-w-3xl leading-relaxed"
             >
                 {description}
             </motion.p>

@@ -621,12 +621,12 @@ export default function FlexGridEditorPage() {
             />
 
             {/* ── Top Main Nav Tabs ────────────────────────────────────────────── */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-1.5 rounded-2xl shadow-sm">
-                <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2 rounded-2xl shadow-sm">
+                <div className="flex items-center gap-1.5">
                     <button
                         onClick={() => setMainTab("flex-cheatsheet")}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                            "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all",
                             mainTab === "flex-cheatsheet"
                                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
                                 : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -637,7 +637,7 @@ export default function FlexGridEditorPage() {
                     <button
                         onClick={() => setMainTab("grid-cheatsheet")}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                            "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all",
                             mainTab === "grid-cheatsheet"
                                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
                                 : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -648,7 +648,7 @@ export default function FlexGridEditorPage() {
                     <button
                         onClick={() => setMainTab("playground")}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all",
+                            "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all",
                             mainTab === "playground"
                                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
                                 : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -660,14 +660,14 @@ export default function FlexGridEditorPage() {
 
                 {/* Search filter for cheatsheet tabs */}
                 {mainTab !== "playground" && (
-                    <div className="relative min-w-[200px] px-2">
-                        <Search className="w-3.5 h-3.5 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <div className="relative min-w-[220px] px-2">
+                        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
                         <input
                             type="text"
                             placeholder="속성 검색 (예: justify, wrap...)"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full pl-9 pr-3 py-2 rounded-xl text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                     </div>
                 )}
@@ -697,15 +697,15 @@ export default function FlexGridEditorPage() {
 
             {/* ══ TAB 3: VISUAL PLAYGROUND ══════════════════════════════════════ */}
             {mainTab === "playground" && (
-                <div className="grid grid-cols-1 xl:grid-cols-[310px_1fr_310px] gap-5 items-start">
+                <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr_320px] gap-6 items-start">
                     {/* Left: Controls Panel */}
-                    <aside className="xl:sticky xl:top-24 space-y-2">
+                    <aside className="xl:sticky xl:top-24 space-y-3">
                         <div className="glass-card rounded-2xl px-4 py-3 flex items-center justify-between">
-                            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">모드</span>
+                            <span className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">모드</span>
                             <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl gap-1">
                                 {(["flex", "grid"] as Mode[]).map(m => (
                                     <button key={m} onClick={() => setMode(m)}
-                                        className={cn("px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
+                                        className={cn("px-4 py-1.5 rounded-lg text-sm font-bold transition-all",
                                             mode === m
                                                 ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
                                                 : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800"
@@ -746,25 +746,25 @@ export default function FlexGridEditorPage() {
                         )}
 
                         <button onClick={resetPlayground}
-                            className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300">
-                            <RefreshCw className="w-3.5 h-3.5" /> 초기화
+                            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl text-sm font-semibold text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300">
+                            <RefreshCw className="w-4 h-4" /> 초기화
                         </button>
                     </aside>
 
                     {/* Center: Live Canvas */}
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         <div className="glass-card rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm">
                             {/* Canvas Toolbar */}
                             <div className="flex flex-wrap items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 gap-2">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                                        <Eye className="w-3.5 h-3.5 text-indigo-500" /> 실시간 캔버스
+                                    <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                                        <Eye className="w-4 h-4 text-indigo-500" /> 실시간 캔버스
                                     </span>
                                     {mode === "flex" && (
                                         <button
                                             onClick={() => setShowAxisGuide(v => !v)}
                                             className={cn(
-                                                "px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 border",
+                                                "px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 border",
                                                 showAxisGuide
                                                     ? "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
                                                     : "text-zinc-400 border-zinc-200 dark:border-zinc-800"
@@ -775,38 +775,38 @@ export default function FlexGridEditorPage() {
                                     )}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[11px] text-zinc-400">아이템 수</span>
-                                    <div className="flex items-center gap-1 bg-zinc-200/60 dark:bg-zinc-800 rounded-lg p-0.5">
+                                    <span className="text-xs font-medium text-zinc-500">아이템 수</span>
+                                    <div className="flex items-center gap-1.5 bg-zinc-200/60 dark:bg-zinc-800 rounded-lg p-1">
                                         <button onClick={() => setItemCount(c => Math.max(1, c - 1))}
-                                            className="w-5 h-5 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700 rounded">
-                                            <Minus className="w-3 h-3" />
+                                            className="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700 rounded">
+                                            <Minus className="w-3.5 h-3.5" />
                                         </button>
-                                        <span className="text-xs font-bold min-w-[20px] text-center">{itemCount}</span>
+                                        <span className="text-sm font-bold min-w-[24px] text-center">{itemCount}</span>
                                         <button onClick={() => setItemCount(c => Math.min(items.length, c + 1))}
-                                            className="w-5 h-5 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700 rounded">
-                                            <Plus className="w-3 h-3" />
+                                            className="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-zinc-700 rounded">
+                                            <Plus className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Main Canvas View */}
-                            <div className="p-4 min-h-[420px] relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px]">
+                            <div className="p-4 min-h-[440px] relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px]">
                                 {/* Axis Overlay Guide */}
                                 {mode === "flex" && showAxisGuide && (
                                     <div className="absolute inset-2 pointer-events-none z-10 flex flex-col justify-between p-2">
-                                        <div className="flex items-center gap-1 text-[10px] font-mono text-indigo-500 font-bold bg-indigo-500/10 backdrop-blur px-2 py-0.5 rounded border border-indigo-500/20 w-fit">
-                                            {flex.direction.includes("row") ? <ArrowRight className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                                        <div className="flex items-center gap-1.5 text-xs font-mono text-indigo-500 font-bold bg-indigo-500/10 backdrop-blur px-2.5 py-1 rounded-lg border border-indigo-500/20 w-fit">
+                                            {flex.direction.includes("row") ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowDown className="w-3.5 h-3.5" />}
                                             Main Axis: {flex.direction}
                                         </div>
-                                        <div className="flex items-center gap-1 text-[10px] font-mono text-pink-500 font-bold bg-pink-500/10 backdrop-blur px-2 py-0.5 rounded border border-pink-500/20 w-fit self-end">
+                                        <div className="flex items-center gap-1.5 text-xs font-mono text-pink-500 font-bold bg-pink-500/10 backdrop-blur px-2.5 py-1 rounded-lg border border-pink-500/20 w-fit self-end">
                                             Cross Axis: {flex.direction.includes("row") ? "vertical" : "horizontal"}
                                         </div>
                                     </div>
                                 )}
 
                                 <div
-                                    className="min-h-[360px] rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 transition-all overflow-auto"
+                                    className="min-h-[380px] rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 transition-all overflow-auto"
                                     style={containerStyle as React.CSSProperties}
                                 >
                                     {Array.from({ length: itemCount }, (_, i) => {
@@ -828,15 +828,15 @@ export default function FlexGridEditorPage() {
                                                 key={it.id}
                                                 onClick={() => setSelectedId(isSelected ? null : it.id)}
                                                 className={cn(
-                                                    "rounded-xl border-2 flex flex-col items-center justify-center cursor-pointer transition-all select-none min-h-[70px] min-w-[70px] p-3 shadow-sm",
+                                                    "rounded-xl border-2 flex flex-col items-center justify-center cursor-pointer transition-all select-none min-h-[75px] min-w-[75px] p-3 shadow-sm",
                                                     pal.bg, pal.border, pal.text,
                                                     isSelected && `ring-2 ring-offset-2 dark:ring-offset-zinc-900 ${pal.ring} scale-[1.02] shadow-md`,
                                                     "hover:brightness-105 active:scale-95"
                                                 )}
                                                 style={itemStyle}
                                             >
-                                                <span className="text-xs font-black">Item {i + 1}</span>
-                                                {isSelected && <span className="text-[9px] font-semibold opacity-70 mt-0.5">선택됨</span>}
+                                                <span className="text-sm font-black">Item {i + 1}</span>
+                                                {isSelected && <span className="text-xs font-semibold opacity-80 mt-0.5">선택됨</span>}
                                             </div>
                                         );
                                     })}
@@ -845,7 +845,7 @@ export default function FlexGridEditorPage() {
                         </div>
 
                         {/* Active Properties Badges */}
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                             {mode === "flex" ? (
                                 <>
                                     <PropBadge label="dir" value={flex.direction} />
@@ -867,11 +867,11 @@ export default function FlexGridEditorPage() {
 
                     {/* Right: Code Generator Output */}
                     <div className="xl:sticky xl:top-24 glass-card rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                        <div className="flex items-center justify-between px-4 py-2.5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60">
-                            <div className="flex gap-1 bg-zinc-200/60 dark:bg-zinc-800 p-0.5 rounded-xl">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60">
+                            <div className="flex gap-1 bg-zinc-200/60 dark:bg-zinc-800 p-1 rounded-xl">
                                 {(["css", "html", "tailwind"] as const).map(t => (
                                     <button key={t} onClick={() => setCodeTab(t)}
-                                        className={cn("px-3 py-1 rounded-lg text-[11px] font-bold transition-all",
+                                        className={cn("px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
                                             codeTab === t
                                                 ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
                                                 : "text-zinc-500 hover:text-zinc-800"
@@ -882,16 +882,16 @@ export default function FlexGridEditorPage() {
                             </div>
                             <button onClick={() => handleCopy()}
                                 className={cn(
-                                    "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all active:scale-95",
+                                    "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95",
                                     copied
                                         ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                                         : "bg-indigo-600 text-white hover:bg-indigo-500"
                                 )}>
-                                {copied ? <><Check className="w-3.5 h-3.5" /> 복사됨</> : <><Copy className="w-3.5 h-3.5" /> 복사</>}
+                                {copied ? <><Check className="w-4 h-4" /> 복사됨</> : <><Copy className="w-4 h-4" /> 복사</>}
                             </button>
                         </div>
 
-                        <pre className="p-4 text-[11px] font-mono leading-relaxed overflow-x-auto bg-zinc-950 text-emerald-400 max-h-[500px] min-h-[220px]">
+                        <pre className="p-4 text-xs font-mono leading-relaxed overflow-x-auto bg-zinc-950 text-emerald-400 max-h-[500px] min-h-[220px]">
                             <code>{activeCode}</code>
                         </pre>
                     </div>
@@ -929,11 +929,11 @@ function CheatsheetView({
             <div className="space-y-4">
                 <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-3">
                     <LayoutGrid className="w-5 h-5 text-indigo-500" />
-                    <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                    <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                         Container 속성 ({type === "flex" ? "Flex Container" : "Grid Container"})
                     </h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredContainer.map(item => (
                         <CheatsheetCard key={item.id} item={item} type={type} onCopyCode={onCopyCode} />
                     ))}
@@ -944,11 +944,11 @@ function CheatsheetView({
             <div className="space-y-4 pt-4">
                 <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-3">
                     <Box className="w-5 h-5 text-pink-500" />
-                    <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                    <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
                         Item 속성 ({type === "flex" ? "Flex Item" : "Grid Item"})
                     </h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredItem.map(item => (
                         <CheatsheetCard key={item.id} item={item} type={type} onCopyCode={onCopyCode} />
                     ))}
@@ -1007,7 +1007,7 @@ function CheatsheetCard({
                 }
                 if (item.id === "justify-content") {
                     base.justifyContent = selectedVal;
-                    base.gridTemplateColumns = "repeat(2, 60px)";
+                    base.gridTemplateColumns = "repeat(2, 65px)";
                 }
                 if (item.id === "align-content") {
                     base.alignContent = selectedVal;
@@ -1032,23 +1032,23 @@ function CheatsheetCard({
                 {/* Card Header */}
                 <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex items-center justify-between">
                     <div>
-                        <h3 className="text-sm font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                        <h3 className="text-base font-bold text-indigo-600 dark:text-indigo-400 font-mono">
                             {item.title}
                         </h3>
-                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-snug">
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-snug">
                             {item.desc}
                         </p>
                     </div>
                 </div>
 
                 {/* Option Selector Buttons */}
-                <div className="p-3 bg-zinc-100/50 dark:bg-zinc-950/40 border-b border-zinc-100 dark:border-zinc-800 flex flex-wrap gap-1">
+                <div className="p-3.5 bg-zinc-100/50 dark:bg-zinc-950/40 border-b border-zinc-100 dark:border-zinc-800 flex flex-wrap gap-1.5">
                     {item.options.map(opt => (
                         <button
                             key={opt.value}
                             onClick={() => setSelectedVal(opt.value)}
                             className={cn(
-                                "px-2.5 py-1 rounded-lg text-xs font-mono transition-all border",
+                                "px-3 py-1.5 rounded-lg text-xs font-mono transition-all border",
                                 selectedVal === opt.value
                                     ? "bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold"
                                     : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-zinc-400"
@@ -1060,9 +1060,9 @@ function CheatsheetCard({
                 </div>
 
                 {/* Live Preview Box */}
-                <div className="p-4 bg-zinc-50 dark:bg-zinc-950/60 min-h-[140px] flex items-center justify-center">
+                <div className="p-4 bg-zinc-50 dark:bg-zinc-950/60 min-h-[150px] flex items-center justify-center">
                     <div
-                        className="w-full min-h-[110px] rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-zinc-900/60 p-3"
+                        className="w-full min-h-[120px] rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-white/60 dark:bg-zinc-900/60 p-3"
                         style={containerPreviewStyle}
                     >
                         {Array.from({ length: 4 }).map((_, idx) => {
@@ -1087,7 +1087,7 @@ function CheatsheetCard({
                                     key={idx}
                                     style={itemStyle}
                                     className={cn(
-                                        "rounded-lg border text-xs font-bold font-mono flex items-center justify-center p-2 min-h-[36px] min-w-[36px] transition-all",
+                                        "rounded-lg border text-xs font-bold font-mono flex items-center justify-center p-2 min-h-[40px] min-w-[40px] transition-all",
                                         pal.bg, pal.border, pal.text,
                                         isTargetItem && "ring-2 ring-indigo-500 scale-105 shadow-md"
                                     )}
@@ -1102,7 +1102,7 @@ function CheatsheetCard({
 
             {/* Generated Code Footer */}
             <div className="p-3 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-900 text-zinc-100 flex items-center justify-between">
-                <code className="text-[11px] font-mono text-emerald-400 truncate max-w-[80%]">
+                <code className="text-xs font-mono text-emerald-400 truncate max-w-[80%]">
                     {item.id}: {selectedVal};
                 </code>
                 <button
@@ -1110,7 +1110,7 @@ function CheatsheetCard({
                     className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
                     title="CSS 코드 복사"
                 >
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="w-4 h-4" />
                 </button>
             </div>
         </div>
@@ -1125,20 +1125,20 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
         <div className="glass-card rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
             <button
                 onClick={() => setOpen(o => !o)}
-                className="w-full flex items-center justify-between px-3.5 py-2.5 bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 bg-zinc-50/50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors"
             >
-                <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{title}</span>
-                <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform duration-200", open ? "rotate-0" : "-rotate-90")} />
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{title}</span>
+                <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-200", open ? "rotate-0" : "-rotate-90")} />
             </button>
-            {open && <div className="p-3 space-y-3 border-t border-zinc-100 dark:border-zinc-800">{children}</div>}
+            {open && <div className="p-4 space-y-3.5 border-t border-zinc-100 dark:border-zinc-800">{children}</div>}
         </div>
     );
 }
 
 function PropRow({ label, children }: { label: string; children: React.ReactNode }) {
     return (
-        <div className="space-y-1">
-            <label className="text-[10px] font-mono font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{label}</label>
+        <div className="space-y-1.5">
+            <label className="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{label}</label>
             {children}
         </div>
     );
@@ -1154,7 +1154,7 @@ function IconBtn({ active, title, onClick, children }: { active: boolean; title:
             onClick={onClick}
             title={title}
             className={cn(
-                "p-1.5 rounded-lg transition-all flex items-center justify-center min-w-[32px] min-h-[32px]",
+                "p-2 rounded-lg transition-all flex items-center justify-center min-w-[36px] min-h-[36px]",
                 active
                     ? "bg-white dark:bg-zinc-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-bold"
                     : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
@@ -1167,8 +1167,8 @@ function IconBtn({ active, title, onClick, children }: { active: boolean; title:
 
 function PropBadge({ label, value }: { label: string; value: string }) {
     return (
-        <div className="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[10px] font-mono text-zinc-600 dark:text-zinc-300">
-            <span className="opacity-50">{label}:</span> <span className="font-bold text-indigo-600 dark:text-indigo-400">{value}</span>
+        <div className="px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-mono text-zinc-600 dark:text-zinc-300">
+            <span className="opacity-60">{label}:</span> <span className="font-bold text-indigo-600 dark:text-indigo-400">{value}</span>
         </div>
     );
 }
@@ -1176,8 +1176,8 @@ function PropBadge({ label, value }: { label: string; value: string }) {
 function NumInput({ label, unit, value, min, max, onChange }: { label: string; unit?: string; value: number; min: number; max: number; onChange: (v: number) => void }) {
     return (
         <div className="space-y-1">
-            <label className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 font-bold">{label}</label>
-            <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-950 rounded-xl p-1 border border-zinc-200 dark:border-zinc-800">
+            <label className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">{label}</label>
+            <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-950 rounded-xl p-1.5 border border-zinc-200 dark:border-zinc-800">
                 <input
                     type="number"
                     min={min}
@@ -1186,7 +1186,7 @@ function NumInput({ label, unit, value, min, max, onChange }: { label: string; u
                     onChange={e => onChange(Number(e.target.value))}
                     className="w-full text-center text-xs font-bold bg-transparent border-none text-zinc-800 dark:text-zinc-200 focus:outline-none"
                 />
-                {unit && <span className="text-[10px] text-zinc-400 pr-1">{unit}</span>}
+                {unit && <span className="text-xs text-zinc-400 pr-1">{unit}</span>}
             </div>
         </div>
     );
@@ -1195,8 +1195,8 @@ function NumInput({ label, unit, value, min, max, onChange }: { label: string; u
 function PaddingInputs({ pt, pr, pb, pl, onChange }: { pt: number; pr: number; pb: number; pl: number; onChange: (k: string, v: number) => void }) {
     return (
         <div className="space-y-1">
-            <label className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 font-bold">padding (top, right, bottom, left)</label>
-            <div className="grid grid-cols-4 gap-1">
+            <label className="text-xs font-mono text-zinc-500 dark:text-zinc-400 font-bold">padding (top, right, bottom, left)</label>
+            <div className="grid grid-cols-4 gap-1.5">
                 {(["pt", "pr", "pb", "pl"] as const).map((k) => (
                     <input
                         key={k}
@@ -1205,7 +1205,7 @@ function PaddingInputs({ pt, pr, pb, pl, onChange }: { pt: number; pr: number; p
                         max={100}
                         value={k === "pt" ? pt : k === "pr" ? pr : k === "pb" ? pb : pl}
                         onChange={e => onChange(k, Number(e.target.value))}
-                        className="w-full text-center text-xs font-mono bg-zinc-100 dark:bg-zinc-950 rounded-lg py-1 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
+                        className="w-full text-center text-xs font-mono bg-zinc-100 dark:bg-zinc-950 rounded-lg py-1.5 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200"
                     />
                 ))}
             </div>
@@ -1217,7 +1217,7 @@ function PaddingInputs({ pt, pr, pb, pl, onChange }: { pt: number; pr: number; p
 
 function FlexAlignPanel({ flex, updateFlex }: { flex: FlexCfg; updateFlex: (k: keyof FlexCfg, v: FlexCfg[keyof FlexCfg]) => void }) {
     return (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
             <PropRow label="justify-content">
                 <IconGroup>
                     {[
@@ -1251,7 +1251,7 @@ function FlexAlignPanel({ flex, updateFlex }: { flex: FlexCfg; updateFlex: (k: k
 
 function GridAlignPanel({ grid, updateGrid }: { grid: GridCfg; updateGrid: (k: keyof GridCfg, v: GridCfg[keyof GridCfg]) => void }) {
     return (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
             <PropRow label="justify-items">
                 <IconGroup>
                     {[
@@ -1282,7 +1282,7 @@ function GridAlignPanel({ grid, updateGrid }: { grid: GridCfg; updateGrid: (k: k
 
 function FlexLayoutPanel({ flex, updateFlex }: { flex: FlexCfg; updateFlex: (k: keyof FlexCfg, v: FlexCfg[keyof FlexCfg]) => void }) {
     return (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
             <PropRow label="flex-direction">
                 <IconGroup>
                     {[
@@ -1317,7 +1317,7 @@ function FlexLayoutPanel({ flex, updateFlex }: { flex: FlexCfg; updateFlex: (k: 
 
 function GridLayoutPanel({ grid, updateGrid }: { grid: GridCfg; updateGrid: (k: keyof GridCfg, v: GridCfg[keyof GridCfg]) => void }) {
     return (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
             <div className="grid grid-cols-2 gap-2">
                 <NumInput label="columns" unit="cols" value={grid.cols} min={1} max={12} onChange={v => updateGrid("cols", v)} />
                 <NumInput label="rows" unit="rows" value={grid.rows} min={1} max={12} onChange={v => updateGrid("rows", v)} />
@@ -1333,14 +1333,14 @@ function GridLayoutPanel({ grid, updateGrid }: { grid: GridCfg; updateGrid: (k: 
 
 function ItemPanel({ mode, item, onUpdate }: { mode: Mode; item: ItemProp; onUpdate: (k: keyof ItemProp, v: ItemProp[keyof ItemProp]) => void }) {
     if (mode === "flex") return (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
             <div className="grid grid-cols-3 gap-2">
                 <NumInput label="grow" value={item.grow} min={0} max={10} onChange={v => onUpdate("grow", v)} />
                 <NumInput label="shrink" value={item.shrink} min={0} max={10} onChange={v => onUpdate("shrink", v)} />
                 <NumInput label="order" value={item.order} min={-5} max={10} onChange={v => onUpdate("order", v)} />
             </div>
             <PropRow label="align-self">
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1.5">
                     {[
                         { v: "auto", label: "auto" }, { v: "flex-start", label: "start" },
                         { v: "center", label: "center" }, { v: "flex-end", label: "end" },
@@ -1350,7 +1350,7 @@ function ItemPanel({ mode, item, onUpdate }: { mode: Mode; item: ItemProp; onUpd
                             key={o.v}
                             onClick={() => onUpdate("alignSelf", o.v as any)}
                             className={cn(
-                                "px-2 py-1 rounded-lg text-xs font-mono transition-all border",
+                                "px-2.5 py-1 rounded-lg text-xs font-mono transition-all border",
                                 item.alignSelf === o.v
                                     ? "bg-indigo-600 text-white font-bold border-indigo-600"
                                     : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700"
