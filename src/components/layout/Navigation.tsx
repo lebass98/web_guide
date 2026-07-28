@@ -45,6 +45,10 @@ export function Navigation({ children }: NavigationProps) {
             name: "WebTools",
             url: "https://lebass98.github.io/web_guide/",
         },
+        {
+            name: "워드앤코드 디자인웹 템플릿",
+            url: "http://lebass98.github.io/Wnc_WebGuide/",
+        },
     ];
 
     useEffect(() => {
