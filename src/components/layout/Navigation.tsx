@@ -34,10 +34,6 @@ export function Navigation({ children }: NavigationProps) {
             url: "https://lebass98.github.io/Editor/",
         },
         {
-            name: "Vision Pulse Dashboard",
-            url: "https://lebass98.github.io/react_dashboard_01/",
-        },
-        {
             name: "출석체크",
             url: "https://lebass98.github.io/attendance/",
         },
