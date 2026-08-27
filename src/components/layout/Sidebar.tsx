@@ -75,65 +75,133 @@ export function Sidebar({ isOpen, isCollapsed, onClose, onToggleCollapse }: Side
 
                     {/* Menu Section */}
                     <div className="flex flex-col items-center gap-2 w-full mb-6 flex-1 px-4 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-zinc-400 dark:hover:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent pr-2">
-                        <span className={cn(
-                            "text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2 transition-opacity duration-300",
-                            "lg:block",
-                            isCollapsed ? "lg:opacity-0 lg:h-0 lg:overflow-hidden" : "lg:opacity-100",
-                            "block" // Always block on mobile
-                        )}>
-                            Tools
-                        </span>
-                        {TOOL_ITEMS.map((item, i) => (
-                            <Link
-                                key={i}
-                                href={item.href}
-                                onClick={onClose}
-                                onMouseEnter={(e) => {
-                                    if (isCollapsed) {
-                                        const rect = e.currentTarget.getBoundingClientRect();
-                                        // Set tooltip at vertical center of hovered item
-                                        setHoverTool({ label: item.label, top: rect.top + rect.height / 2 });
-                                    }
-                                }}
-                                onMouseLeave={() => setHoverTool(null)}
-                                className={cn(
-                                    "p-3 rounded-xl transition-all duration-200 group relative flex items-center justify-start",
-                                    // Mobile: always full width. PC: based on collapse
-                                    "w-full gap-4 px-4 shrink-0",
-                                    isCollapsed ? "lg:w-12 lg:h-12 lg:justify-center lg:px-0" : "lg:w-full lg:gap-4 lg:px-4",
-                                    pathname === item.href
-                                        ? "text-[#1c1c1c] dark:text-white"
-                                        : "text-zinc-600 dark:text-zinc-400 hover:text-[#1c1c1c] dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-zinc-800/50"
-                                )}
-                            >
-                                {pathname === item.href && (
-                                    <motion.div
-                                        layoutId="activeSidebarBg"
-                                        className="absolute inset-0 bg-gray-100 dark:bg-zinc-800 rounded-xl -z-10 shadow-sm"
-                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                                    />
-                                )}
-                                <item.icon className="w-5 h-5 relative z-10 shrink-0" />
-                                <span className={cn(
-                                    "text-sm font-semibold whitespace-nowrap transition-colors relative z-10",
-                                    isCollapsed ? "lg:hidden" : "lg:block",
-                                    "block" // Always block on mobile
-                                )}>
-                                    {item.label}
-                                </span>
+                        {/* Section: UI 요소 */}
+                        <div className="w-full flex flex-col items-center gap-1 mb-2">
+                            <span className={cn(
+                                "text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1 px-2 w-full transition-opacity duration-300",
+                                "lg:block",
+                                isCollapsed ? "lg:opacity-0 lg:h-0 lg:overflow-hidden lg:m-0" : "lg:opacity-100",
+                                "block"
+                            )}>
+                                UI 요소
+                            </span>
+                            {TOOL_ITEMS.filter((item) => item.category === "ui").map((item, i) => (
+                                <Link
+                                    key={item.id}
+                                    href={item.href}
+                                    onClick={onClose}
+                                    onMouseEnter={(e) => {
+                                        if (isCollapsed) {
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            setHoverTool({ label: `[UI 요소] ${item.label}`, top: rect.top + rect.height / 2 });
+                                        }
+                                    }}
+                                    onMouseLeave={() => setHoverTool(null)}
+                                    className={cn(
+                                        "p-3 rounded-xl transition-all duration-200 group relative flex items-center justify-start",
+                                        "w-full gap-4 px-4 shrink-0",
+                                        isCollapsed ? "lg:w-12 lg:h-12 lg:justify-center lg:px-0" : "lg:w-full lg:gap-4 lg:px-4",
+                                        pathname === item.href
+                                            ? "text-[#1c1c1c] dark:text-white"
+                                            : "text-zinc-600 dark:text-zinc-400 hover:text-[#1c1c1c] dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-zinc-800/50"
+                                    )}
+                                >
+                                    {pathname === item.href && (
+                                        <motion.div
+                                            layoutId="activeSidebarBg"
+                                            className="absolute inset-0 bg-gray-100 dark:bg-zinc-800 rounded-xl -z-10 shadow-sm"
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        />
+                                    )}
+                                    <item.icon className="w-5 h-5 relative z-10 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                                    <span className={cn(
+                                        "text-sm font-semibold whitespace-nowrap transition-colors relative z-10",
+                                        isCollapsed ? "lg:hidden" : "lg:block",
+                                        "block"
+                                    )}>
+                                        {item.label}
+                                    </span>
 
-                                {pathname === item.href && (
-                                    <motion.div 
-                                        layoutId="activeSidebarIndicator"
-                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                                        className={cn(
-                                            "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] dark:bg-white rounded-r-full lg:block hidden",
-                                            isCollapsed && "left-0"
-                                        )} 
-                                    />
-                                )}
-                            </Link>
-                        ))}
+                                    {pathname === item.href && (
+                                        <motion.div 
+                                            layoutId="activeSidebarIndicator"
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                            className={cn(
+                                                "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-indigo-600 dark:bg-indigo-400 rounded-r-full lg:block hidden",
+                                                isCollapsed && "left-0"
+                                            )} 
+                                        />
+                                    )}
+                                </Link>
+                            ))}
+                        </div>
+
+                        {/* Divider */}
+                        <div className={cn(
+                            "w-full border-t border-gray-100 dark:border-zinc-800 my-1",
+                            isCollapsed ? "lg:w-8" : "lg:w-full"
+                        )} />
+
+                        {/* Section: Tools */}
+                        <div className="w-full flex flex-col items-center gap-1">
+                            <span className={cn(
+                                "text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1 px-2 w-full transition-opacity duration-300",
+                                "lg:block",
+                                isCollapsed ? "lg:opacity-0 lg:h-0 lg:overflow-hidden lg:m-0" : "lg:opacity-100",
+                                "block"
+                            )}>
+                                Tools
+                            </span>
+                            {TOOL_ITEMS.filter((item) => item.category !== "ui").map((item, i) => (
+                                <Link
+                                    key={item.id}
+                                    href={item.href}
+                                    onClick={onClose}
+                                    onMouseEnter={(e) => {
+                                        if (isCollapsed) {
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            setHoverTool({ label: item.label, top: rect.top + rect.height / 2 });
+                                        }
+                                    }}
+                                    onMouseLeave={() => setHoverTool(null)}
+                                    className={cn(
+                                        "p-3 rounded-xl transition-all duration-200 group relative flex items-center justify-start",
+                                        "w-full gap-4 px-4 shrink-0",
+                                        isCollapsed ? "lg:w-12 lg:h-12 lg:justify-center lg:px-0" : "lg:w-full lg:gap-4 lg:px-4",
+                                        pathname === item.href
+                                            ? "text-[#1c1c1c] dark:text-white"
+                                            : "text-zinc-600 dark:text-zinc-400 hover:text-[#1c1c1c] dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-zinc-800/50"
+                                    )}
+                                >
+                                    {pathname === item.href && (
+                                        <motion.div
+                                            layoutId="activeSidebarBg"
+                                            className="absolute inset-0 bg-gray-100 dark:bg-zinc-800 rounded-xl -z-10 shadow-sm"
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        />
+                                    )}
+                                    <item.icon className="w-5 h-5 relative z-10 shrink-0" />
+                                    <span className={cn(
+                                        "text-sm font-semibold whitespace-nowrap transition-colors relative z-10",
+                                        isCollapsed ? "lg:hidden" : "lg:block",
+                                        "block"
+                                    )}>
+                                        {item.label}
+                                    </span>
+
+                                    {pathname === item.href && (
+                                        <motion.div 
+                                            layoutId="activeSidebarIndicator"
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                            className={cn(
+                                                "absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#1c1c1c] dark:bg-white rounded-r-full lg:block hidden",
+                                                isCollapsed && "left-0"
+                                            )} 
+                                        />
+                                    )}
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </aside>
 
