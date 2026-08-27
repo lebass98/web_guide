@@ -31,7 +31,6 @@ import {
     Hash,
     AppWindow,
     Table2,
-    LayoutTemplate,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -61,14 +60,6 @@ const itemVariants = {
 
 export default function Home() {
     const tools: Tool[] = [
-        // ── UI 요소 ──
-        {
-            title: "박스 (UI 컴포넌트)",
-            desc: "방사형 그라데이션과 바로가기 알약 버튼을 갖춘 토스 스타일 임팩트 배너 박스입니다.",
-            href: "/tools/box",
-            icon: LayoutTemplate,
-            color: "amber",
-        },
         // ── 영문 ──
         {
             title: "Base64 변환기",
